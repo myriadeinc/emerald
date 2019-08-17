@@ -4,6 +4,7 @@
     },
     "port": 8180,
     "pool": {
-        "singleThread": false
+        "singleThread": false,
+        "workers": 1
     }
 }
