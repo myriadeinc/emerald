@@ -1,0 +1,9 @@
+{
+    "service": {
+        "name": "diamond"
+    },
+    "port": 8180,
+    "pool": {
+        "singleThread": false
+    }
+}
