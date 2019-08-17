@@ -4,12 +4,15 @@
   "description": "Prototype javascript pool server for Myriade",
   "main": "src/main.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start:dev": "nodemon -L --ignore test src/main.js",
+    "start": "node src/main.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "app-module-path": "^2.2.0",
     "bunyan": "^1.8.12",
+    "cryptonight-hashing": "^3.0.5",
     "express": "^4.17.1",
     "lodash": "^4.17.15",
     "nconf": "^0.10.0",

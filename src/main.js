@@ -9,6 +9,7 @@ require('app-module-path').addPath(rootPath);
 
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
+//onst spawner = require('src/util/spawner.js');
 
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
@@ -20,19 +21,25 @@ const handleWorker = () => {
 };
 
 const main = () => {
-    if (cluster.isWorker){
-        handleWorker();
-    }
-    else if (config.get('pool:singleThread')){
-
-    }
-    else {
-
-    }
+    return new Promise((resolve, reject) => {
+        logger.core.info('Starting Emerald')
+        if (cluster.isWorker){
+            handleWorker();
+        }
+        else if (config.get('pool:singleThread')){
+    
+        }
+        else {
+    
+        }
+        while(true){
+            
+        }
+    })
+    
 };
 
-main() 
-.cath(err => {
+main().catch(err => {
     logger.core.error(err);
     process.exit(1);
 });
