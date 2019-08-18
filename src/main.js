@@ -18,15 +18,8 @@ const logger = require('src/util/logger.js');
 const main = () => {
     return new Promise((resolve, reject) => {
         logger.core.info('Starting Emerald')
-        if (cluster.isWorker){
-            handleWorker();
-        }
-        else if (config.get('pool:singleThread')){
-    
-        }
-        else {
-    
-        }
+        
+        
         while(true){
             
         }
