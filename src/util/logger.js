@@ -10,6 +10,6 @@ const logger = bunyan.createLogger({
 module.exports = {
   core: logger.child({component: 'core'}),
   db: logger.child({component: 'db'}),
-  auth: logger.child({component: 'auth'}),
-  account: logger.child({component: 'account'}),
+  cache: logger.child({component: 'cache'}),
+  monero: logger.child({component: 'monero'})
 };
