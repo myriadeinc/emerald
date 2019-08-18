@@ -3,6 +3,9 @@
         "name": "diamond"
     },
     "port": 8180,
+    "cluster": {
+        "mode": "docker"
+    },
     "pool": {
         "singleThread": false,
         "workers": 1

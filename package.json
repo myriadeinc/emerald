@@ -4,8 +4,10 @@
   "description": "Prototype javascript pool server for Myriade",
   "main": "src/main.js",
   "scripts": {
-    "start:dev": "nodemon -L --ignore test src/main.js",
-    "start": "node src/main.js"
+    "start:dev": "nodemon --inspect=0.0.0.0:9878 -L --ignore test src/main.js",
+    "start": "node src/main.js",
+    "lint:fix": "eslint --fix src",
+    "test": "mocha --color --recursive 'test'"
   },
   "author": "",
   "license": "ISC",

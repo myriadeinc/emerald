@@ -13,12 +13,7 @@ const logger = require('src/util/logger.js');
 
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
-const handleWorker = () => {
-    switch(process.env.workerType){
-        case 'pool':
-            break;
-    }
-};
+
 
 const main = () => {
     return new Promise((resolve, reject) => {
