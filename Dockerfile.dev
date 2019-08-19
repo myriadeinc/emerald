@@ -1,6 +1,8 @@
 FROM ubuntu:18.04
 RUN apt update && apt install -y nodejs npm 
 
+RUN apt-get install libboost-all-dev
+
 WORKDIR /usr/src/app
 
 COPY . .

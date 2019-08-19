@@ -4,8 +4,9 @@ const jsonrpc = require('json-rpc-protocol');
 // API interface to interact with Monero Daemon via JSON RPC
 class MoneroApi {
 
-    constructor(host=null, port=null) {
-        this.__daemon_host = host ? host: config.get('daemon:host');
+    constructor() {
+        this.__daemon_host = config.get('monero:daemon:host') ? config.get('monero:daemon:host'): "0.0.0.0";
+        this.__wallet_host = config.get('monero:wallet:host') ? config.get('monero:wallet:host') : "0.0.0.0";
     }
 
     /**
