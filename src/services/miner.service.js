@@ -2,23 +2,27 @@
 
 const MinerService = {
 
-    getJob: () => {
-        return new Promise((resolve, reject) => {
-            reject(server.error(501, 'not implemented'));
-        });
-    },
-
-    submit: () => {
-        return new Promise((resolve, reject) => {
-            reject(server.error(501, 'not implemented'));
-        });
-    },
-
-    login: () => {
-        return new Promise((resolve, reject) => {
-            reject(server.error(501, 'not implemented'));
-        });
+    rpcInterface: {
+        job: () => {
+            return new Promise((resolve, reject) => {
+                reject('getJob is not implemented');
+            });
+        },
+    
+        submit: () => {
+            return new Promise((resolve, reject) => {
+                reject('submit is not implemented');
+            });
+        },
+    
+        login: () => {
+            return new Promise((resolve, reject) => {
+                //console.log('here');
+                resolve('login is not implemented');
+            });
+        }
     }
+    
 }
 
 module.exports = MinerService;
