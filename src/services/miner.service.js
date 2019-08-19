@@ -17,9 +17,17 @@ const MinerService = {
     
         login: () => {
             return new Promise((resolve, reject) => {
-                //console.log('here');
                 resolve('login is not implemented');
             });
+        },
+         
+        keepalived: () => {
+            return new Promise((resolve, reject) => {
+                const res = {
+                    status: 'KEEPALIVED'
+                };
+                resolve(res)
+            })
         }
     }
     
