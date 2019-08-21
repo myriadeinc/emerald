@@ -12,7 +12,10 @@ services:
     environment:
       - NODE_ENV=local
     volumes:
-      - ./:/usr/src/app
+      - ./src:/usr/src/app/src
+      - ./test:/usr/src/app/test
+      - ./config:/usr/src/app/config
+      - ./scripts:/usr/src/app/scripts
     ports:
       - "8088:8088"
       - "9878:9878"

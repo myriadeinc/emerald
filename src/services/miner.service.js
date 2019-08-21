@@ -21,12 +21,11 @@ const MinerService = {
             });
         },
          
-        keepalived: () => {
+        keepalived: (id) => {
             return new Promise((resolve, reject) => {
-                const res = {
+                resolve({
                     status: 'KEEPALIVED'
-                };
-                resolve(res)
+                });
             })
         }
     }
