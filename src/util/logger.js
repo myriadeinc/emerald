@@ -13,5 +13,5 @@ module.exports = {
   cache: logger.child({component: 'cache'}),
   monero: logger.child({component: 'monero'}),
   block: logger.child({component: 'block_service'}),
-  miner: logger.child({component: 'miner'})
+  miner: logger.child({component: 'miner'}),
 };
