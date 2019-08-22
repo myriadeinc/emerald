@@ -9,11 +9,15 @@
     "pool": {
         "singleThread": false,
         "workers": 1,
+        "randomX": false,
         "ports": [
             12345,
             12346,
             12347
-        ]
+        ],
+        "cryptonight": {
+            "blobType": ""
+        }
     },
     "monero":{
         "daemon":{
