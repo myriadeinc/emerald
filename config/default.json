@@ -8,6 +8,7 @@
     },
     "pool": {
         "singleThread": false,
+        "poolAddress": "__REPLACE__",
         "workers": 1,
         "randomX": false,
         "ports": [
@@ -22,7 +23,7 @@
     "monero":{
         "daemon":{
             "host": "0.0.0.0",
-            "port": "5855"
+            "port": 5855
         },
         "wallet": {
             "host": "0.0.0.0",
