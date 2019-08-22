@@ -12,31 +12,28 @@ const logger = require('src/util/logger.js');
 
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
-let servers = {}
+const servers = {};
 
 const main = async () => {
-
-    logger.core.info('Starting Emerald')
-    const pool = require('src/pool.js');
-    const ports = config.get('pool:ports');
-    ports.forEach(p => {
-        let server = pool.listen(p);
-        logger.core.info(`Pool listening on port ${p}`);
-        servers[p] = server;
-    });
-        
+  logger.core.info('Starting Emerald');
+  const pool = require('src/pool.js');
+  const ports = config.get('pool:ports');
+  ports.forEach((p) => {
+    const server = pool.listen(p);
+    logger.core.info(`Pool listening on port ${p}`);
+    servers[p] = server;
+  });
 };
 
 const gracefulShutdown = () => {
-    Object.keys(servers).forEach(port => {
-        let server = servers[port];
-        server.close(async () => {
-            // await some DB shut down
-            console.log(`${config.get('service')} is gracefully shutting down on port ${port}`);
-            process.exit(0);
-        });
-    })
-    
+  Object.keys(servers).forEach((port) => {
+    const server = servers[port];
+    server.close(async () => {
+      // await some DB shut down
+      console.log(`${config.get('service')} is gracefully shutting down on port ${port}`);
+      process.exit(0);
+    });
+  });
 };
 
 process.on('SIGTERM', gracefulShutdown);
@@ -47,9 +44,9 @@ process.on('unhandledRejection', (err) => {
 });
 
 
-main().catch(err => {
-    logger.core.error(err);
-    process.exit(1);
+main().catch((err) => {
+  logger.core.error(err);
+  process.exit(1);
 });
 
 
