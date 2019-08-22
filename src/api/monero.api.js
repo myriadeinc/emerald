@@ -46,12 +46,10 @@ class MoneroApi {
     
     /**
      * @description gets the header of the last block : promisified
-     * @returns {object} Returns the header of the last block
+     * @returns {object} Returns the header of the last block promisified
      */
     getLastBlockHeader() {
-        return new Promise((resolve, reject) => {
-
-        });
+        return this.__rpc_client.send('getlastblockheader', {});
     }
 
     /**
