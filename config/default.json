@@ -1,6 +1,6 @@
 {
     "service": {
-        "name": "diamond"
+        "name": "emerald"
     },
     "port": 8088,
     "cluster": {
@@ -31,6 +31,7 @@
         }
     },
     "diamond":{
-        "public_key": "__VOID__"
+        "public_key": "__VOID__",
+        "host": "0.0.0.0"
     }
 }
