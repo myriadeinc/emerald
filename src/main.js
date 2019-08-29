@@ -19,9 +19,9 @@ const main = async () => {
   const pool = require('src/pool.js');
   const ports = config.get('pool:ports');
   ports.forEach((p) => {
-    const server = pool.listen(p);
-    logger.core.info(`Pool listening on port ${p}`);
-    servers[p] = server;
+    const server = pool.listen(p.port);
+    logger.core.info(`Pool listening on port ${p.port}`);
+    servers[p.port] = server;
   });
 };
 

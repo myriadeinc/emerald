@@ -7,13 +7,16 @@ class DiamondApi {
     }
 
     /**
-     * 
+     * Performs the login functionality
      * @param {object} data has username and password 
-     */
+     */ 
     login(data) {
         
     }
 
+    getUser(userId){
+
+    }
 
 }
 
