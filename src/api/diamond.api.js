@@ -18,6 +18,7 @@ class DiamondApi {
      * 
      * @param {UUID} userId 
      * @param {Hex} address 
+     * @returns An user JSON
      */
     async getUser(userId=null, address=null){
 
