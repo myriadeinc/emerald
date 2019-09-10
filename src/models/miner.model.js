@@ -8,48 +8,47 @@ const VarDiff = require('src/util/global.js').VARDIFF;
 
 const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
-
+const cache = require('src/util/cache.js');
 
 class MinerModel {
 
     address = null;
     id = null;
-    workerName = null;
-    difficulty = null;
-    port=null;
+    name = null;
+    difficulty = config.get('pool:difficulty');
+    port=config.get('pool:port');
     shareTimeRing = cryptonoteUtils.ringBuffer(16);
     
     /**
      * Serialize from JSON or JWT token into a Miner instance
-     * @param {object} options 
-     * @param {token} jwt 
+     * @param {object} data 
      */
-    async constructor(currPort, options={}, jwt=null) {
-        if (jwt){
-            // Handle to object form JWT token
-            this.address = jwt.address;
-            this.id = jwt.userId;
-            this.workerName = jwt.workerName;
-            this.port = jwt.connectionPort;
-            this.difficulty = jwt.difficulty ? jwt.difficulty : null;
-        }
-        else if (options){
-            this.address = options.address;
-            this.id = res.id;
-            this.workerName = res.workerName;
-            this.difficulty = options.difficulty ? options.difficulty : null;
-        }
-        else {
-            throw err.Miner.Instantiation();
-        }
+    async constructor(data) {
+        
+        this.address = data.address;
+        this.name = data.name;
+        this.id = data.accountId;
     }
 
     /**
      * 
      * @param {JSON} data The JSON data of a miner that needs to be serialized
      */
-    async static serializeMiner(data) {
+    async static serializeJWT(token) {
+        try{
+            let tok = await diamondApi.decodeAndVerifyToken(token)
+            data.accountId = tok.sub
+            data = {
+                accountId: tok.sub,
+                ...tok.account
 
+            }
+            return new MinerModel(data);
+        }
+        catch(e){
+            logger.core.error(e);
+            return null;
+        }
     }
 
 
@@ -65,7 +64,7 @@ class MinerModel {
      * @param {time} now 
      */
     retarget(now) {
-        let options = config.get('pool:ports:varDiff');
+        let options = config.get('pool:varDiff');
 
         let sinceLast = now - this.lastShareTime;
         let decreaser = sinceLast > VarDiff.tMax;
