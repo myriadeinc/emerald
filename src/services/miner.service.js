@@ -1,6 +1,12 @@
 'use strict';
 
 const logger = require('src/util/logger.js').miner;
+
+const DiamondApi = require('src/api/diamond.api.js');
+const diamondApi = new DiamondApi();
+
+const cache = require('src/util/cache.js');
+
 const MinerService = {
 
   rpcInterface: {
@@ -17,10 +23,22 @@ const MinerService = {
     },
 
     login: (params) => {
-      return new Promise((resolve, reject) => {
-        logger.info(`${params.login} trying to login with ${params.agent}`);
-        resolve('login is not implemented');
-      });
+
+      return diamondApi.login(address=params.login, email=params.pass)
+      .then(accessToken => {
+          return diamondApi.decodeAndVerifyToken(accessToken);
+      })
+      .then(tokenJSON => {
+          return cache.put(tokenJSON.sub, tokenJSON);
+      })
+      .then(() => {
+          return "success";
+      })
+      .catch(err => {
+          logger.core.err(err);
+          return err;
+      })
+      
     },
 
     keepalived: (params) => {

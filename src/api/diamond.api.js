@@ -58,4 +58,4 @@ class DiamondApi {
 
 }
 
-export default DiamondApi;
+module.exports = DiamondApi;
