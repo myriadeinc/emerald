@@ -1,7 +1,3 @@
-const cluster = require('cluster');
-const fs = require('fs');
-const os = require('os');
-
 const path = require('path');
 
 const rootPath = path.resolve(`${__dirname}/..`);
@@ -10,29 +6,31 @@ require('app-module-path').addPath(rootPath);
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
 
+const cache = require('src/util/cache.js');
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
-const servers = {};
+let server;
 
 const main = async () => {
-  logger.core.info('Starting Emerald');
+  logger.core.info(`Starting Emerald for ${config.get('pool:desc')}`);
+  
+  logger.core.info('Initializing cache DB');
+  cache.init(config.get('cache'));
+  logger.core.info('Cache Initialized');
+
   const pool = require('src/pool.js');
-  const ports = config.get('pool:ports');
-  ports.forEach((p) => {
-    const server = pool.listen(p.port);
-    logger.core.info(`Pool listening on port ${p.port}`);
-    servers[p.port] = server;
+  const port = config.get('pool:port');
+  server = pool.listen(port, () => {
+    logger.core.info(`Listening on port ${port}`)
   });
+
 };
 
 const gracefulShutdown = () => {
-  Object.keys(servers).forEach((port) => {
-    const server = servers[port];
-    server.close(async () => {
-      // await some DB shut down
-      console.log(`${config.get('service')} is gracefully shutting down on port ${port}`);
-      process.exit(0);
-    });
+  server.close(async () => {
+    // await some DB shut down
+    console.log(`${config.get('service')} is gracefully shutting down on port ${port}`);
+    process.exit(0);
   });
 };
 

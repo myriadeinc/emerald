@@ -1,6 +1,6 @@
 'use strict';
 
-const redis = require('promise-redis');
+const redis = require('promise-redis')();
 
 let redisClient;
 

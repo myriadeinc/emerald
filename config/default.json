@@ -7,45 +7,20 @@
     "cluster": {
         "mode": "docker"
     },
+    "cache": {
+        "host": "localhost",
+        "port": 6379,
+        "user": "",
+        "db": "0"
+    },
     "pool": {
         "singleThread": false,
         "poolAddress": "__REPLACE__",
         "workers": 1,
         "randomX": true,
-        "ports": [
-            {
-                "port": 12345,
-                "difficulty": 5000,
-                "desc": "Low end hardware"
-            },
-            {
-                "port": 12346,
-                "difficulty": 15000,
-                "desc": "Mid range hardware"
-            },
-            {
-                "port": 12347,
-                "difficulty": 25000,
-                "desc": "High end hardware"
-            },
-            {
-                "port": 12348,
-                "difficulty": 500000,
-                "desc": "Cloud-mining / NiceHash"
-            },
-            {
-                "port": 12349,
-                "difficulty": 25000,
-                "desc": "Hidden port",
-                "hidden": true
-            },
-            {
-                "port": 12350,
-                "difficulty": 20000,
-                "desc": "SSL connection",
-                "ssl": true
-            }
-        ],
+        "difficulty": 5000,
+        "desc": "Low end hardware",
+        "ports": 12345,
         "cryptonight": {
             "blobType": ""
         },
