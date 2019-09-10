@@ -1,6 +1,7 @@
 {
     "service": {
-        "name": "emerald"
+        "name": "emerald",
+        "shared_secret": "__REPLACE__"
     },
     "port": 8088,
     "cluster": {

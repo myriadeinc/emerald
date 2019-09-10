@@ -10,5 +10,7 @@ Err.Miner = Err.extend('Miner Error', 500, 'MinerError');
 
 Err.Miner.instantiation = Err.Miner.extend('Miner Instantiation Error', 500, 'MinerInstantiationError');
 
+Err.Miner.login = Err.Miner.extend('Miner Login Error', 500, 'MinerLoginError');
+
 
 module.exports = Err;

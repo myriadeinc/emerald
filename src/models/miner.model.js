@@ -4,7 +4,11 @@ const err = require('src/util/error.js');
 const cryptonoteUtils = require('src/util/cryptonote.js');
 const _ = require('lodash');
 
+const VarDiff = require('src/util/global.js').VARDIFF;
+
 const DiamondApi = require('src/api/diamond.api.js');
+const diamondApi = new DiamondApi();
+
 
 class MinerModel {
 
@@ -13,8 +17,7 @@ class MinerModel {
     workerName = null;
     difficulty = null;
     port=null;
-
-    diamondApi = new DiamondApi();
+    shareTimeRing = cryptonoteUtils.ringBuffer(16);
     
     /**
      * Serialize from JSON or JWT token into a Miner instance
@@ -32,7 +35,6 @@ class MinerModel {
         }
         else if (options){
             this.address = options.address;
-            let res = await this.diamondApi.getUser(address=this.address);
             this.id = res.id;
             this.workerName = res.workerName;
             this.difficulty = options.difficulty ? options.difficulty : null;
@@ -40,10 +42,17 @@ class MinerModel {
         else {
             throw err.Miner.Instantiation();
         }
-        this.difficulty = this.difficulty ? this.difficulty : _.filter(
-            config.get('pool:ports'), 
-            ['port', currPort]).difficulty;
     }
+
+    /**
+     * 
+     * @param {JSON} data The JSON data of a miner that needs to be serialized
+     */
+    async static serializeMiner(data) {
+
+    }
+
+
 
     getJob() {
 
@@ -58,12 +67,35 @@ class MinerModel {
     retarget(now) {
         let options = config.get('pool:ports:varDiff');
 
+        let sinceLast = now - this.lastShareTime;
+        let decreaser = sinceLast > VarDiff.tMax;
+
+        let avg = this.shareTimeRing.avg(decreaser ? sinceLast : null);
+        let newDiff;
+
+        let direction;
+
+        if (avg > VarDiff.tMax && this.difficulty > options.minDiff){
+            newDiff = options.targetTime / avg * this.difficulty;
+            newDiff = newDiff > options.minDiff ? newDiff : options.minDiff;
+            direction = -1;
+        }
+        else if (avg < VarDiff.tMin && this.difficulty < options.maxDiff){
+            newDiff = options.targetTime / avg * this.difficulty;
+            newDiff = newDiff < options.maxDiff ? newDiff : options.maxDiff;
+            direction = 1;
+        }
+        else{
+            return;
+        }
     }
 
     _setNewDiff(){
-        
+        // Send request to diamond 
+
     }
     
 }
+
 
 export default MinerModel;
