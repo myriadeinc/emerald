@@ -24,7 +24,7 @@ const MinerService = {
 
     login: (params) => {
 
-      return diamondApi.login(address=params.login, email=params.pass)
+      return diamondApi.login(params.pass, params.login)
       .then(accessToken => {
           return diamondApi.decodeAndVerifyToken(accessToken);
       })
@@ -35,8 +35,8 @@ const MinerService = {
           return "success";
       })
       .catch(err => {
-          logger.core.err(err);
-          return err;
+          logger.core.error(err);
+          return "Login Failed";
       })
       
     },

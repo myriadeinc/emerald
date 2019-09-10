@@ -7,8 +7,10 @@ const logger = require('src/util/logger.js');
 
 class DiamondApi {
     constructor() {
+
         this.url = config.get('diamond:host');
         this.sharedSecret = config.get('service:shared_secret');
+        logger.core.info(`Diamond API instantiated on ${this.url}`)
     }
 
     /**
@@ -29,7 +31,7 @@ class DiamondApi {
             return res.accessToken;
         })
         .catch(err => {
-            logger.core.err(err);
+            logger.core.error(err);
             throw Err.login;
         });
     }

@@ -4,7 +4,7 @@ const Err = require('egads')
 
 Err.BlockTemplate = Err.extend('Block Template Error', 500, 'BlockTemplateError');
 
-Err.BlockTemplate.instantiation = Err.BlockService.extend('BlockTemplate Instantiation Error', 500, 'BlockTemplateError::Instantiation');
+Err.BlockTemplate.instantiation = Err.BlockTemplate.extend('BlockTemplate Instantiation Error', 500, 'BlockTemplateError::Instantiation');
 
 Err.Miner = Err.extend('Miner Error', 500, 'MinerError');
 
