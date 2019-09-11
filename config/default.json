@@ -45,6 +45,7 @@
     },
     "diamond":{
         "public_key": "__VOID__",
+        "port": 8180,
         "host": "0.0.0.0"
     }
 }

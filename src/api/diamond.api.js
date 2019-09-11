@@ -1,4 +1,5 @@
 'use strict';
+const _ = require('lodash');
 const config = require('src/util/config.js');
 const axios = require('axios');
 const Err = require('src/util/error.js').Miner;
@@ -9,6 +10,7 @@ class DiamondApi {
     constructor() {
 
         this.url = config.get('diamond:host');
+        this.port = config.get('diamond:port');
         this.sharedSecret = config.get('service:shared_secret');
         logger.core.info(`Diamond API instantiated on ${this.url}`)
     }
@@ -19,20 +21,23 @@ class DiamondApi {
      * @returns an promise of an access token
      */ 
     login(address, email) {
-        return axios.post(`${this.url}/v1/account/address-login`,{
-            address,
-            email
-        },{
-                headers: {
-                    Authorization: `SharedSecret ${this.sharedSecret}`
-                }
+        logger.core.info(`Login Proxy for ${address}`);
+        return axios({
+            url: `http://${this.url}:${this.port}/v1/account/address-login`,
+            method: 'post',
+            data: {
+                address,
+                email
+            },
+            headers: {
+                Authorization: `SharedSecret ${this.sharedSecret}`
+            }
         })
         .then((res) => {
-            return res.accessToken;
+            return res.data.accessToken;
         })
         .catch(err => {
             logger.core.error(err);
-            throw Err.login;
         });
     }
 
@@ -42,6 +47,7 @@ class DiamondApi {
             try {
                 decodedToken = jwt.verify(token, config.get('diamond:public_key'));
             } catch (err) {
+                logger.core.error(err);
                 return reject(err);
             }
             return resolve(_.omit(decodedToken, ['iat', 'jti']));

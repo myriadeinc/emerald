@@ -24,18 +24,19 @@ const MinerService = {
 
     login: (params) => {
 
-      return diamondApi.login(params.pass, params.login)
+      return diamondApi.login(params.login, params.pass)
       .then(accessToken => {
           return diamondApi.decodeAndVerifyToken(accessToken);
       })
       .then(tokenJSON => {
+          logger.info(`Storing JSONToken for ${params.login} into cache`);
           return cache.put(tokenJSON.sub, tokenJSON);
       })
       .then(() => {
           return "success";
       })
       .catch(err => {
-          logger.core.error(err);
+          logger.error(err);
           return "Login Failed";
       })
       
