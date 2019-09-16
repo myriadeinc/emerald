@@ -10,31 +10,26 @@ const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
 const cache = require('src/util/cache.js');
 
-class MinerModel {
-
-    address = null;
-    id = null;
-    name = null;
-    difficulty = config.get('pool:difficulty');
-    port=config.get('pool:port');
-    shareTimeRing = cryptonoteUtils.ringBuffer(16);
-    
+class MinerModel {    
     /**
      * Serialize from JSON or JWT token into a Miner instance
      * @param {object} data 
      */
-    async constructor(data) {
+    constructor(data) {
         
         this.address = data.address;
         this.name = data.name;
         this.id = data.accountId;
+        this.difficulty = config.get('pool:difficulty')
+        this.port=config.get('pool:port')
+        this.shareTimeRing = cryptonoteUtils.ringBuffer(16);
     }
 
     /**
      * 
      * @param {JSON} data The JSON data of a miner that needs to be serialized
      */
-    async static serializeJWT(token) {
+    static async serializeJWT(token) {
         try{
             let tok = await diamondApi.decodeAndVerifyToken(token)
             data.accountId = tok.sub
@@ -97,4 +92,4 @@ class MinerModel {
 }
 
 
-export default MinerModel;
+module.exports = MinerModel;

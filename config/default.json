@@ -24,6 +24,7 @@
         "cryptonight": {
             "blobType": ""
         },
+        "intAddressPrefix": "__REPLACE__",
         "varDiff": {
             "minDiff": 100,
             "maxDiff": 100000000,
