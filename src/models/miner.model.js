@@ -29,9 +29,9 @@ class MinerModel {
      * 
      * @param {JSON} data The JSON data of a miner that needs to be serialized
      */
-    static async serializeJWT(token) {
+    static serializeJWT(tok) {
         try{
-            let tok = await diamondApi.decodeAndVerifyToken(token)
+           
             data.accountId = tok.sub
             data = {
                 accountId: tok.sub,
