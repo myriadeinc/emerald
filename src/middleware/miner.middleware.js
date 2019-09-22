@@ -22,7 +22,7 @@ const loadMiner = (decodedToken, request) => {
         if (request.params.miner){
             delete request.params.miner;
         }
-        request.params.miner = miner;
+        request.body.params.miner = miner;
     }
 }
 
@@ -45,14 +45,17 @@ const validateMiner = (request) => {
             })
         }
         else {
-            try {
-                decodedToken = cache.get(minerAddress);
-            }
-            catch(e) {
-                reject(e);
-            }
+            return cache.get(minerAddress)
+            .then((tok) => {
+                if (!tok){
+                    reject('Miner is not logged in');
+                }
+                resolve(tok);
+            })
+            .catch(err => {
+                reject(err);
+            })
         }
-        resolve(decodedToken);
 
     })
 }
@@ -72,11 +75,11 @@ const MinerMiddleware = {
         if (needAuth) {
             return validateMiner(req)
             .then((decodedToken) => {
-                loadMiner(decodedToken, request);
+                loadMiner(decodedToken, req);
                 next();
             })
             .catch(err => {
-                logger.error(`While authenticating this occured, ${err} for miner ${req.body.params.minerId}`);
+                logger.error(`While authenticating this occured, ${err} for miner ${req.body.params.address}`);
                 res.status(403).send('Authentication Failure');
             })
         }

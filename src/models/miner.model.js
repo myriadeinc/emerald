@@ -19,10 +19,10 @@ class MinerModel {
         
         this.address = data.address;
         this.name = data.name;
-        this.id = data.accountId;
-        this.difficulty = config.get('pool:difficulty')
-        this.port=config.get('pool:port')
-        this.shareTimeRing = cryptonoteUtils.ringBuffer(16);
+        this.id = data.id;
+        // this.difficulty = config.get('pool:difficulty')
+        // this.port=config.get('pool:port')
+        // this.shareTimeRing = cryptonoteUtils.ringBuffer(16);
     }
 
     /**
@@ -30,15 +30,8 @@ class MinerModel {
      * @param {JSON} data The JSON data of a miner that needs to be serialized
      */
     static serializeJWT(tok) {
-        try{
-           
-            data.accountId = tok.sub
-            data = {
-                accountId: tok.sub,
-                ...tok.account
-
-            }
-            return new MinerModel(data);
+        try{           
+            return new MinerModel(tok.account);
         }
         catch(e){
             logger.core.error(e);
