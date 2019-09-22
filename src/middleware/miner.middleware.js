@@ -1,7 +1,7 @@
 'use strict';
 
 const config = require('src/util/config.js');
-const logger = requier('src/util/logger.js').miner;
+const logger = require('src/util/logger.js').miner;
 
 const cache = require('src/util/cache.js');
 

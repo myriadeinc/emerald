@@ -54,7 +54,7 @@ class MoneroApi {
     * @description Submit a block to the daemon
     * @param {object} buffer Shared buffer constructed with CnUtil
     */
-  submit(buffer) {
+  submitblock(buffer) {
     return this.__rpc_client.send('submitblock', [buffer.toString('hex')]);
   }
 }

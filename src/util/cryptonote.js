@@ -84,7 +84,7 @@ const CryptonoteUtil = {
     const amount = (parseInt(coins || 0) / config.coinUnits).toFixed(digits || coinDecimalPlaces);
     return amount + (withoutSymbol ? '' : (' ' + config.symbol));
   },
-
+  construct_ : () => {}
   ringBuffer: (maxSize) => {
     let data = [];
     let cursor = 0;
