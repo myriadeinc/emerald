@@ -68,12 +68,12 @@ function minerSubmitsBlock(miner, job, blockTemplate, params){
              moneroApi.submitblock(shareBuffer, function(error, result){
                   if (error){
                     // Log error
-                      recordShareData(miner, job, hashDiff.toString());
+                      recordShareData(Set([miner, job, hashDiff.toString()]));
                   }
                   else{
                       let blockFastHash = cryptonote.get_block_id(shareBuffer, cnBlobType).toString('hex');
                       // Log success
-                      recordShareData(miner, job, hashDiff.toString(), true, blockFastHash, shareType, blockTemplate);
+                      recordShareData(Set([miner, job, hashDiff.toString(), true, blockFastHash, shareType, blockTemplate]));
                       // Link this function !!
                       jobRefresh();
                       return true;
@@ -86,20 +86,15 @@ function minerSubmitsBlock(miner, job, blockTemplate, params){
               return ;
           }
           else{
-              recordShareData(miner, job, hashDiff.toString());
+              recordShareData(Set([miner, job, hashDiff.toString()]));
           }
           return false;
 }
-
-
-
+ // Refactor in later commit
 function recordShareData(payload){
   cache.put(payload);
 }
 
 
 module.exports = {
-
-
-
 };
