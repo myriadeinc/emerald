@@ -7,8 +7,7 @@ const MetricsServices = {
             accountId: minerId,
             ...metrics
         }
-        const msgString = JSON.stringify(msg);
-        return mq.send(msgString)
+        return mq.send(msg)
         .then((res) => {
             if (-1 == res) {
                 // Soft handle failure

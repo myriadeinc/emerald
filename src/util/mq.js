@@ -1,13 +1,24 @@
 'use strict';
-
 const amq = require('amqplib');
 
 const logger = require('src/util/logger.js').mq;
+const config = require('src/util/config.js');
 
-const queue = 'MinerMetrics';
+const queue = config.get('rabbitmq:queue');
 let channel;
 
+const toBuffer = (obj) => {
+    let str = obj;
+    if ('string' !== typeof myVar){
+        str = JSON.stringify(obj);
+    }
+    const buff = Buffer.from(str, 'utf8');
+    return buff;
+}
+
 const MQ = {
+
+    channel,
 
     init: (url) => {
         return amq.connect(url)
@@ -15,17 +26,17 @@ const MQ = {
             return conn.createChannel();
         })
         .then(ch => {
-            channel = ch;
-            return channel.assertQueue(queue);
+            MQ.channel = ch;
+            return true;
         })
         .catch(logger.error);
     },
 
     send: (msg) => {
-        return channel.assertQueue(queue)
+        return MQ.channel.assertQueue(queue)
         .then(ok => {
             logger.info(`Sending: ${msg}\n on queue ${queue}`);
-            return channel.sendToQueue(queue, msg);
+            return MQ.channel.sendToQueue(queue, toBuffer(msg));
         })
         .then(() => {
             return 0;
@@ -38,17 +49,17 @@ const MQ = {
     },
 
     registerConsumer: (cb) => {
-        return channel.assertQueue(queue)
+        return MQ.channel.assertQueue(queue)
         .then(ok => {
-            return channel.consume(queue, (msg) => {
+            return MQ.channel.consume(queue, (msg) => {
                 if (null !== msg){
-                    channel.ack(msg);
+                    MQ.channel.ack(msg);
                     logger.info(`Consuming message: ${msg.content.toString()}\n from queue ${queue}`);
-                    cb(msg.content);
+                    cb(JSON.parse(msg.content.toString()));
                 }
             });
         })
-        .cathc(err => {
+        .catch(err => {
             logger.error(err);
         });
     }

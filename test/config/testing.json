@@ -1,0 +1,5 @@
+{
+    "rabbitmq": {
+        "queue": "Miner::Metrics::Test"
+    }
+}

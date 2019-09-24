@@ -33,7 +33,6 @@ const main = async () => {
 
 const gracefulShutdown = () => {
   server.close(async () => {
-    // await some DB shut down
     console.log(`${config.get('service')} is gracefully shutting down on port ${port}`);
     process.exit(0);
   });
