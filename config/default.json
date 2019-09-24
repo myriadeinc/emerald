@@ -33,6 +33,9 @@
             "maxJump": 100
         }
     },
+    "rabbitmq":{
+        "url" : "amqp://guest:guest@1277.0.0.1:5672"
+    },
     "monero":{
         "daemon":{
             "host": "0.0.0.0",
