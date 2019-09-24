@@ -15,14 +15,10 @@ class MinerModel {
      * Serialize from JSON or JWT token into a Miner instance
      * @param {object} data 
      */
-    constructor(data) {
-        
+    constructor(data) {       
         this.address = data.address;
         this.name = data.name;
         this.id = data.id;
-        // this.difficulty = config.get('pool:difficulty')
-        // this.port=config.get('pool:port')
-        // this.shareTimeRing = cryptonoteUtils.ringBuffer(16);
     }
 
     /**
@@ -39,49 +35,23 @@ class MinerModel {
         }
     }
 
-
-
+    /**
+     * @returns {BlockTemplate} jobTemplate
+     */
     getJob() {
-
+        return new Promise((resolve, reject) => {
+            resolve('Boilerplate for Miner::getJob');
+        })
     }
-
-    getTargetHex() {}
 
     /**
-     * Retarget difficulty
-     * @param {time} now 
+     * @param {BlockTemplate} blockTemplate 
      */
-    retarget(now) {
-        let options = config.get('pool:varDiff');
-
-        let sinceLast = now - this.lastShareTime;
-        let decreaser = sinceLast > VarDiff.tMax;
-
-        let avg = this.shareTimeRing.avg(decreaser ? sinceLast : null);
-        let newDiff;
-
-        let direction;
-
-        if (avg > VarDiff.tMax && this.difficulty > options.minDiff){
-            newDiff = options.targetTime / avg * this.difficulty;
-            newDiff = newDiff > options.minDiff ? newDiff : options.minDiff;
-            direction = -1;
-        }
-        else if (avg < VarDiff.tMin && this.difficulty < options.maxDiff){
-            newDiff = options.targetTime / avg * this.difficulty;
-            newDiff = newDiff < options.maxDiff ? newDiff : options.maxDiff;
-            direction = 1;
-        }
-        else{
-            return;
-        }
+    submit(blockTemplate) {
+        return new Promise((resolve, reject) => {
+            resolve('Boilerplate for Miner::submit');
+        })
     }
-
-    _setNewDiff(){
-        // Send request to diamond 
-
-    }
-    
 }
 
 

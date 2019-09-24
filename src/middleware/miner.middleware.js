@@ -66,7 +66,6 @@ const filterMethods = (securedMethods, method) => {
 const MinerMiddleware = {
 
     rpcAuthenticateMiner : (req, res, next) => {
-        // Check if current method needs auth
         const currMethod = req.body.method;
         const needAuth = filterMethods([
             "submit",

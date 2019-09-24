@@ -11,15 +11,30 @@ const MinerService = {
 
   rpcInterface: {
     job: (params) => {
-      return new Promise((resolve, reject) => {
-        resolve('getJob is not implemented');
-      });
+      const miner = params.miner;
+      return miner.getJob()
+      .then((job) => {
+        return {
+          job,
+          success: true
+        }
+      })
+      .catch((err) => {
+        logger.error(err);
+        return "Failed";
+      })
     },
 
     submit: (params) => {
-      return new Promise((resolve, reject) => {
-        reject('submit is not implemented');
-      });
+      const miner = params.miner;
+      return miner.submit({})
+      .then(() => {
+        return "Done";
+      })
+      .catch(err => {
+        logger.error(err);
+        return "Failed";
+      })
     },
 
     login: (params) => {
