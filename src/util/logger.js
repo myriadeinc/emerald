@@ -12,7 +12,8 @@ const logger = bunyan.createLogger({
 
 module.exports = {
   core: logger.child({component: 'core'}),
-  db: logger.child({component: 'db'}),
+  db: logger.child({component: 'database'}),
+  mq: logger.child({component: 'messaging_queue'}),
   cache: logger.child({component: 'cache'}),
   monero: logger.child({component: 'monero'}),
   block: logger.child({component: 'block_service'}),
