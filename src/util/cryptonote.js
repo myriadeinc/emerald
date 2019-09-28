@@ -8,9 +8,9 @@ const dateFormat = require('dateformat');
 const cnUtil = require('cryptonote-util');
 const uuid = require('uuid/v4');
 
-
-const addressBase58Prefix = parseInt(cnUtil.address_decode(Buffer.from(config.poolServer.poolAddress)).toString());
-const integratedAddressBase58Prefix = config.poolServer.intAddressPrefix ? parseInt(config.poolServer.intAddressPrefix) : addressBase58Prefix + 1;
+const config = require('src/util/config.js');
+const addressBase58Prefix = parseInt(cnUtil.address_decode(Buffer.from(config.get('pool:poolAddress'))).toString());
+const integratedAddressBase58Prefix = config.get('pool:intAddressPrefix') ? parseInt(config.get('pool:intAddressPrefix')) : addressBase58Prefix + 1;
 
 const CryptonoteUtil = {
 

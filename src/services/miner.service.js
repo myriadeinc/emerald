@@ -11,15 +11,30 @@ const MinerService = {
 
   rpcInterface: {
     job: (params) => {
-      return new Promise((resolve, reject) => {
-        reject('getJob is not implemented');
-      });
+      const miner = params.miner;
+      return miner.getJob()
+      .then((job) => {
+        return {
+          job,
+          success: true
+        }
+      })
+      .catch((err) => {
+        logger.error(err);
+        return "Failed";
+      })
     },
 
     submit: (params) => {
-      return new Promise((resolve, reject) => {
-        reject('submit is not implemented');
-      });
+      const miner = params.miner;
+      return miner.submit({})
+      .then(() => {
+        return "Done";
+      })
+      .catch(err => {
+        logger.error(err);
+        return "Failed";
+      })
     },
 
     login: (params) => {
@@ -30,9 +45,10 @@ const MinerService = {
       })
       .then(tokenJSON => {
           logger.info(`Storing JSONToken for ${params.login} into cache`);
-          return cache.put(tokenJSON.sub, tokenJSON);
+          tokenJSON.account.id = tokenJSON.sub;
+          return cache.put(tokenJSON.account.address, tokenJSON);
       })
-      .then(() => {
+      .then((res) => {
           return "success";
       })
       .catch(err => {

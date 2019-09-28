@@ -12,5 +12,6 @@ Err.Miner.instantiation = Err.Miner.extend('Miner Instantiation Error', 500, 'Mi
 
 Err.Miner.login = Err.Miner.extend('Miner Login Error', 500, 'MinerLoginError');
 
+Err.Miner.authentication = Err.Miner.extend('Unable to authenticate Miner, please try to login again', 403, 'MinerAuthenticationError');
 
 module.exports = Err;

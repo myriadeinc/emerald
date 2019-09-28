@@ -21,6 +21,7 @@
     "bunyan-formatter": "^1.0.0",
     "cryptonight-hashing": "^3.0.5",
     "cryptonote-util": "0.0.1",
+    "dateformat": "^3.0.3",
     "egads": "^1.0.2",
     "express": "^4.17.1",
     "jayson": "^3.0.2",
