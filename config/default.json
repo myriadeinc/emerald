@@ -1,7 +1,9 @@
 {
     "service": {
         "name": "emerald",
-        "shared_secret": "__REPLACE__"
+        "shared_secret": "__REPLACE__",
+        "host": "0.0.0.0",
+        "port": 8088
     },
     "port": 8088,
     "cluster": {
@@ -51,5 +53,9 @@
         "public_key": "__VOID__",
         "port": 8180,
         "host": "0.0.0.0"
+    },
+    "pickaxe": {
+        "host": "0.0.0.0",
+        "port": 8050
     }
 }
