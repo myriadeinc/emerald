@@ -14,7 +14,7 @@ class BlockTemplate {
      */
     constructor(data){
         try{
-            this.isRandomX = config.get('pool:randomx');
+          
             this.difficulty = data.difficulty;
             this.blob = data.blocktemplate_blob;
             if (this.isRandomX){
