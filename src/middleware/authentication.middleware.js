@@ -9,7 +9,7 @@ const AuthMiddleware = {
   validateSharedSecret: (req, res, next) => {
     if (req.header.authorization){
       let authArr = req.header.authorization.split()
-      if ('shared_scret' == authArr[0] && secret == authArr[1]){
+      if ('shared_secret' == authArr[0] && secret == authArr[1]){
         next();
       }
     }
