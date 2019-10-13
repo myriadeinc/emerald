@@ -17,7 +17,7 @@
     },
     "pool": {
         "singleThread": false,
-        "poolAddress": "__REPLACE__",
+        "poolAddress": "9wviCeWe2D8XS82k2ovp5EUYLzBt9pYNW2LXUFsZiv8S3Mt21FZ5qQaAroko1enzw3eGr9qC7X1D7Geoo2RrAotYPwq9Gm8",
         "workers": 1,
         "randomX": true,
         "difficulty": 5000,

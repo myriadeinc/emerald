@@ -20,14 +20,14 @@ class DiamondApi {
      * @param {object} data has username and password 
      * @returns an promise of an access token
      */ 
-    login(address, email) {
+    login(address, password) {
         logger.core.info(`Login Proxy for ${address}`);
         return axios({
             url: `http://${this.url}:${this.port}/v1/account/address-login`,
             method: 'post',
             data: {
                 address,
-                email
+                password
             },
             headers: {
                 Authorization: `SharedSecret ${this.sharedSecret}`
