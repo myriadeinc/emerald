@@ -63,13 +63,18 @@ class MinerModel {
      */
     getJob() {
         return new Promise((resolve, reject) => {
+            
+
+
+
+
             resolve('Boilerplate for Miner::getJob');
         })
     }
     /**
+     * 
+     * @Example Request
      * "id": 2,
-     * 
-     * 
      * "jsonrpc": "2.0",
      * "method": "submit",
      * "params": {
@@ -78,7 +83,7 @@ class MinerModel {
      * "nonce": "d0030040",
      * "result": "e1364b8782719d7683e2ccd3d8f724bc59dfa780a9e960e7c0e0046acdb40100"
      * }
-     * 
+     * @param {request} req
      */ 
     submit(req) {
         return new Promise((resolve, reject) => {
