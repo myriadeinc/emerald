@@ -3,6 +3,11 @@ const config = require('src/util/config.js');
 
 const variance = config.get('pool:varDiff:variancePercent') / 100 * config.get('pool:varDiff:targetTime');
 
+const bignum = require('bignum');
+
+// Reference diff
+const refDiff = bignum('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF', 16);
+
 const VARDIFF ={
     variance,
     bufferSize: config.get('pool:varDiff:retargetTime') / config.get('pool:varDiff:targetTime') * 4,
@@ -12,5 +17,6 @@ const VARDIFF ={
 }
 
 module.exports = {
-    VARDIFF
+    VARDIFF,
+    refDiff
 }
