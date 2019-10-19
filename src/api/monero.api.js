@@ -29,6 +29,7 @@ class MoneroApi {
     * @param {object} params object for configuring the next template
     * @return {object}  Returns an object for the block template
     */
+  
   async getBlockTemplate() {
     try {
       const res = await this.__rpc_client.send('getblocktemplate', {
@@ -59,4 +60,4 @@ class MoneroApi {
   }
 }
 
-export default MoneroApi;
+module.exports = MoneroApi;
