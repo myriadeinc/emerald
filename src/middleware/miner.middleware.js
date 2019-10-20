@@ -12,10 +12,6 @@ const MinerModel = require('src/models/miner.model.js');
 const diamondApi = new DiamondApi();
 
 
-const validateToken = (tok) => {
-    
-}
-
 const loadMiner = (decodedToken, request) => {
     const miner =  MinerModel.serializeJWT(decodedToken);
     if (miner) {
@@ -29,8 +25,7 @@ const loadMiner = (decodedToken, request) => {
 const validateMiner = (request) => {
     return new Promise((resolve, reject) => {
         let token =null;
-        let decodedToken;
-        const minerAddress = request.body.params.address;
+        const minerId = request.body.params.id;
         if (request.header.authorization && 
             'Bearer' === request.header.authorization.split()[0]){
                 token = request.header.authorization.split()[1]
@@ -45,7 +40,7 @@ const validateMiner = (request) => {
             })
         }
         else {
-            return cache.get(minerAddress)
+            return cache.get(minerId)
             .then((tok) => {
                 if (!tok){
                     reject('Miner is not logged in');

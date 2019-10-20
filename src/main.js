@@ -3,6 +3,8 @@ const path = require('path');
 const rootPath = path.resolve(`${__dirname}/..`);
 require('app-module-path').addPath(rootPath);
 
+const BlockTemplateService = require('src/services/block.template.service.js');
+
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
 
@@ -23,12 +25,23 @@ const main = async () => {
   mq.init(config.get('rabbitmq:url'));
   logger.core.info('Messaging queue initialized');
 
-  const pool = require('src/pool.js');
-  const port = config.get('pool:port');
-  server = pool.listen(port, () => {
-    logger.core.info(`Listening on port ${port}`)
-  });
+  logger.core.info('Initializing Block Templating service');
+  BlockTemplateService.init()
+  .then(()=>{
+    logger.core.info('Block Templating queue initialized');
 
+    const pool = require('src/pool.js');
+    const port = config.get('pool:port');
+    server = pool.listen(port, () => {
+      logger.core.info(`Listening on port ${port}`)
+    });
+
+  })
+  .catch(err => {
+    logger.core.error(err);
+    process.exit(1);
+  })
+  
 };
 
 const gracefulShutdown = () => {

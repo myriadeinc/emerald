@@ -1,4 +1,5 @@
 const mq = require('src/util/mq.js');
+'use strict';
 
 const MetricsServices = {
 

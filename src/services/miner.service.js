@@ -5,6 +5,9 @@ const logger = require('src/util/logger.js').miner;
 const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
 
+const BlockTemplateService = require('src/services/block.template.service.js');
+const MinerModel = require('src/models/miner.model.js');
+
 const cache = require('src/util/cache.js');
 
 const MinerService = {
@@ -38,18 +41,21 @@ const MinerService = {
     },
 
     login: (params) => {
-
       return diamondApi.login(params.login, params.pass)
       .then(accessToken => {
           return diamondApi.decodeAndVerifyToken(accessToken);
       })
       .then(tokenJSON => {
-          logger.info(`Storing JSONToken for ${params.login} into cache`);
           tokenJSON.account.id = tokenJSON.sub;
-          return cache.put(tokenJSON.account.address, tokenJSON);
+          logger.info(`Storing JSONToken for miner: ${tokenJSON.account.id} into cache`);
+          cache.put(tokenJSON.account.id, tokenJSON, "MINER_ID");
+          return MinerModel.serializeJWT(tokenJSON);
       })
-      .then((res) => {
-          return "success";
+      .then((miner) => {
+          if (!miner){
+            throw 0;
+          }
+          return miner.getJob();
       })
       .catch(err => {
           logger.error(err);
