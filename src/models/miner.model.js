@@ -30,6 +30,7 @@ const moneroApi = new MoneroApi();
 const SapphireApi = require('src/api/monero.api.js');
 const sapphireApi = new SapphireApi();
 
+//key value job 
 
 const cache = require('src/util/cache.js');
 
@@ -63,11 +64,6 @@ class MinerModel {
      */
     getJob() {
         return new Promise((resolve, reject) => {
-            
-
-
-
-
             resolve('Boilerplate for Miner::getJob');
         })
     }
@@ -103,17 +99,9 @@ class MinerModel {
              Reconstruct the block from data,check to see that it matches the sent block
             */
             
-            const blockTemplate = getCurrentBlockTemplate();
+            const blockTemplate = BlockTemplateService.getBlock();
             const job = getJobById();
             
-            constructBlock = function(blockTemplate, minerData, job){
-            var block = new Buffer(blockTemplate.buffer.length);
-            blockTemplate.buffer.copy(block);
-            block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
-            new Buffer(minerData.nonce, 'hex').copy(block, 39);
-            return block;
-            }
-
             var block = constructBlock(blocktemplate,minerData, job);
 
             const convertedBlob = cryptoNoteUtils.cnUtil.convert_blob(block);
@@ -162,17 +150,6 @@ class MinerModel {
     }
 }
 
-function constructBlock(){
-
-
-    return null;
-}
-
-
-function getBlockTemplate(id){
-    return 'hexdata';
-
-}
 
 function getLatestBlockTemplate(){
     return 'hexdata';
@@ -180,7 +157,6 @@ function getLatestBlockTemplate(){
 
 function getCurrentDifficulty(){
     return 10;
-
 }
 
 
