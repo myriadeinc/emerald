@@ -6,6 +6,7 @@ const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
 
 const BlockTemplateService = require('src/services/block.template.service.js');
+const MinerModel = require('src/models/miner.model.js');
 
 const cache = require('src/util/cache.js');
 
@@ -40,24 +41,21 @@ const MinerService = {
     },
 
     login: (params) => {
-      let minerId;
       return diamondApi.login(params.login, params.pass)
       .then(accessToken => {
           return diamondApi.decodeAndVerifyToken(accessToken);
       })
       .then(tokenJSON => {
           tokenJSON.account.id = tokenJSON.sub;
-          minerId = tokenJSON.account.id
           logger.info(`Storing JSONToken for miner: ${tokenJSON.account.id} into cache`);
-          return cache.put(tokenJSON.account.id, tokenJSON);
+          cache.put(tokenJSON.account.id, tokenJSON, "MINER_ID");
+          return MinerModel.serializeJWT(tokenJSON);
       })
-      .then(() => {
-          let block = BlockTemplateService.getBlock();
-          return {
-            status: "OK",
-            id: minerId,
-            job: {}
+      .then((miner) => {
+          if (!miner){
+            throw 0;
           }
+          return miner.getJob();
       })
       .catch(err => {
           logger.error(err);

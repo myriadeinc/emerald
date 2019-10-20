@@ -28,8 +28,9 @@ const Cache = {
     return val;
   },
 
-  put: (key, value) => {
-    return redisClient.set(key, Cache.stringify(value));
+  put: (key, value, namespace="") => {
+    prefixed_key = `${namespace}::${key}`;
+    return redisClient.set(prefixed_key, Cache.stringify(value));
   },
 
   get: (key) => {
