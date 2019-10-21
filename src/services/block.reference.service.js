@@ -42,7 +42,33 @@ const BlockReferenceService = {
     },
 
     checkDifficulty: (difficulty, blockHashed) => {
-
+        var hashArray = blockHashed.toJSON().reverse();
+        // Diff is a reference from bignum 
+        var hashDiff = diff.div(bignum.fromBuffer(new Buffer(hashArray)));
+    
+        if (hashDiff.ge(blockTemplate.difficulty)){
+            moneroApi.submit(block, function(error, result){
+                if (error){
+                    sapphireApi.sendShareInfo();
+                    resolve("MONERO API ERROR");
+                    return false;
+                }
+                else{
+                    var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
+                    // Send blockfasthash instead
+                    sapphireApi.sendShareInfo();                        
+                    jobRefresh();
+                    resolve("Share Granted");
+                    return true;
+                }
+            });
+        }
+    
+        else if (hashDiff.lt(job.difficulty)){
+            // Miner sent bad block/nonce, this is a bannable offense since XMRig should not be sending any below target difficulty
+            sapphireApi.sendShareInfo();
+            return false;
+        }
 
     },
 
