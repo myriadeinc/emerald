@@ -69,6 +69,7 @@ class MinerModel {
      */
     getJob() {
         return JobHelperService.create(BlockTemplateService.getBlock());
+
     }
     /**
      * 
@@ -85,7 +86,6 @@ class MinerModel {
      * @param {request} req
      */ 
     submit(req) {
-
         /*
              minerdata.id = miner uuid
              minerdata.job_id = job id
@@ -130,6 +130,34 @@ class MinerModel {
             const blockTemplate = BlockTemplateService.getBlock();
             const job = getJobById();
             
+
+        return new Promise((resolve, reject) => {
+            //miner, job, blockTemplate, nonce, resultHash
+            const minerData = 
+            {
+                "id": req.params.id,
+                "job_id": req.params.job_id,
+                "nonce": req.params.nonce,
+                "result": req.params.result
+            }
+            /*
+             minerdata.id = miner uuid
+             minerdata.job_id = job id
+             minerdata.nonce = nonce
+             minerdata.result = resultHash -> the hash of the supposed block
+             Reconstruct the block from data,check to see that it matches the sent block
+            */
+            
+            const blockTemplate = getCurrentBlockTemplate();
+            const job = getJobById();
+            
+            constructBlock = function(blockTemplate, minerData, job){
+            var block = new Buffer(blockTemplate.buffer.length);
+            blockTemplate.buffer.copy(block);
+            block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
+            new Buffer(minerData.nonce, 'hex').copy(block, 39);
+            return block;
+            }
             var block = constructBlock(blocktemplate,minerData, job);
 
             const convertedBlob = cryptoNoteUtils.cnUtil.convert_blob(block);
@@ -170,12 +198,49 @@ class MinerModel {
                 sapphireApi.sendShareInfo();
                 return false;
             }
-            
 
         })
     }
 }
 
+function constructBlock(){
+
+
+    return null;
+}
+
+
+function getBlockTemplate(id){
+    return 'hexdata';
+
+}
+
+function getLatestBlockTemplate(){
+    return 'hexdata';
+}
+
+function getCurrentDifficulty(){
+    return 10;
+
+}
+
+
+
+function getJobById(id){
+    blockTemplate = getLatestBlockTemplate();
+    uid = '12345';
+    newJob = {
+        id: uid,
+        extraNonce: blockTemplate.extraNonce,
+        height: blockTemplate.height,
+        difficulty: getCurrentDifficulty(),
+        score: getCurrentScore(),
+        diffHex: getDiffHex(),
+        submissions: []
+    };
+
+    return newJob;
+}
 
 function getLatestBlockTemplate(){
     return 'hexdata';
