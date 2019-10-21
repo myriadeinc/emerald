@@ -1,9 +1,9 @@
-import {exec} from 'child_process';
-
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
-const cryptonoteUtils = require('src/util/cryptonote.js')
+const xmrUtils = require('src/util/cryptonote.js')
+const blockTemplateService = require('src/services/block.template.service.js');
+
 
 /**
  * @Note
@@ -11,17 +11,14 @@ const cryptonoteUtils = require('src/util/cryptonote.js')
  * This model was created to separate the block processing logic from miner model
  * 
  */
-class BlockReference {
-    block = null;
-    /**
-     * 
-     * @description Constructs a Block Reference
-     * @param {object} blockTemplate
-     * @param {boolean} randomX 
-     */
-    constructor(blockTemplate, minerData, job){
+const BlockReferenceService = {
+    buildBlock: (minerData, job) => {
         try{
-            this.block = new Buffer(blockTemplate.buffer.length);
+
+            var job = jobHelperService.getFromId(minerData.job_id);
+
+
+            var block = new Buffer(blockTemplate.buffer.length);
             blockTemplate.buffer.copy(this.block);
             this.block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
             new Buffer(minerData.nonce, 'hex').copy(block, 39);
@@ -31,15 +28,31 @@ class BlockReference {
             logger.error(e);
             throw err.instantiation;
         }
-    }
+    },
+    checkBlock: (block, result) => {
+        const blockHashed = xmrUtils.hash(block, "randomx");
+        
+        if(blockHashed.toString('hex') !== minerdata.result){
+            logger("Bad Hash!!!1");
+            return false;
+        }
 
-    compare(nonce){
+        return true;
+
+    },
+
+    checkDifficulty: (difficulty, blockHashed) => {
 
 
-    }
+    },
+
+    getVerifiedBlock: () => {
+        return null;
+    },
 
 
 
-}
 
-export default Blockreference;
+};
+
+module.exports = BlockReferenceService;

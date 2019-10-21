@@ -22,11 +22,15 @@ const diff = globals.refDiff;
 
 const bignum = require('bignum');
 
+const JobHelperService = require('src/services/job.helper.service.js');
+const BlockTemplateService = require('src/services/block.template.service.js');
 
 const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
+
 const MoneroApi = require('src/api/monero.api.js');
 const moneroApi = new MoneroApi();
+
 const SapphireApi = require('src/api/monero.api.js');
 const sapphireApi = new SapphireApi();
 
@@ -60,12 +64,11 @@ class MinerModel {
     }
 
     /**
+     * 
      * @returns {BlockTemplate} jobTemplate
      */
     getJob() {
-        return new Promise((resolve, reject) => {
-            resolve('Boilerplate for Miner::getJob');
-        })
+        return JobHelperService.create(BlockTemplateService.getBlock());
     }
     /**
      * 
@@ -82,22 +85,47 @@ class MinerModel {
      * @param {request} req
      */ 
     submit(req) {
-        return new Promise((resolve, reject) => {
-            //miner, job, blockTemplate, nonce, resultHash
-            const minerData = 
-            {
-                "id": req.params.id,
-                "job_id": req.params.job_id,
-                "nonce": req.params.nonce,
-                "result": req.params.result
-            }
-            /*
+
+        /*
              minerdata.id = miner uuid
              minerdata.job_id = job id
              minerdata.nonce = nonce
              minerdata.result = resultHash -> the hash of the supposed block
              Reconstruct the block from data,check to see that it matches the sent block
             */
+        const minerData = 
+            {
+                "id": req.params.id,
+                "job_id": req.params.job_id,
+                "nonce": req.params.nonce,
+                "result": req.params.result
+            };
+        var block = BlockReferenceService.buildBlock();
+
+        if(!BlockReferenceService.checkBlock(block, minerData.result)){
+            sapphireApi.sendShareInfo();
+            return {};
+        }
+
+
+        if(BlockReferenceService.checkDifficulty()){
+            return moneroApi.submit(BlockReferenceService.getVerifiedBlock())
+            .then((result) => {
+                sapphireApi.sendShareInfo();
+                return null;
+            });
+        }
+        else{
+            sapphireApi.sendShareInfo();
+            return {error: "does not meet difficulty"};
+
+        }
+
+
+        // Remove the below block after refactoring is completed
+        return new Promise((resolve, reject) => {
+            //miner, job, blockTemplate, nonce, resultHash
+            
             
             const blockTemplate = BlockTemplateService.getBlock();
             const job = getJobById();
@@ -142,9 +170,7 @@ class MinerModel {
                 sapphireApi.sendShareInfo();
                 return false;
             }
-            else{
-                return false;
-            }
+            
 
         })
     }
