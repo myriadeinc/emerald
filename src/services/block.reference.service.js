@@ -43,6 +43,7 @@ const BlockReferenceService = {
 
     checkDifficulty: (difficulty, blockHashed) => {
         var hashArray = blockHashed.toJSON().reverse();
+
         // Diff is a reference from bignum 
         var hashDiff = diff.div(bignum.fromBuffer(new Buffer(hashArray)));
     
@@ -71,11 +72,6 @@ const BlockReferenceService = {
         }
 
     },
-
-    getVerifiedBlock: () => {
-        return null;
-    },
-
 
 
 

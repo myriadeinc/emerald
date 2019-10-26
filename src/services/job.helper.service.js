@@ -37,6 +37,17 @@ const JobHelperService = {
      * @todo: add proper method
      */
     getFromId: (id) => {
+        blockTemplate = getLatestBlockTemplate();
+        uid = '12345';
+        newJob = {
+        id: uid,
+        extraNonce: blockTemplate.extraNonce,
+        height: blockTemplate.height,
+        difficulty: getCurrentDifficulty(),
+        score: getCurrentScore(),
+        diffHex: getDiffHex(),
+        submissions: []
+        };
         return cache.get(`job::${id}`).toJSON();
     }
 

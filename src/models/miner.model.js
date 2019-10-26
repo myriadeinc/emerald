@@ -68,8 +68,15 @@ class MinerModel {
      * @returns {BlockTemplate} jobTemplate
      */
     getJob() {
-        return JobHelperService.create(BlockTemplateService.getBlock());
-
+        job = JobHelperService.create(BlockTemplateService.getBlock();
+        return {
+            job_id: job.job_id,
+            params: {
+                blob: job.blob
+            }
+        }
+    }
+    
     }
     /**
      * 
@@ -87,11 +94,11 @@ class MinerModel {
      */ 
     submit(req) {
         /*
-             minerdata.id = miner uuid
-             minerdata.job_id = job id
-             minerdata.nonce = nonce
-             minerdata.result = resultHash -> the hash of the supposed block
-             Reconstruct the block from data,check to see that it matches the sent block
+            minerdata.id = miner uuid
+            minerdata.job_id = job id
+            minerdata.nonce = nonce
+            minerdata.result = resultHash -> the hash of the supposed block
+            Reconstruct the block from data,check to see that it matches the sent block
             */
         const minerData = 
             {
@@ -100,172 +107,27 @@ class MinerModel {
                 "nonce": req.params.nonce,
                 "result": req.params.result
             };
-        var block = BlockReferenceService.buildBlock();
+        // Get the current block template and create a block with the provided nonce
+        var block = BlockReferenceService.buildBlock(minerData);
+        var job = JobHelperService.getFromId(minerData.job_id);
 
+        // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
         if(!BlockReferenceService.checkBlock(block, minerData.result)){
-            sapphireApi.sendShareInfo();
+            sapphireApi.sendShareInfo("Bad Block hash provided, penalty to miner");
             return {};
         }
-
-
-        if(BlockReferenceService.checkDifficulty()){
-            return moneroApi.submit(BlockReferenceService.getVerifiedBlock())
+        // If the difficulty check passes we submit the block
+        if(BlockReferenceService.checkDifficulty(job.difficulty,block)){
+            return moneroApi.submit(block)
             .then((result) => {
-                sapphireApi.sendShareInfo();
+                sapphireApi.sendShareInfo("good block provided, share given to miner");
                 return null;
             });
         }
         else{
             sapphireApi.sendShareInfo();
             return {error: "does not meet difficulty"};
-
         }
-
-
-        // Remove the below block after refactoring is completed
-        return new Promise((resolve, reject) => {
-            //miner, job, blockTemplate, nonce, resultHash
-            
-            
-            const blockTemplate = BlockTemplateService.getBlock();
-            const job = getJobById();
-            
-
-        return new Promise((resolve, reject) => {
-            //miner, job, blockTemplate, nonce, resultHash
-            const minerData = 
-            {
-                "id": req.params.id,
-                "job_id": req.params.job_id,
-                "nonce": req.params.nonce,
-                "result": req.params.result
-            }
-            /*
-             minerdata.id = miner uuid
-             minerdata.job_id = job id
-             minerdata.nonce = nonce
-             minerdata.result = resultHash -> the hash of the supposed block
-             Reconstruct the block from data,check to see that it matches the sent block
-            */
-            
-            const blockTemplate = getCurrentBlockTemplate();
-            const job = getJobById();
-            
-            constructBlock = function(blockTemplate, minerData, job){
-            var block = new Buffer(blockTemplate.buffer.length);
-            blockTemplate.buffer.copy(block);
-            block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
-            new Buffer(minerData.nonce, 'hex').copy(block, 39);
-            return block;
-            }
-            var block = constructBlock(blocktemplate,minerData, job);
-
-            const convertedBlob = cryptoNoteUtils.cnUtil.convert_blob(block);
-
-            const algoVariant = 0;
-            const blockHashed = cryptoNight(convertedBlob, algoVariant);
-            
-            if (blockHashed.toString('hex') !== minerdata.result) {
-                logger("Bad Hash, penalty to miner");
-                resolve("Bad Hash");
-                return false;
-            }
-        
-            var hashArray = blockHashed.toJSON().reverse();
-            // Diff is a reference from bignum 
-            var hashDiff = diff.div(bignum.fromBuffer(new Buffer(hashArray)));
-        
-            if (hashDiff.ge(blockTemplate.difficulty)){
-                moneroApi.submit(block, function(error, result){
-                    if (error){
-                        sapphireApi.sendShareInfo();
-                        resolve("MONERO API ERROR");
-                        return false;
-                    }
-                    else{
-                        var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
-                        // Send blockfasthash instead
-                        sapphireApi.sendShareInfo();                        
-                        jobRefresh();
-                        resolve("Share Granted");
-                        return true;
-                    }
-                });
-            }
-        
-            else if (hashDiff.lt(job.difficulty)){
-                // Miner sent bad block/nonce, this is a bannable offense since XMRig should not be sending any below target difficulty
-                sapphireApi.sendShareInfo();
-                return false;
-            }
-
-        })
     }
 }
-
-function constructBlock(){
-
-
-    return null;
-}
-
-
-function getBlockTemplate(id){
-    return 'hexdata';
-
-}
-
-function getLatestBlockTemplate(){
-    return 'hexdata';
-}
-
-function getCurrentDifficulty(){
-    return 10;
-
-}
-
-
-
-function getJobById(id){
-    blockTemplate = getLatestBlockTemplate();
-    uid = '12345';
-    newJob = {
-        id: uid,
-        extraNonce: blockTemplate.extraNonce,
-        height: blockTemplate.height,
-        difficulty: getCurrentDifficulty(),
-        score: getCurrentScore(),
-        diffHex: getDiffHex(),
-        submissions: []
-    };
-
-    return newJob;
-}
-
-function getLatestBlockTemplate(){
-    return 'hexdata';
-}
-
-function getCurrentDifficulty(){
-    return 10;
-}
-
-
-
-function getJobById(id){
-    blockTemplate = getLatestBlockTemplate();
-    uid = '12345';
-    newJob = {
-        id: uid,
-        extraNonce: blockTemplate.extraNonce,
-        height: blockTemplate.height,
-        difficulty: getCurrentDifficulty(),
-        score: getCurrentScore(),
-        diffHex: getDiffHex(),
-        submissions: []
-    };
-
-    return newJob;
-}
-
 module.exports = MinerModel;
