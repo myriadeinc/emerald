@@ -1,7 +1,10 @@
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
-const xmrUtils = require('src/util/cryptonote.js')
+
+const xmrUtil = require('cryptoforknote-util');
+const multiHashing = require('cryptonight-hashing');
+
 const blockTemplateService = require('src/services/block.template.service.js');
 
 
@@ -14,15 +17,22 @@ const blockTemplateService = require('src/services/block.template.service.js');
 const BlockReferenceService = {
     buildBlock: (minerData, job) => {
         try{
-
-            var job = jobHelperService.getFromId(minerData.job_id);
-
+            const job = jobHelperService.getFromId(minerData.job_id);
 
             var block = new Buffer(blockTemplate.buffer.length);
             blockTemplate.buffer.copy(this.block);
+            // Write the extra nonce first, then the regular nonce
             this.block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
+            /* 
+            For fallback:
             new Buffer(minerData.nonce, 'hex').copy(block, 39);
-            return block;
+            Writing the nonce in a specific position if util does not work in testing
+            */
+            const randomXid = 1;
+            const NonceBuffer = new Buffer(minerData.nonce,'hex');
+            return xmrUtil.construct_block_blob(blockTemplate, NonceBuffer, randomXid);
+            
+
         }
         catch(e){
             logger.error(e);
@@ -30,7 +40,7 @@ const BlockReferenceService = {
         }
     },
     checkBlock: (block, result) => {
-        const blockHashed = xmrUtils.hash(block, "randomx");
+        const blockHashed = xmrUtil.hash(block, "randomx");
         
         if(blockHashed.toString('hex') !== minerdata.result){
             logger("Bad Hash!!!1");

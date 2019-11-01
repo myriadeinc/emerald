@@ -15,8 +15,6 @@ function cryptoNightFast(buf){
     return cryptoNight(Buffer.concat([new Buffer([buf.length]), buf]), true);
 }
 
-
-
 const VarDiff = globals.VARDIFF;
 const diff = globals.refDiff;
 
@@ -77,7 +75,6 @@ class MinerModel {
         }
     }
     
-    }
     /**
      * 
      * @Example Request
@@ -130,4 +127,5 @@ class MinerModel {
         }
     }
 }
+
 module.exports = MinerModel;
