@@ -20,8 +20,6 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-formatter": "^1.0.0",
-    "cryptonight-hashing": "^3.0.5",
-    "cryptonote-util": "0.0.1",
     "dateformat": "^3.0.3",
     "egads": "^1.0.2",
     "express": "^4.17.1",
@@ -31,7 +29,9 @@
     "nconf": "^0.10.0",
     "path": "^0.12.7",
     "promise-redis": "0.0.5",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git#v5.0.0",
+    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v15.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
