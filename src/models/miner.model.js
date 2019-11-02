@@ -51,7 +51,7 @@ class MinerModel {
      * 
      * @param {JSON} data The JSON data of a miner that needs to be serialized
      */
-    static serializeJWT(tok) {
+    static fromToken(tok) {
         try{           
             return new MinerModel(tok.account);
         }
@@ -66,13 +66,15 @@ class MinerModel {
      * @returns {BlockTemplate} jobTemplate
      */
     getJob() {
-        job = JobHelperService.create(BlockTemplateService.getBlock();
-        return {
-            job_id: job.job_id,
-            params: {
-                blob: job.blob
+        return JobHelperService.create(BlockTemplateService.getBlockTemplate())
+        .then(job => {
+            return {
+                job_id: job.job_id,
+                params: {
+                    blob: job.blob
+                }
             }
-        }
+        });
     }
     
     /**
@@ -89,7 +91,7 @@ class MinerModel {
      * }
      * @param {request} req
      */ 
-    submit(req) {
+    async submit(data) {
         /*
             minerdata.id = miner uuid
             minerdata.job_id = job id
@@ -97,16 +99,15 @@ class MinerModel {
             minerdata.result = resultHash -> the hash of the supposed block
             Reconstruct the block from data,check to see that it matches the sent block
             */
-        const minerData = 
-            {
-                "id": req.params.id,
-                "job_id": req.params.job_id,
-                "nonce": req.params.nonce,
-                "result": req.params.result
-            };
+        const minerData = {
+            id: this.id,
+            job_id: data.job_id,
+            nonce: data.nonce,
+            results: data.result
+        };
         // Get the current block template and create a block with the provided nonce
-        var block = BlockReferenceService.buildBlock(minerData);
-        var job = JobHelperService.getFromId(minerData.job_id);
+        let block = BlockReferenceService.buildBlock(minerData);
+        let job = await JobHelperService.getFromId(minerData.job_id);
 
         // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
         if(!BlockReferenceService.checkBlock(block, minerData.result)){

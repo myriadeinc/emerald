@@ -29,15 +29,16 @@ const Cache = {
   },
 
   put: (key, value, namespace="") => {
-    prefixed_key = `${namespace}::${key}`;
+    const prefixed_key = `${namespace}::${key}`;
     return redisClient.set(prefixed_key, Cache.stringify(value));
   },
 
-  get: (key) => {
-    return redisClient.get(key)
-        .then((res) => {
-          return Cache.parse(res);
-        });
+  get: (key, namespace="") => {
+    const prefixed_key = `${namespace}::${key}`;
+    return redisClient.get(prefixed_key)
+      .then((res) => {
+        return Cache.parse(res);
+      });
   },
   close: () => {
     redisClient.quit();

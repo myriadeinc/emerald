@@ -5,8 +5,8 @@ const err = require('src/util/error.js').BlockReference;
 const xmrUtil = require('cryptoforknote-util');
 const multiHashing = require('cryptonight-hashing');
 
-const blockTemplateService = require('src/services/block.template.service.js');
-
+const BlockTemplateService = require('src/services/block.template.service.js');
+const JobHelperService = require('src/services/job.helper.service.js');
 
 /**
  * @Note
@@ -17,12 +17,13 @@ const blockTemplateService = require('src/services/block.template.service.js');
 const BlockReferenceService = {
     buildBlock: (minerData, job) => {
         try{
-            const job = jobHelperService.getFromId(minerData.job_id);
+            let blockTemplate = BlockTemplateService.getBlockTemplate();
+            const job = JobHelperService.getFromId(minerData.job_id);
 
-            var block = new Buffer(blockTemplate.buffer.length);
-            blockTemplate.buffer.copy(this.block);
+            let block = new Buffer(blockTemplate.buffer.length);
+            blockTemplate.buffer.copy(block);
             // Write the extra nonce first, then the regular nonce
-            this.block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
+            block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
             /* 
             For fallback:
             new Buffer(minerData.nonce, 'hex').copy(block, 39);
@@ -31,8 +32,6 @@ const BlockReferenceService = {
             const randomXid = 1;
             const NonceBuffer = new Buffer(minerData.nonce,'hex');
             return xmrUtil.construct_block_blob(blockTemplate, NonceBuffer, randomXid);
-            
-
         }
         catch(e){
             logger.error(e);
