@@ -5,6 +5,8 @@ const logger = require('src/util/logger.js')
 
 const xmrUtils = require('src/util/cryptonote.js');
 
+const BlockTemplateService = require('src/services/block.template.service.js');
+
 const JobHelperService = {
 
     /**
@@ -22,33 +24,48 @@ const JobHelperService = {
             difficulty:          blockTemplate.difficulty,
         }
         const jobReply = {
-                job_id: newJob.id,
-                blob: BlockTemplateService.getBlob(),
-                /**
-                 * @todo: add proper conversion from diff to target
-                 */
-                target: difficulty.toString('hex'),
+            job_id: newJob.id,
+            blob: BlockTemplateService.getBlob(),
+            /**
+             * @todo: add proper conversion from diff to target
+             */
+            target: difficulty.toString('hex'),
         }
-        cache.put(newJob.id,newJob,"job");
-        return jobReply;
+        return cache.put(newJob.id,newJob,"job")
+        .then(() => {
+            return jobReply;
+        })
+        
     },
 
     /**
      * @todo: add proper method
      */
     getFromId: (id) => {
-        blockTemplate = getLatestBlockTemplate();
-        uid = '12345';
-        newJob = {
-        id: uid,
-        extraNonce: blockTemplate.extraNonce,
-        height: blockTemplate.height,
-        difficulty: getCurrentDifficulty(),
-        score: getCurrentScore(),
-        diffHex: getDiffHex(),
-        submissions: []
-        };
-        return cache.get(`job::${id}`).toJSON();
+        let job;
+        return cache.get(id, namespace='job')
+        .then(res => {
+            job = res;
+            return job;
+        })
+        .catch(err => {
+            uid = '12345'; // Generate a new UID
+            logger.core.error(`Error hitting cache with job::${id} ; ${err}`);
+            let blockTemplate = BlockTemplateService.getBlockTemplate();
+            job = {
+                id: crypto.pseudoRandomBytes(21).toString('base64'),
+                extraNonce: blockTemplate.extraNonce,
+                height: blockTemplate.height,
+                difficulty: getCurrentDifficulty(),
+                score: getCurrentScore(),
+                diffHex: getDiffHex(),
+                submissions: []
+            };
+            return cache.put(uid, job, namespace="job")
+        })
+        .then(() => {
+            return job
+        })
     }
 
 }

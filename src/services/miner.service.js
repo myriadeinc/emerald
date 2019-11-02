@@ -13,8 +13,7 @@ const cache = require('src/util/cache.js');
 const MinerService = {
 
   rpcInterface: {
-    job: (params) => {
-      const miner = params.miner;
+    job: ({miner, data}) => {
       return miner.getJob()
       .then((job) => {
         return {
@@ -28,9 +27,8 @@ const MinerService = {
       })
     },
 
-    submit: (params) => {
-      const miner = params.miner;
-      return miner.submit({})
+    submit: ({miner, data}) => {
+      return miner.submit(data)
       .then(() => {
         return "Done";
       })
@@ -49,7 +47,7 @@ const MinerService = {
           tokenJSON.account.id = tokenJSON.sub;
           logger.info(`Storing JSONToken for miner: ${tokenJSON.account.id} into cache`);
           cache.put(tokenJSON.account.id, tokenJSON, "MINER_ID");
-          return MinerModel.serializeJWT(tokenJSON);
+          return MinerModel.fromToken(tokenJSON);
       })
       .then((miner) => {
           if (!miner){

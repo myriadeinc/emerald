@@ -12,13 +12,15 @@ const MinerModel = require('src/models/miner.model.js');
 const diamondApi = new DiamondApi();
 
 
-const loadMiner = (decodedToken, request) => {
-    const miner =  MinerModel.serializeJWT(decodedToken);
+const loadMiner = (decodedToken,  request) => {
+    const miner =  MinerModel.fromToken(decodedToken);
     if (miner) {
-        if (request.params.miner){
-            delete request.params.miner;
+        let data = request.body.params;
+        delete request.body.params;
+        request.body.params = {
+            data,
+            miner
         }
-        request.body.params.miner = miner;
     }
 }
 
