@@ -33,7 +33,7 @@ class MoneroApi {
   async getBlockTemplate() {
     try {
       const res = await this.__rpc_client.send('getblocktemplate', {
-        reserve_size: 17,
+        reserve_size: 8,
         wallet_address: config.get('pool:poolAddress'),
       });
       const blockTemplate = new BlockTemplate(res);
@@ -53,7 +53,7 @@ class MoneroApi {
 
   /**
     * @description Submit a block to the daemon
-    * @param {object} buffer Shared buffer constructed with CnUtil
+    * @param {object} buffer Shared buffer constructed with xmr utilities
     */
   submit(buffer) {
     return this.__rpc_client.send('submitblock', [buffer.toString('hex')]);

@@ -65,7 +65,7 @@ const BlockReferenceService = {
                     return false;
                 }
                 else{
-                    var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
+                    // var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
                     // Send blockfasthash instead
                     sapphireApi.sendShareInfo();                        
                     jobRefresh();

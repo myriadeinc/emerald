@@ -4,8 +4,7 @@ const err = require('src/util/error.js').BlockTemplate;
 
 const previousOffset = 7; // Legacy hard coded from cryptonote
 
-const cryptonoteUtils = require('src/util/cryptonote.js')
-const xmrUtils = require('src/util/cryptonote.js');
+const xmrUtil = require('cryptoforknote-util');
 
 class BlockTemplate {
     
@@ -25,7 +24,6 @@ class BlockTemplate {
             // This is only if for some reason the prev_hash field does not exist, ignore until refactor
             // this.previous_hash = Buffer.alloc(32);
             // this.buffer.copy(this.previousHash, 0, previousOffset, 39);
-            
         }
         catch(e){
             logger.error(e);

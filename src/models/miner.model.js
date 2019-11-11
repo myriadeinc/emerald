@@ -66,7 +66,7 @@ class MinerModel {
      * @returns {BlockTemplate} jobTemplate
      */
     getJob() {
-        job = JobHelperService.create(BlockTemplateService.getBlock();
+        let job = JobHelperService.create(BlockTemplateService.getBlock());
         return {
             job_id: job.job_id,
             params: {
