@@ -32,8 +32,7 @@ describe('Miner role and submission of block', () => {
 
             const blob = xmr.construct_block_blob(
                 blockTemplate,
-                new Buffer(nonce,'hex'),
-                0
+                new Buffer(nonce,'hex')
             );
             console.dir(xmrHash.randomx(blob));
             return moneroApi.submit(blob.toString('hex'));
