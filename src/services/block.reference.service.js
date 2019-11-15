@@ -6,7 +6,12 @@ const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
 
-const blockTemplateService = require('src/services/block.template.service.js');
+const xmrUtil = require('cryptoforknote-util');
+const multiHashing = require('cryptonight-hashing');
+
+const BlockTemplateService = require('src/services/block.template.service.js');
+const JobHelperService = require('src/services/job.helper.service.js');
+
 
 /**
  * @Note
@@ -34,9 +39,7 @@ const BlockReferenceService = {
             Writing the nonce in a specific position if util does not work in testing
             */
             const NonceBuffer = new Buffer(minerData.nonce,'hex');
-
-            return xmr.construct_block_blob(blockTemplate, NonceBuffer);
-
+            return xmrUtil.construct_block_blob(blockTemplate, NonceBuffer, randomXid);
         }
         catch(e){
             logger.error(e);
