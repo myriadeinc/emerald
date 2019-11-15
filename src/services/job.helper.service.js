@@ -3,7 +3,7 @@ const crypto = require('crypto');
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js')
 
-const xmrUtils = require('src/util/cryptonote.js');
+const xmrUtils = require('src/util/xmr.js');
 
 const BlockTemplateService = require('src/services/block.template.service.js');
 
