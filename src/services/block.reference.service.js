@@ -8,7 +8,6 @@ const err = require('src/util/error.js').BlockReference;
 
 const blockTemplateService = require('src/services/block.template.service.js');
 
-
 /**
  * @Note
  * @description
@@ -22,19 +21,22 @@ const BlockReferenceService = {
      */
     buildBlock: (minerData, job) => {
         try{
-            const job = jobHelperService.getFromId(minerData.job_id);
+            let blockTemplate = BlockTemplateService.getBlockTemplate();
+            const job = JobHelperService.getFromId(minerData.job_id);
 
-            var block = new Buffer(blockTemplate.buffer.length);
-            blockTemplate.buffer.copy(this.block);
+            let block = new Buffer(blockTemplate.buffer.length);
+            blockTemplate.buffer.copy(block);
             // Write the extra nonce first, then the regular nonce
-            this.block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
+            block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
             /* 
             For fallback:
             new Buffer(minerData.nonce, 'hex').copy(block, 39);
             Writing the nonce in a specific position if util does not work in testing
             */
             const NonceBuffer = new Buffer(minerData.nonce,'hex');
+
             return xmr.construct_block_blob(blockTemplate, NonceBuffer);
+
         }
         catch(e){
             logger.error(e);

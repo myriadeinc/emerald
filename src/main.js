@@ -18,29 +18,23 @@ const main = async () => {
   logger.core.info(`Starting Emerald for ${config.get('pool:desc')}`);
   
   logger.core.info('Initializing cache DB');
-  cache.init(config.get('cache'));
+  await cache.init(config.get('cache'));
   logger.core.info('Cache initialized');
 
   logger.core.info('Initializing messaging queue RabbitMQ');
-  mq.init(config.get('rabbitmq:url'));
+  await mq.init(config.get('rabbitmq:url'));
   logger.core.info('Messaging queue initialized');
 
   logger.core.info('Initializing Block Templating service');
-  BlockTemplateService.init()
-  .then(()=>{
-    logger.core.info('Block Templating queue initialized');
+  await BlockTemplateService.init()
+  
+  logger.core.info('Block Templating queue initialized');
 
-    const pool = require('src/pool.js');
-    const port = config.get('pool:port');
-    server = pool.listen(port, () => {
-      logger.core.info(`Listening on port ${port}`)
-    });
-
-  })
-  .catch(err => {
-    logger.core.error(err);
-    process.exit(1);
-  })
+  const pool = require('src/pool.js');
+  const port = config.get('pool:port');
+  server = pool.listen(port, () => {
+    logger.core.info(`Listening on port ${port}`)
+  });
   
 };
 

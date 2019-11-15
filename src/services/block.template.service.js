@@ -20,7 +20,7 @@ const BlockTemplateService = {
     })
   },
 
-  getBlock: () => {
+  getBlockTemplate: () => {
     return currentBlockTemplate;
   },
 
