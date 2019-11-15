@@ -32,4 +32,4 @@ randomx: (blob, seed_hash) => {
 
 }
 
-module.exports = xmr;
+module.exports = Xmr;
