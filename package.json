@@ -30,8 +30,8 @@
     "path": "^0.12.7",
     "promise-redis": "0.0.5",
     "redis": "^2.8.0",
-    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git#v5.0.0",
-    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v15.0.0"
+    "xmr-util": "git+https://github.com/myriadeinc/cryptonote-lib.git",
+    "xmr-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v15.0.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -40,6 +40,7 @@
     "eslint": "^6.0.1",
     "eslint-config-google": "^0.13.0",
     "mocha": "^6.2.0",
-    "nodemon": "^1.19.1"
+    "nodemon": "^1.19.1",
+    "sinon": "^7.5.0"
   }
 }

@@ -1,3 +1,7 @@
+'use strict';
+
+const xmr = require('src/util/xmr.js');
+const bignum = require('bignum');
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
@@ -8,13 +12,18 @@ const multiHashing = require('cryptonight-hashing');
 const BlockTemplateService = require('src/services/block.template.service.js');
 const JobHelperService = require('src/services/job.helper.service.js');
 
+
 /**
  * @Note
  * @description
  * This model was created to separate the block processing logic from miner model
- * 
+ * minerData: id, job_id, nonce, result
  */
 const BlockReferenceService = {
+    /**
+     * @param {Object} minerData Custom object with fields for
+     * 
+     */
     buildBlock: (minerData, job) => {
         try{
             let blockTemplate = BlockTemplateService.getBlockTemplate();
@@ -29,7 +38,6 @@ const BlockReferenceService = {
             new Buffer(minerData.nonce, 'hex').copy(block, 39);
             Writing the nonce in a specific position if util does not work in testing
             */
-            const randomXid = 1;
             const NonceBuffer = new Buffer(minerData.nonce,'hex');
             return xmrUtil.construct_block_blob(blockTemplate, NonceBuffer, randomXid);
         }
@@ -38,11 +46,11 @@ const BlockReferenceService = {
             throw err.instantiation;
         }
     },
-    checkBlock: (block, result) => {
-        const blockHashed = xmrUtil.hash(block, "randomx");
+    checkBlock: (block, seed_hash,result) => {
+        const blockHashed = xmrUtil.randomx(block, seed_hash);
         
         if(blockHashed.toString('hex') !== minerdata.result){
-            logger("Bad Hash!!!1");
+            logger("Bad Hash!!!");
             return false;
         }
 
@@ -54,7 +62,10 @@ const BlockReferenceService = {
         var hashArray = blockHashed.toJSON().reverse();
 
         // Diff is a reference from bignum 
-        var hashDiff = diff.div(bignum.fromBuffer(new Buffer(hashArray)));
+        var hashDiff = xmr.diff.div(
+            bignum.fromBuffer(new Buffer(hashArray))
+            
+            );
     
         if (hashDiff.ge(blockTemplate.difficulty)){
             moneroApi.submit(block, function(error, result){
@@ -64,7 +75,7 @@ const BlockReferenceService = {
                     return false;
                 }
                 else{
-                    var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
+                    // var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
                     // Send blockfasthash instead
                     sapphireApi.sendShareInfo();                        
                     jobRefresh();

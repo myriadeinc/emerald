@@ -1,22 +1,15 @@
 const logger = require('src/util/logger.js').miner;
 const config = require('src/util/config.js');
+const xmr = require('src/util/xmr.js');
 const err = require('src/util/error.js');
 const _ = require('lodash');
 const globals = require('src/util/global.js');
 
-const cryptoNoteUtils = require('src/util/cryptonote.js');
 /**
  * 
  * Currently broken, we will need to fix
  */
-const multiHash = require('mutli-hashing');
-const cryptoNight = mutliHash['cryptonight'];
-function cryptoNightFast(buf){
-    return cryptoNight(Buffer.concat([new Buffer([buf.length]), buf]), true);
-}
 
-const VarDiff = globals.VARDIFF;
-const diff = globals.refDiff;
 
 const bignum = require('bignum');
 
@@ -66,13 +59,11 @@ class MinerModel {
      * @returns {BlockTemplate} jobTemplate
      */
     getJob() {
-        return JobHelperService.create(BlockTemplateService.getBlockTemplate())
-        .then(job => {
-            return {
-                job_id: job.job_id,
-                params: {
-                    blob: job.blob
-                }
+        let job = JobHelperService.create(BlockTemplateService.getBlockTemplate());
+        return {
+            job_id: job.job_id,
+            params: {
+                blob: job.blob
             }
         });
     }

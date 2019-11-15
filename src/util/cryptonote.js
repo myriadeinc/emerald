@@ -5,7 +5,7 @@
 
 const crypto = require('crypto');
 const dateFormat = require('dateformat');
-const cnUtil = require('cryptonote-util');
+const cnUtil = require('cryptoforknote-util');
 const uuid = require('uuid/v4');
 
 const config = require('src/util/config.js');
