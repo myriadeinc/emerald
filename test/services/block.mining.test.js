@@ -2,8 +2,7 @@
 
 const testing = require('../test.init.js');
 const crypto = require('crypto')
-const xmr = require('cryptoforknote-util');
-const xmrHash = require('cryptonight-hashing');
+
 const MoneroApi = require('src/api/monero.api.js');
 
 const moneroApi = new MoneroApi();
@@ -16,6 +15,10 @@ const chai = require('chai')
     .use(require('chai-as-promised'))
     .use(require('chai-string'))
     .should();
+/*
+
+TODO: Finish test
+
 
 describe('Miner role and submission of block', () => {
     // before('Add login functionality here', () => {
@@ -59,3 +62,4 @@ function miniMiner(blockTemplate){
     return nonce;
 
 }
+*/

@@ -41,11 +41,11 @@ const BlockReferenceService = {
             throw err.instantiation;
         }
     },
-    checkBlock: (block, result) => {
-        const blockHashed = xmrUtil.hash(block, "randomx");
+    checkBlock: (block, seed_hash,result) => {
+        const blockHashed = xmrUtil.randomx(block, seed_hash);
         
         if(blockHashed.toString('hex') !== minerdata.result){
-            logger("Bad Hash!!!1");
+            logger("Bad Hash!!!");
             return false;
         }
 

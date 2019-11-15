@@ -1,9 +1,8 @@
-const randomx = require('cryptoforknote-util');
-const blockUtil = require('cryptonight-hashing');
+const randomxUtil = require('xmr-util');
+const blockUtil = require('xmr-hashing');
 const bignum = require('bignum');
 
-
-const Xmr = {
+const xmr = {
 /**
  * bignum for checking difficulty
  */
@@ -27,9 +26,9 @@ construct_block_blob: (buffer,nonceData) => {
  * @Doc We use the constant 0 to sepcify Monero's randomx configuration
  */
 randomx: (blob, seed_hash) => {
-    return randomx(blob, seed_hash, 0)
+    return randomxUtil(blob, seed_hash, 0)
 }
 
 }
 
-module.exports = Xmr;
+module.exports = xmr;

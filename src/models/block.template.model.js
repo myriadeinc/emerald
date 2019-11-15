@@ -4,7 +4,7 @@ const err = require('src/util/error.js').BlockTemplate;
 
 const previousOffset = 7; // Legacy hard coded from cryptonote
 
-const xmrUtil = require('cryptoforknote-util');
+const xmrUtil = require('src/util/xmr.js');
 
 class BlockTemplate {
     
@@ -37,11 +37,6 @@ class BlockTemplate {
         // We start the extraNonce at 1 as the original code effectively writes 1
         buffer.writeUInt32BE(1, reserved_offset);
         return xmrUtils.convert_blob(buffer).toString('hex');
-    }
-
-    nextBlob(){
-        this.buffer.writeUInt32BE(1, this.reservedOffset);
-        return cryptonoteUtils.cnUtil.convert_blob(this.buffer, config.get('pool:cryptonight:blobType')).toString('hex');
     }
     /* Note: 
     This function is only used for miner proxies 
