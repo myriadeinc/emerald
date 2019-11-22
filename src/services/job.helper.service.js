@@ -7,8 +7,6 @@ const xmrUtils = require('src/util/xmr.js');
 
 const BlockTemplateService = require('src/services/block.template.service.js');
 
-const BlockTemplateService = require('src/services/block.template.service.js');
-
 const JobHelperService = {
 
     /**

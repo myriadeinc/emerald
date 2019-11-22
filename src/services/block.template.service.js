@@ -45,7 +45,7 @@ const BlockTemplateService = {
       return BlockTemplateService.updateBlock(data.result);
     })
     .then(() => {
-      return BlockTemplateService.subscribeToUpdates()
+    //  return BlockTemplateService.subscribeToUpdates()
     })
   },
 

@@ -4,7 +4,7 @@ const xmr = require('src/util/xmr.js');
 const err = require('src/util/error.js');
 const _ = require('lodash');
 const globals = require('src/util/global.js');
-
+const cache = require('src/util/cache.js');
 /**
  * 
  * Currently broken, we will need to fix
@@ -59,11 +59,13 @@ class MinerModel {
      * @returns {BlockTemplate} jobTemplate
      */
     getJob() {
-        let job = JobHelperService.create(BlockTemplateService.getBlockTemplate());
-        return {
-            job_id: job.job_id,
-            params: {
-                blob: job.blob
+        JobHelperService.create(BlockTemplateService.getBlockTemplate())
+        .then( job => {
+            return {
+                job_id: job.job_id,
+                params: {
+                    blob: job.blob
+                }
             }
         });
     }
@@ -103,6 +105,7 @@ class MinerModel {
         // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
         if(!BlockReferenceService.checkBlock(block, minerData.result)){
             sapphireApi.sendShareInfo("Bad Block hash provided, penalty to miner");
+            BanService.addStrike(this.id);
             return {};
         }
         // If the difficulty check passes we submit the block
@@ -110,14 +113,17 @@ class MinerModel {
             return moneroApi.submit(block)
             .then((result) => {
                 sapphireApi.sendShareInfo("good block provided, share given to miner");
+                
                 return null;
             });
         }
         else{
             sapphireApi.sendShareInfo();
+            BanService.addStrike(this.id);
             return {error: "does not meet difficulty"};
         }
     }
+
 }
 
 module.exports = MinerModel;

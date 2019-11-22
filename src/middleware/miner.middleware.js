@@ -5,7 +5,7 @@ const Err = require('src/util/error.js').Miner;
 const logger = require('src/util/logger.js').miner;
 const _ = require('lodash');
 const cache = require('src/util/cache.js');
-
+const BanService = require('src.services/ban.service.js');
 const DiamondApi = require('src/api/diamond.api.js');
 const MinerModel = require('src/models/miner.model.js');
 
@@ -28,6 +28,9 @@ const validateMiner = (request) => {
     return new Promise((resolve, reject) => {
         let token =null;
         const minerId = request.body.params.id;
+        if(BanService.checkBan(minerId)){
+            reject("You have been banned");
+        }
         if (request.header.authorization && 
             'Bearer' === request.header.authorization.split()[0]){
                 token = request.header.authorization.split()[1]
