@@ -12,14 +12,21 @@ services:
     environment:
       - NODE_ENV=local
     volumes:
-      - ./src:/usr/src/app/src
-      - ./test:/usr/src/app/test
-      - ./config:/usr/src/app/config
-      - ./scripts:/usr/src/app/scripts
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
     ports:
       - "8088:8088"
       - "9878:9878"
       - "12345:12345"
-      - "12346:12346"
-      - "12347:12347"
-  
+    depends_on:
+      cache:
+          condition: service_healthy
+  cache:
+    image: redis:3.2.3
+    ports:
+        - "6379:6379"
+    healthcheck:
+        test: "redis-cli -h localhost ping | grep -q 'PONG'"
+        interval: 1s
+        timeout: 1s
+        retries: 60

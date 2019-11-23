@@ -1,5 +1,5 @@
-FROM ubuntu:18.04
-  # Intermediary image for building C++ Libraries 
+FROM ubuntu:18.04 as builder
+
   RUN apt update && apt install -y nodejs npm 
 
   RUN apt-get install -y libboost-all-dev
@@ -12,15 +12,19 @@ FROM ubuntu:18.04
   RUN rm -rf node_modules
   RUN npm install
 
-FROM node:8.9.4
+FROM ubuntu:18.04 as app
   # Building final image
-  EXPOSE 8088
-  RUN chown -R node:node /usr/src/app
-  USER node
-  ENV NODE_ENV "PRODUCTION"
   WORKDIR /usr/src/app
+  EXPOSE 8088
+  RUN apt update && apt install -y nodejs libboost-all-dev
 
-  COPY --from=0 /usr/src/build/* .
+#   RUN chown -R node:node /usr/src/app
+#   USER node
+  ENV NODE_ENV "PRODUCTION"
+#   COPY --from=builder /usr/local/lib /usr/local/lib
+#   COPY --from=builder /usr/lib /usr/lib
+#   COPY --from=builder /usr/local/lib /usr/local/lib
+  COPY --from=builder /usr/src/build/ /usr/src/app/
   
   # We don't run "npm start" because we don't want npm to manage the SIGTERM signal
   CMD [ "node", "src/main.js" ]
