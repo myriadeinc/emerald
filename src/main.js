@@ -16,7 +16,7 @@ let server;
 
 const main = async () => {
   logger.core.info(`Starting Emerald for ${config.get('pool:desc')}`);
-  
+
   logger.core.info('Initializing cache DB');
   await cache.init(config.get('cache'));
   logger.core.info('Cache initialized');
@@ -26,16 +26,15 @@ const main = async () => {
   logger.core.info('Messaging queue initialized');
 
   logger.core.info('Initializing Block Templating service');
-  await BlockTemplateService.init()
-  
+  await BlockTemplateService.init();
+
   logger.core.info('Block Templating queue initialized');
 
   const pool = require('src/pool.js');
   const port = config.get('pool:port');
   server = pool.listen(port, () => {
-    logger.core.info(`Listening on port ${port}`)
+    logger.core.info(`Listening on port ${port}`);
   });
-  
 };
 
 const gracefulShutdown = () => {

@@ -8,7 +8,7 @@ class SapphireApi {
   }
 
   sendShareInfo(data) {
-      return MQ.send(data)
+    return MQ.send(data);
   }
 }
 

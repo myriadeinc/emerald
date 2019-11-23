@@ -5,7 +5,7 @@ const jayson = require('jayson/promise');
 
 const MinerMiddleware = require('src/middleware/miner.middleware.js');
 
-router.post('/', 
+router.post('/',
     MinerMiddleware.rpcAuthenticateMiner,
     jayson.server(MinerService.rpcInterface).middleware());
 

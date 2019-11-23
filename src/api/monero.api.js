@@ -1,27 +1,31 @@
 'use strict';
 const config = require('src/util/config.js');
-const jsonrpc = require('json-rpc-client');
 const logger = require('src/util/logger.js').monero;
 const BlockTemplate = require('src/models/block.template.model.js');
 
-// API interface to interact with Monero Daemon via JSON RPC
-/**
- * 
- */
+const axios = require('axios');
+
+const send_rpc = (method, data) => {
+  return axios({
+    url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
+    method: 'post',
+    data: {
+      json_rpc: '2.0',
+      id: '0',
+      method,
+      params: data,
+    },
+  })
+      .then(({data}) =>{
+        return data.result;
+      });
+};
+
 class MoneroApi {
-  constructor() {
-    this.__daemon_host = config.get('monero:daemon:host') ? config.get('monero:daemon:host'): '0.0.0.0';
-    this.__daemon_port = config.get('monero:daemon:port') ? config.get('monero:daemon:port') : 5857;
-    this.__wallet_host = config.get('monero:wallet:host') ? config.get('monero:wallet:host') : '0.0.0.0';
-    this.__rpc_client = new jsonrpc({
-      host: this.__daemon_host,
-      port: this.__daemon_port,
-    });
-    try {
-      this.__rpc_client.connect();
-    } catch (e) {
-      logger.error(e);
-    }
+  constructor(host=null, port=null, wallet_host=null) {
+    this.__daemon_host = host ? host: config.get('monero:daemon:host');
+    this.__daemon_port = port ? port: config.get('monero:daemon:port');
+    this.__wallet_host = wallet_host ? wallet_host: config.get('monero:wallet:host');
   }
 
   /**
@@ -29,10 +33,10 @@ class MoneroApi {
     * @param {object} params object for configuring the next template
     * @return {object}  Returns an object for the block template
     */
-  
+
   async getBlockTemplate() {
     try {
-      const res = await this.__rpc_client.send('getblocktemplate', {
+      const res = await send_rpc('getblocktemplate', {
         reserve_size: 8,
         wallet_address: config.get('pool:poolAddress'),
       });
@@ -48,7 +52,7 @@ class MoneroApi {
     * @return {object} Returns the header of the last block promisified
     */
   getLastBlockHeader() {
-    return this.__rpc_client.send('getlastblockheader', {});
+    return send_rpc('getlastblockheader', {});
   }
 
   /**
@@ -56,7 +60,7 @@ class MoneroApi {
     * @param {object} buffer Shared buffer constructed with xmr utilities
     */
   submit(buffer) {
-    return this.__rpc_client.send('submitblock', [buffer.toString('hex')]);
+    return send_rpc('submitblock', [buffer.toString('hex')]);
   }
 }
 
