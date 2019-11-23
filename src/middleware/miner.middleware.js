@@ -12,17 +12,17 @@ const MinerModel = require('src/models/miner.model.js');
 const diamondApi = new DiamondApi();
 
 
-const loadMiner = (decodedToken,  request) => {
-    const miner =  MinerModel.fromToken(decodedToken);
-    if (miner) {
-        let data = request.body.params;
-        delete request.body.params;
-        request.body.params = {
-            data,
-            miner
-        }
-    }
-}
+const loadMiner = (decodedToken, request) => {
+  const miner = MinerModel.fromToken(decodedToken);
+  if (miner) {
+    const data = request.body.params;
+    delete request.body.params;
+    request.body.params = {
+      data,
+      miner,
+    };
+  }
+};
 
 const validateMiner = (request) => {
     return new Promise((resolve, reject) => {
@@ -61,31 +61,30 @@ const validateMiner = (request) => {
 }
 
 const filterMethods = (securedMethods, method) => {
-    return _.includes(securedMethods, method);
-}; 
+  return _.includes(securedMethods, method);
+};
 const MinerMiddleware = {
 
-    rpcAuthenticateMiner : (req, res, next) => {
-        const currMethod = req.body.method;
-        const needAuth = filterMethods([
-            "submit",
-            "job"
-        ], currMethod);
-        if (needAuth) {
-            return validateMiner(req)
-            .then((decodedToken) => {
-                loadMiner(decodedToken, req);
-                next();
-            })
-            .catch(err => {
-                logger.error(`While authenticating this occured, ${err} for miner ${req.body.params.address}`);
-                res.status(403).send('Authentication Failure');
-            })
-        }
-        else {
+  rpcAuthenticateMiner: (req, res, next) => {
+    const currMethod = req.body.method;
+    const needAuth = filterMethods([
+      'submit',
+      'job',
+    ], currMethod);
+    if (needAuth) {
+      return validateMiner(req)
+          .then((decodedToken) => {
+            loadMiner(decodedToken, req);
             next();
-        }
+          })
+          .catch((err) => {
+            logger.error(`While authenticating this occured, ${err} for miner ${req.body.params.address}`);
+            res.status(403).send('Authentication Failure');
+          });
+    } else {
+      next();
     }
-}
+  },
+};
 
 module.exports = MinerMiddleware;

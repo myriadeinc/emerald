@@ -1,6 +1,9 @@
+dev:
+	docker build -f Dockerfile.dev -t myriadeinc/emerald:dev .
+
 up:
 	docker-compose up
-dev:
-	docker build -f Dockerfile.dev -t myriade/emerald:dev .
-build:
-	docker build -t myriade/emerald .
+
+build: 
+	docker build -f Dockerfile -t myriadeinc/emerald:latest .
+
