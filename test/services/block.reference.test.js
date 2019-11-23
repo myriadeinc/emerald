@@ -17,16 +17,16 @@ describe('Unit test for Block Reference Service', ()=> {
   let job;
   let blockTemplate;
 
-  before('setup', () => {
-    miner = MinerModel({
-      address = '0x1',
-      name = 'john',
-      id = '1'
-    })
-    job = miner.getJob();
-  });
+  // before('setup', () => {
+  //   miner = new MinerModel({
+  //     address : "0x1",
+  //     name : 'john',
+  //     id : '1'
+  //   })
+  //   job = miner.getJob();
+  // });
 
   it('should #buildBlock and return a blockTemplate blob', () => {
-
+    
   });
 })

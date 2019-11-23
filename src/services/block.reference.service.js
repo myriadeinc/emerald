@@ -6,7 +6,7 @@ const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
 
-const xmrUtil = require('cryptoforknote-util');
+const xmrUtil = require('cryptonote-lib');
 const multiHashing = require('cryptonight-hashing');
 
 const BlockTemplateService = require('src/services/block.template.service.js');

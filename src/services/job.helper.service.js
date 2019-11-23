@@ -15,6 +15,7 @@ const JobHelperService = {
      *
      */
   create: (blockTemplate) => {
+
     const newJob = {
       id: crypto.pseudoRandomBytes(21).toString('base64'),
       blockHash: blockTemplate.idHash,
@@ -27,14 +28,14 @@ const JobHelperService = {
       job_id: newJob.id,
       blob: BlockTemplateService.getBlob(),
       /**
-             * @todo: add proper conversion from diff to target
-             */
+     * @todo: add proper conversion from diff to target
+     */
       target: difficulty.toString('hex'),
     };
     return cache.put(newJob.id, newJob, 'job')
-        .then(() => {
-          return jobReply;
-        });
+    .then(() => {
+        return jobReply;
+    });
   },
 
   /**

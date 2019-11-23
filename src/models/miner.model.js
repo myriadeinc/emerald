@@ -60,12 +60,12 @@ class MinerModel {
   getJob() {
     return JobHelperService.create(BlockTemplateService.getBlockTemplate())
         .then((job) => {
-          return {
-            job_id: job.job_id,
-            params: {
-              blob: job.blob,
-            },
-          };
+            return {
+                job_id: job.job_id,
+                params: {
+                    blob: job.blob,
+                },
+            };
         });
   }
 
