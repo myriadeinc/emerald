@@ -14,11 +14,13 @@ FROM ubuntu:18.04
 
 FROM node:8.9.4
   # Building final image
+  EXPOSE 8088
   RUN chown -R node:node /usr/src/app
   USER node
   ENV NODE_ENV "PRODUCTION"
   WORKDIR /usr/src/app
 
   COPY --from=0 /usr/src/build/* .
+  
   # We don't run "npm start" because we don't want npm to manage the SIGTERM signal
   CMD [ "node", "src/main.js" ]
