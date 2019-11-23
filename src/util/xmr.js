@@ -1,5 +1,5 @@
-const randomxUtil = require('xmr-util');
-const blockUtil = require('xmr-hashing');
+const randomxUtil = require('cryptonote-lib');
+const blockUtil = require('cryptonight-hashing');
 const bignum = require('bignum');
 
 const xmr = {
