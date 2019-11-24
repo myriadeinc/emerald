@@ -10,6 +10,7 @@ class SapphireApi {
   sendShareInfo(data) {
     return MQ.send(data);
   }
+
 }
 
 export default SapphireApi;

@@ -14,7 +14,7 @@ const JobHelperService = {
      * @param {blockTemplate}
      *
      */
-  create: (blockTemplate) => {
+  create: (blockTemplate, minerId) => {
 
     const newJob = {
       id: crypto.pseudoRandomBytes(21).toString('base64'),
@@ -22,7 +22,7 @@ const JobHelperService = {
       extraNonce: blockTemplate.extraNonce,
       height: blockTemplate.height,
       seed_hash: blockTemplate.seed_hash,
-      difficulty: blockTemplate.difficulty,
+      difficulty: getVarDiff(minerId,blockTemplate),
     };
     const jobReply = {
       job_id: newJob.id,
@@ -37,7 +37,10 @@ const JobHelperService = {
         return jobReply;
     });
   },
-
+getVarDiff: (minerId, blockTemplate) => {
+  // Need to add real variable difficulty calculator
+  return blockTemplate.difficulty;
+},
   /**
      * @todo: add proper method
      */

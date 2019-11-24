@@ -100,7 +100,7 @@ class MinerModel {
     // Get the current block template and create a block with the provided nonce
     const block = BlockReferenceService.buildBlock(minerData);
     const job = await JobHelperService.getFromId(minerData.job_id);
-
+    const timestamp = new Date(new Date().toUTCString()).getTime();
     // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
     if (!BlockReferenceService.checkBlock(block, minerData.result)) {
       sapphireApi.sendShareInfo('Bad Block hash provided, penalty to miner');
@@ -110,8 +110,19 @@ class MinerModel {
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {
       return moneroApi.submit(block)
           .then((result) => {
-            sapphireApi.sendShareInfo('good block provided, share given to miner');
-            return null;
+
+            const payload = {
+              "minerId": minerData.id,
+              "timestamp": timestamp,
+              "difficulty": job.difficulty,
+              "jackpot": false
+            };
+            if(result.status === "ok"){
+                // If our block results in an award, trigger
+                payload.jackpot = true;
+            }
+            sapphireApi.sendShareInfo(payload);
+            return {"status": "share granted"};
           });
     } else {
       sapphireApi.sendShareInfo();
