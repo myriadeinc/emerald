@@ -20,8 +20,6 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-formatter": "^1.0.0",
-    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v15.0.0",
-    "cryptonote-lib": "git+https://github.com/myriadeinc/cryptonote-lib.git",
     "dateformat": "^3.0.3",
     "egads": "^1.0.2",
     "express": "^4.17.1",

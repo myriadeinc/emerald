@@ -110,12 +110,23 @@ class MinerModel {
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {
       return moneroApi.submit(block)
           .then((result) => {
-            sapphireApi.sendShareInfo('good block provided, share given to miner');
-            return null;
+            const payload = {
+              "minerId": minerData.id,
+              "timestamp": timestamp,
+              "blockheight": job.height,
+              "difficulty": job.difficulty,
+              "jackpot": false
+            };
+            if(result.status === "ok"){
+                // If our block results in an award, trigger
+                payload.jackpot = true;
+            }
+            sapphireApi.sendShareInfo(payload);
+            return {"status": "share granted"};
           });
     } else {
       sapphireApi.sendShareInfo();
-      return {error: 'does not meet difficulty'};
+      return {error: 'Does not meet difficulty'};
     }
   }
 }

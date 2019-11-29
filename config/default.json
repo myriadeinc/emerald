@@ -41,7 +41,7 @@
     },
     "monero":{
         "daemon":{
-            "host": "http://9b7bc232.ngrok.io/",
+            "host": "",
             "port": 80
         },
         "wallet": {
