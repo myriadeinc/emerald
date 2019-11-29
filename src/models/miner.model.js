@@ -100,7 +100,7 @@ class MinerModel {
     // Get the current block template and create a block with the provided nonce
     const block = BlockReferenceService.buildBlock(minerData);
     const job = await JobHelperService.getFromId(minerData.job_id);
-
+    const timestamp = new Date(new Date().toUTCString()).getTime();
     // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
     if (!BlockReferenceService.checkBlock(block, minerData.result)) {
       sapphireApi.sendShareInfo('Bad Block hash provided, penalty to miner');
@@ -109,7 +109,6 @@ class MinerModel {
     // If the difficulty check passes we submit the block
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {
       return moneroApi.submit(block)
-          .then((result) => {
             const payload = {
               "minerId": minerData.id,
               "timestamp": timestamp,
