@@ -4,7 +4,7 @@ const xmr = require('src/util/xmr.js');
 const err = require('src/util/error.js');
 const _ = require('lodash');
 const globals = require('src/util/global.js');
-
+const cache = require('src/util/cache.js');
 /**
  *
  * Currently broken, we will need to fix
@@ -59,14 +59,14 @@ class MinerModel {
      */
   getJob() {
     return JobHelperService.create(BlockTemplateService.getBlockTemplate())
-        .then((job) => {
-            return {
-                job_id: job.job_id,
-                params: {
-                    blob: job.blob,
-                },
-            };
-        });
+      .then((job) => {
+          return {
+              job_id: job.job_id,
+              params: {
+                  blob: job.blob,
+              },
+          };
+      });
   }
 
   /**
@@ -85,12 +85,12 @@ class MinerModel {
      */
   async submit(data) {
     /*
-            minerdata.id = miner uuid
-            minerdata.job_id = job id
-            minerdata.nonce = nonce
-            minerdata.result = resultHash -> the hash of the supposed block
-            Reconstruct the block from data,check to see that it matches the sent block
-            */
+      minerdata.id = miner uuid
+      minerdata.job_id = job id
+      minerdata.nonce = nonce
+      minerdata.result = resultHash -> the hash of the supposed block
+      Reconstruct the block from data,check to see that it matches the sent block
+      */
     const minerData = {
       id: this.id,
       job_id: data.job_id,
@@ -109,11 +109,10 @@ class MinerModel {
     // If the difficulty check passes we submit the block
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {
       return moneroApi.submit(block)
-          .then((result) => {
-
             const payload = {
               "minerId": minerData.id,
               "timestamp": timestamp,
+              "blockheight": job.height,
               "difficulty": job.difficulty,
               "jackpot": false
             };
@@ -126,7 +125,7 @@ class MinerModel {
           });
     } else {
       sapphireApi.sendShareInfo();
-      return {error: 'does not meet difficulty'};
+      return {error: 'Does not meet difficulty'};
     }
   }
 }
