@@ -1,0 +1,34 @@
+version: 2
+jobs:
+  build:
+    docker:
+      # Primary
+      - image: myriadeinc/node-ci:latest
+        environment:
+          db__host: 127.0.0.1
+          db__port: 5432
+          rabbitmq__url: amqp://guest:guest@127.0.0.1:5672/
+      - image: rabbitmq:3.6.4-management
+    steps:
+      - checkout
+      - setup_remote_docker:
+          version: 18.06.0-ce
+      - run:
+          name: Installing dev dependencies
+          command: |
+            npm install
+      - run:
+          name: Run Tests
+          command: |
+            npm run test
+      - run:
+          name: Build Docker image
+          command: |
+            echo "$DOCKERHUB_PASS" | docker login -u "$DOCKERHUB_USERNAME" --password-stdin
+            TAG=$(git show -s --pretty=%H) make build
+      - deploy:
+          name: Push & deploy build
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              docker push myriadeinc/sapphire:$(git show -s --pretty=%H)
+            fi

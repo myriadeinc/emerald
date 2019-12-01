@@ -19,6 +19,7 @@
     "bignum": "^0.13.0",
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
+    "logdna-bunyan": "^1.2.0",
     "bunyan-formatter": "^1.0.0",
     "dateformat": "^3.0.3",
     "egads": "^1.0.2",

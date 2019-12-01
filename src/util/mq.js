@@ -29,7 +29,9 @@ const MQ = {
           MQ.channel = ch;
           return true;
         })
-        .catch(logger.error);
+        .catch(err => {
+          logger.error(err);
+        });
   },
 
   send: (msg) => {

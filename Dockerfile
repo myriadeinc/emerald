@@ -20,11 +20,9 @@ FROM ubuntu:18.04 as app
 
 #   RUN chown -R node:node /usr/src/app
 #   USER node
-  ENV NODE_ENV "PRODUCTION"
+  ENV NODE_ENV "prod"
 #   COPY --from=builder /usr/local/lib /usr/local/lib
 #   COPY --from=builder /usr/lib /usr/lib
 #   COPY --from=builder /usr/local/lib /usr/local/lib
   COPY --from=builder /usr/src/build/ /usr/src/app/
-  
-  # We don't run "npm start" because we don't want npm to manage the SIGTERM signal
   CMD [ "node", "src/main.js" ]
