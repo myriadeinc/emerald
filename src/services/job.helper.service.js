@@ -1,3 +1,4 @@
+/* eslint-disable valid-jsdoc */
 
 const crypto = require('crypto');
 const config = require('src/util/config.js');
@@ -15,14 +16,14 @@ const JobHelperService = {
      *
      */
   create: (blockTemplate, minerId) => {
-
     const newJob = {
+      minerId: minerId,
       id: crypto.pseudoRandomBytes(21).toString('base64'),
       blockHash: blockTemplate.idHash,
       extraNonce: blockTemplate.extraNonce,
       height: blockTemplate.height,
       seed_hash: blockTemplate.seed_hash,
-      difficulty: getVarDiff(minerId,blockTemplate),
+      difficulty: JobHelperService.getVarDiff(minerId, blockTemplate),
     };
     const jobReply = {
       job_id: newJob.id,
@@ -33,14 +34,16 @@ const JobHelperService = {
       target: difficulty.toString('hex'),
     };
     return cache.put(newJob.id, newJob, 'job')
-    .then(() => {
-        return jobReply;
-    });
+        .then(() => {
+          return jobReply;
+        });
   },
-getVarDiff: (minerId, blockTemplate) => {
+
+
+  getVarDiff: (minerId, blockTemplate) => {
   // Need to add real variable difficulty calculator
-  return blockTemplate.difficulty;
-},
+    return blockTemplate.difficulty;
+  },
   /**
      * @todo: add proper method
      */
@@ -52,17 +55,14 @@ getVarDiff: (minerId, blockTemplate) => {
           return job;
         })
         .catch((err) => {
-          uid = '12345'; // Generate a new UID
+          uid = crypto.pseudoRandomBytes(21).toString('base64'); // Generate a new UID
           logger.core.error(`Error hitting cache with job::${id} ; ${err}`);
           const blockTemplate = BlockTemplateService.getBlockTemplate();
           job = {
-            id: crypto.pseudoRandomBytes(21).toString('base64'),
+            id: uid,
             extraNonce: blockTemplate.extraNonce,
             height: blockTemplate.height,
-            difficulty: getCurrentDifficulty(),
-            score: getCurrentScore(),
-            diffHex: getDiffHex(),
-            submissions: [],
+            difficulty: JobHelperService.getVarDiff(id, blockTemplate),
           };
           return cache.put(uid, job, namespace='job');
         })

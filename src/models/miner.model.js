@@ -20,14 +20,9 @@ const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
 
 const MoneroApi = require('src/api/monero.api.js');
-const moneroApi = new MoneroApi();
 
 const SapphireApi = require('src/api/monero.api.js');
-const sapphireApi = new SapphireApi();
 
-// key value job
-
-const cache = require('src/util/cache.js');
 
 class MinerModel {
   /**
@@ -57,18 +52,18 @@ class MinerModel {
      *
      * @return {BlockTemplate} jobTemplate
      */
-  getJob() {
-    return JobHelperService.create(BlockTemplateService.getBlockTemplate())
-      .then((job) => {
+  async getJob() {
+    const blockTemplate = await BlockTemplateService.getBlockTemplate();
+    JobHelperService.create(blockTemplate, this.id)
+        .then((job) => {
           return {
-              job_id: job.job_id,
-              params: {
-                  blob: job.blob,
-              },
+            job_id: job.job_id,
+            params: {blob: job.blob},
           };
-      });
+        }).catch((err)=>{
+          return err;
+        });
   }
-
   /**
      *
      * @Example Request
@@ -100,11 +95,11 @@ class MinerModel {
     // Get the current block template and create a block with the provided nonce
     const block = BlockReferenceService.buildBlock(minerData);
     const job = await JobHelperService.getFromId(minerData.job_id);
-    const timestamp = new Date(new Date().toUTCString()).getTime();
+    const timestamp = new Date();
     // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
     if (!BlockReferenceService.checkBlock(block, minerData.result)) {
-      sapphireApi.sendShareInfo('Bad Block hash provided, penalty to miner');
-      return {};
+      // sapphireApi.sendShareInfo(job.minerId, job.difficulty, Date.now());
+      return {error: "Invalid block! "};
     }
     // If the difficulty check passes we submit the block
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {

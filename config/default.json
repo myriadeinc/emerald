@@ -16,6 +16,7 @@
         "db": "0"
     },
     "pool": {
+        "reserveSize": 8,
         "singleThread": false,
         "poolAddress": "9wviCeWe2D8XS82k2ovp5EUYLzBt9pYNW2LXUFsZiv8S3Mt21FZ5qQaAroko1enzw3eGr9qC7X1D7Geoo2RrAotYPwq9Gm8",
         "workers": 1,
@@ -41,7 +42,7 @@
     },
     "monero":{
         "daemon":{
-            "host": "",
+            "host": "daemon.myriade.io",
             "port": 80
         },
         "wallet": {
@@ -50,7 +51,7 @@
         }
     },
     "diamond":{
-        "public_key": "__VOID__",
+        "public_key": "__REPLACE__",
         "port": 8180,
         "host": "0.0.0.0"
     },

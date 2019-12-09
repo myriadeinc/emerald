@@ -1,12 +1,13 @@
 const router = require('express').Router();
 
-const MinerService = require('src/services/miner.service.js');
-const jayson = require('jayson/promise');
-
 const MinerMiddleware = require('src/middleware/miner.middleware.js');
+const MinerService = require('src/services/miner.service.js');
+const jsonRPC = require('express-json-rpc-router');
+
 
 router.post('/',
     MinerMiddleware.rpcAuthenticateMiner,
-    jayson.server(MinerService.rpcInterface).middleware());
+    jsonRPC({methods: MinerService}),
+);
 
 module.exports = router;

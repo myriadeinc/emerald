@@ -62,7 +62,6 @@ const BlockReferenceService = {
     // Diff is a reference from bignum
     const hashDiff = xmr.diff.div(
         bignum.fromBuffer(new Buffer(hashArray)),
-
     );
 
     if (hashDiff.ge(blockTemplate.difficulty)) {
