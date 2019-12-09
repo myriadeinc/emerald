@@ -5,22 +5,25 @@ const logger = require('src/util/logger.js').miner;
 const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
 
+const BlockReferenceService = require('src/services/block.reference.service.js');
+
 const BlockTemplateService = require('src/services/block.template.service.js');
 const MinerModel = require('src/models/miner.model.js');
 
+const JobHelperService = require('src/services/job.helper.service.js');
+
 const cache = require('src/util/cache.js');
 const config = require('src/util/config.js');
+
+const debug = true;
+
 const MinerService = {
   // Test function
   paramDump: (params) => {
     return params;
   },
-  // {miner,data}
+  // job is pushed to the client/miner, must implement this via raw server
   job: (params) => {
-    // To be modified since this is suppose to be a push notification according tto
-    //  strantum
-    console.log("job method called!");
-
     return miner.getJob()
         .then((job) => {
           return {
@@ -34,19 +37,47 @@ const MinerService = {
         });
   },
 
-  submit: (params) => {
-    return new Promise((resolve, reject) => {
-      miner.submit(data)
-      .then((result) => {
-        resolve(result);
-      })
-      .catch((err) => {
-        logger.error(err);
-        reject(err);
-      });
+ // TODO: promisify
+ submit: (params) => {
+  return new Promise((resolve, reject) => {
+    // Load miner by id
+    // MinerModel.submit(data)
+
+    return MinerService.submitProxy(params)
+    .then((result) => {
+      resolve(result);
+    })
+    .catch((err) => {
+      logger.error(err);
+      reject(err);
     });
-   
-  },
+  });
+ 
+},
+// This is very bad code, must rewrite!
+submitProxy: async (data) => {
+  const minerData = {
+    id: data.id,
+    job_id: data.job_id,
+    nonce: data.nonce,
+    results: data.result,
+  };
+  const job = await JobHelperService.getFromId(minerData.job_id);
+
+  const block = BlockReferenceService.buildBlock(minerData, job);
+  const block2 = BlockReferenceService.convertBlock(block);
+  const r = BlockReferenceService.hashBlock(block2, job.seed_hash);
+  const finalHash = r.toString('hex');
+  
+  if(finalHash == minerData.results){
+    if(BlockReferenceService.checkDifficulty(job.difficulty, finalHash)){
+      return {status: "ok"};
+    }
+
+
+  }
+    return {error: "invalid share"}
+},
 
   login: (params) => {
     const login = params.login;
@@ -89,6 +120,7 @@ const MinerService = {
       });
     });
   },
+
 
 
 };

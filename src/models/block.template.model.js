@@ -12,6 +12,7 @@ class BlockTemplate {
     try {
       this.difficulty = data.difficulty;
       this.blob = data.blockhashing_blob;
+      this.templateBlob = data.blocktemplate_blob;
       this.height = data.height;
       this.seed_hash = data.seed_hash;
       this.reservedOffset = data.reserved_offset;
@@ -27,7 +28,7 @@ class BlockTemplate {
   }
 
   getBlob() {
-    const buffer = new Buffer(this.blob, 'hex');
+    const buffer = Buffer.from(this.blob, 'hex');
     // We start the extraNonce at 1 as the original code effectively writes 1
     buffer.writeUInt32BE(1, reserveOffset);
     return xmrUtil.convert_blob(buffer).toString('hex');

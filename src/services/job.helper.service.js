@@ -23,17 +23,17 @@ const JobHelperService = {
     const newJob = {
       minerId: minerId,
       job_id: crypto.pseudoRandomBytes(21).toString('hex'),
-      blockHash: blockTemplate.idHash,
-      extraNonce: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
+      blockHash: blockTemplate.blob,
+      extraNonce: 5,//crypto.pseudoRandomBytes(4).readUInt32BE(0, true),
       height: blockTemplate.height,
       seed_hash: blockTemplate.seed_hash,
+      blockBlob: blockTemplate.templateBlob,
       // Diff hardcoded for now
       difficulty: diff.toString()
-      
     };
     const jobReply = {
       height: newJob.height,
-      blob: JobHelperService.createBlob(blockTemplate.blob),
+      blob: blockTemplate.blob,
       job_id: newJob.job_id,
       id: minerId,
        /**
@@ -43,22 +43,19 @@ const JobHelperService = {
       seed_hash: newJob.seed_hash,
       algo: "rx/0"
     };
-    return cache.put(newJob.id, newJob, 'job')
-        .then(() => {
+    return cache.put(newJob.job_id, newJob, 'job')
+        .then((result) => {
           return jobReply;
         });
   },
 
   // Add proper blob creation
   createBlob: (blob) => {
-
-
-
+    return blob;
   },
   getTargetHex: (difficulty) => {
             difficulty = BigInt(difficulty);
-            let difficultyBuffer = new Buffer(32);
-            difficultyBuffer.fill(0);
+            let difficultyBuffer = Buffer.alloc(32);
 
             let quotient = Buffer.from((baseDiff/difficulty).toString(16),'hex');
             quotient.copy(difficultyBuffer, 32 - quotient.length);
@@ -77,11 +74,9 @@ const JobHelperService = {
   /**
      * @todo: add proper method
      */
-  getFromId: (id) => {
-    let job;
-    return cache.get(id, namespace='job')
-        .then((res) => {
-          job = res;
+  getFromId: async (id) => {
+    return cache.get(id,'job')
+        .then((job) => {
           return job;
         })
         .catch((err) => {
