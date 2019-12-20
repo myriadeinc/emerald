@@ -30,9 +30,10 @@ const validateMiner = (request) => {
     if (BanService.checkBan(minerId)) {
       reject(Error('You have been banned!'));
     }
-    if (request.header.authorization &&
-        'Bearer' === request.header.authorization.split()[0]) {
-      token = request.header.authorization.split()[1];
+    // We can't do this since Stratum uses JSON-RPC over TCP
+    if (request.body.authorization &&
+        'Bearer' === request.body.authorization.split()[0]) {
+      token = request.headers.authorization.split()[1];
     }
     if (token) {
       return diamondApi.decodeAndVerifyToken(token)

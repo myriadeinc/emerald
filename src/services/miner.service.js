@@ -15,13 +15,15 @@ const MinerService = {
   paramDump: (params) => {
     return params;
   },
-  job: ({miner, data}) => {
+  // {miner,data}
+  job: (params) => {
+    console.log("job method called!");
     return miner.getJob()
         .then((job) => {
           return {
             job,
             success: true,
-          };
+          }
         })
         .catch((err) => {
           logger.error(err);
@@ -29,7 +31,8 @@ const MinerService = {
         });
   },
 
-  submit: ({miner, data}) => {
+  // TODO: promisify
+  submit: (params) => {
     return miner.submit(data)
         .then((result) => {
           return result;
@@ -43,8 +46,8 @@ const MinerService = {
   login: (params) => {
     const login = params.login;
     const pass = params.pass;
-
-    return diamondApi.login(login, pass)
+    return new Promise((resolve,reject) => {
+      diamondApi.login(login, pass)
         .then((accessToken) => {
           return diamondApi.decodeAndVerifyToken(accessToken);
         })
@@ -58,12 +61,22 @@ const MinerService = {
           if (!miner) {
             throw Error('Miner not found!');
           }
-          return miner.getJob();
+          return miner.getJob().then((result)=>{
+            
+            resolve({
+              id: miner.id,
+              job: result,
+              status: "OK"
+            });
+            
+          });
+          
         })
         .catch((err) => {
           logger.error(err);
-          return Error('Login failed');
+          reject(Error('Login failed'));
         });
+    }); 
   },
 
   keepalived: (params) => {

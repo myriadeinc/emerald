@@ -3,13 +3,13 @@
 const crypto = require('crypto');
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
+const cache = require('src/util/cache.js');
 
 const xmrUtils = require('src/util/xmr.js');
 
 const BlockTemplateService = require('src/services/block.template.service.js');
 
 const JobHelperService = {
-
   /**
      * @description Create a new job based on existing blocktemplate
      * @param {blockTemplate}
@@ -18,20 +18,23 @@ const JobHelperService = {
   create: (blockTemplate, minerId) => {
     const newJob = {
       minerId: minerId,
-      id: crypto.pseudoRandomBytes(21).toString('base64'),
+      job_id: crypto.pseudoRandomBytes(21).toString('hex'),
       blockHash: blockTemplate.idHash,
       extraNonce: blockTemplate.extraNonce,
       height: blockTemplate.height,
       seed_hash: blockTemplate.seed_hash,
       difficulty: JobHelperService.getVarDiff(minerId, blockTemplate),
+      
     };
     const jobReply = {
-      job_id: newJob.id,
-      blob: BlockTemplateService.getBlob(),
-      /**
+      height: newJob.height,
+      blob: blockTemplate.blob,
+      job_id: newJob.job_id,
+       /**
      * @todo: add proper conversion from diff to target
      */
-      target: difficulty.toString('hex'),
+      target: newJob.difficulty.toString(16),
+      seed_hash: newJob.seed_hash,
     };
     return cache.put(newJob.id, newJob, 'job')
         .then(() => {
@@ -42,7 +45,8 @@ const JobHelperService = {
 
   getVarDiff: (minerId, blockTemplate) => {
   // Need to add real variable difficulty calculator
-    return blockTemplate.difficulty;
+    return 10;
+   // return blockTemplate.difficulty;
   },
   /**
      * @todo: add proper method
@@ -55,20 +59,10 @@ const JobHelperService = {
           return job;
         })
         .catch((err) => {
-          uid = crypto.pseudoRandomBytes(21).toString('base64'); // Generate a new UID
           logger.core.error(`Error hitting cache with job::${id} ; ${err}`);
-          const blockTemplate = BlockTemplateService.getBlockTemplate();
-          job = {
-            id: uid,
-            extraNonce: blockTemplate.extraNonce,
-            height: blockTemplate.height,
-            difficulty: JobHelperService.getVarDiff(id, blockTemplate),
-          };
-          return cache.put(uid, job, namespace='job');
+          return err;
         })
-        .then(() => {
-          return job;
-        });
+        
   },
 
 };

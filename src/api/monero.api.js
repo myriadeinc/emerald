@@ -7,7 +7,7 @@ const BlockTemplate = require('src/models/block.template.model.js');
 const axios = require('axios');
 const reserveSize = config.get('pool:reserveSize') || 8;
 
-
+// @TODO: Change to RPC client
 function sendRpcBase(method, data) {
   return new Promise(function(resolve, reject) {
     axios({

@@ -5,11 +5,6 @@ const err = require('src/util/error.js');
 const _ = require('lodash');
 const globals = require('src/util/global.js');
 const cache = require('src/util/cache.js');
-/**
- *
- * Currently broken, we will need to fix
- */
-
 
 const bignum = require('bignum');
 
@@ -54,15 +49,16 @@ class MinerModel {
      */
   async getJob() {
     const blockTemplate = await BlockTemplateService.getBlockTemplate();
-    JobHelperService.create(blockTemplate, this.id)
+    return new Promise((resolve,reject) => {
+      JobHelperService.create(blockTemplate, this.id)
         .then((job) => {
-          return {
-            job_id: job.job_id,
-            params: {blob: job.blob},
-          };
+          resolve(job);
         }).catch((err)=>{
-          return err;
+          reject(err);
         });
+
+
+    });
   }
   /**
      *
@@ -79,6 +75,7 @@ class MinerModel {
      * @param {request} req
      */
   async submit(data) {
+    // TODO: Promisify
     /*
       minerdata.id = miner uuid
       minerdata.job_id = job id
@@ -103,21 +100,20 @@ class MinerModel {
     }
     // If the difficulty check passes we submit the block
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {
-      return moneroApi.submit(block)
-            const payload = {
-              "minerId": minerData.id,
-              "timestamp": timestamp,
-              "blockheight": job.height,
-              "difficulty": job.difficulty,
-              "jackpot": false
-            };
-            if(result.status === "ok"){
-                // If our block results in an award, trigger
-                payload.jackpot = true;
-            }
-            sapphireApi.sendShareInfo(payload);
-            return {"status": "share granted"};
-          });
+      await moneroApi.submit(block);
+      const payload = {
+        "minerId": minerData.id,
+        "timestamp": timestamp,
+        "blockheight": job.height,
+        "difficulty": job.difficulty,
+        "jackpot": false
+      };
+      if(result.status === "ok"){
+          // If our block results in an award, trigger
+          payload.jackpot = true;
+      }
+      sapphireApi.sendShareInfo(payload);
+      return {"status": "share granted"};
     } else {
       sapphireApi.sendShareInfo();
       return {error: 'Does not meet difficulty'};
