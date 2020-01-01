@@ -62,12 +62,13 @@ const MinerService = {
             throw Error('Miner not found!');
           }
           return miner.getJob().then((result)=>{
-            
-            resolve({
+            const testBody = {
               id: miner.id,
               job: result,
               status: "OK"
-            });
+            };
+
+            resolve(testBody);
             
           });
           
@@ -78,7 +79,7 @@ const MinerService = {
         });
     }); 
   },
-
+  
   keepalived: (params) => {
     return new Promise((resolve, reject) => {
       resolve({

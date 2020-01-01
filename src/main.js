@@ -33,7 +33,7 @@ const main = async () => {
   logger.core.info('Block Templating queue initialized');
 
   const stratumPort = config.get('pool:port');
-  logger.core.info("Starting Stratum RPC on port ${stratumPort}")
+  logger.core.info(`Starting Stratum RPC on port ${stratumPort}`);
   const stratum = jayson.server(MinerService);
 
   stratum.tcp().listen(stratumPort);

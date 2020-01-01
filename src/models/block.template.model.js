@@ -11,7 +11,7 @@ class BlockTemplate {
   constructor(data) {
     try {
       this.difficulty = data.difficulty;
-      this.blob = data.blocktemplate_blob;
+      this.blob = data.blockhashing_blob;
       this.height = data.height;
       this.seed_hash = data.seed_hash;
       this.reservedOffset = data.reserved_offset;

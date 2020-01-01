@@ -36,6 +36,7 @@ class MinerModel {
      */
   static fromToken(tok) {
     try {
+      
       return new MinerModel(tok.account);
     } catch (e) {
       logger.core.error(e);
@@ -75,7 +76,6 @@ class MinerModel {
      * @param {request} req
      */
   async submit(data) {
-    // TODO: Promisify
     /*
       minerdata.id = miner uuid
       minerdata.job_id = job id
