@@ -17,7 +17,10 @@ const MinerService = {
   },
   // {miner,data}
   job: (params) => {
+    // To be modified since this is suppose to be a push notification according tto
+    //  strantum
     console.log("job method called!");
+
     return miner.getJob()
         .then((job) => {
           return {
@@ -31,7 +34,6 @@ const MinerService = {
         });
   },
 
-  // TODO: promisify
   submit: (params) => {
     return new Promise((resolve, reject) => {
       miner.submit(data)
@@ -49,40 +51,34 @@ const MinerService = {
   login: (params) => {
     const login = params.login;
     const pass = params.pass;
-    return new Promise((resolve,reject) => {
-      
-      diamondApi.login(login, pass)
-        .then((accessToken) => {
-          return diamondApi.decodeAndVerifyToken(accessToken);
-          
-        })
-        .then((tokenJSON) => {
-          tokenJSON.account.id = tokenJSON.sub;
-          logger.info(`Storing JSONToken for miner: ${tokenJSON.account.id} into cache`);
-          cache.put(tokenJSON.account.id, tokenJSON, 'MINER_ID');
-          return MinerModel.fromToken(null);
-        })
-      
-        .then((miner) => {
-          if (!miner) {
-            throw Error('Miner not found!');
-          }
-          return miner.getJob().then((result)=>{
-            const testBody = {
-              id: miner.id,
-              job: result,
-              status: "OK"
-            };
 
-            resolve(testBody);
-            
-          });
-          
-        })
-        .catch((err) => {
-          logger.error(err);
-          reject(Error('Login failed'));
-        });
+    return new Promise((resolve,reject) => {
+      //  DO NOT REMOVE
+      // After discussion, since XMRrig sends insecure TCP requests, we will not
+      //  be requesting the actual Diamond password (since exposing that password will 
+      //  effectively compromise all of our back-end service). Since there is low risk and no
+      //  incentive for anyone to impersonate another miner, we will use Miner Address as login and
+      //  their miner Id as pass.
+
+
+      const miner = new MinerModel({
+        address: login,
+        id: pass,
+      });
+
+      return miner.getJob().then((result)=>{
+        const responseBody = {
+          id: miner.id,
+          job: result,
+          status: "OK"
+        };
+
+        resolve(responseBody);
+        
+      }).catch((err) => {
+        logger.error(err);
+        reject(Error('Login failed'));
+      });
     }); 
   },
   

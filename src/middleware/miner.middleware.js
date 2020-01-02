@@ -62,26 +62,29 @@ const filterMethods = (securedMethods, method) => {
   return _.includes(securedMethods, method);
 };
 const MinerMiddleware = {
-  rpcAuthenticateMiner: (req, res, next) => {
-    const currMethod = req.body.method;
-    const needAuth = filterMethods([
-      'submit',
-      'job',
-    ], currMethod);
-    if (needAuth) {
-      return validateMiner(req)
-          .then((decodedToken) => {
-            loadMiner(decodedToken, req);
-            next();
-          })
-          .catch((err) => {
-            logger.error(`While authenticating this occured, ${err} for miner ${req.body.params.address}`);
-            res.status(403).send('Authentication Failure');
-          });
-    } else {
-      next();
-    }
-  },
+  // rpcAuthenticateMiner: (req, res, next) => {
+  //   const currMethod = req.body.method;
+  //   const needAuth = filterMethods([
+  //     'submit',
+  //     'job',
+  //   ], currMethod);
+  //   if (needAuth) {
+  //     return validateMiner(req)
+  //         .then((decodedToken) => {
+  //           loadMiner(decodedToken, req);
+  //           next();
+  //         })
+  //         .catch((err) => {
+  //           logger.error(`While authenticating this occured, ${err} for miner ${req.body.params.address}`);
+  //           res.status(403).send('Authentication Failure');
+  //         });
+  //   } else {
+  //     next();
+  //   }
+  // },
+
+  rpcAuthenticateMiner: (method, )
+
 };
 
 module.exports = MinerMiddleware;

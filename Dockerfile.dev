@@ -21,6 +21,7 @@ COPY . .
 RUN chmod 777 /usr/src/app
 
 EXPOSE 8088
+EXPOSE 12345
 EXPOSE 9878
 
 CMD node /usr/src/app/src/main.js

@@ -1,20 +1,20 @@
-'use strict';
+// 'use strict';
 
-const testing = require('../test.init.js');
-const crypto = require('crypto')
+// const testing = require('../test.init.js');
+// const crypto = require('crypto')
 
-const MoneroApi = require('src/api/monero.api.js');
+// const MoneroApi = require('src/api/monero.api.js');
 
-const moneroApi = new MoneroApi();
-/**
- * Get job manually from job service, then mine to find a nonce
- * 
- */
-const config = require('src/util/config.js');
-const chai = require('chai')
-    .use(require('chai-as-promised'))
-    .use(require('chai-string'))
-    .should();
+// const moneroApi = new MoneroApi();
+// /**
+//  * Get job manually from job service, then mine to find a nonce
+//  * 
+//  */
+// const config = require('src/util/config.js');
+// const chai = require('chai')
+//     .use(require('chai-as-promised'))
+//     .use(require('chai-string'))
+//     .should();
 /*
 
 TODO: Finish test

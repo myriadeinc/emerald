@@ -1,33 +1,35 @@
 /* eslint-disable require-jsdoc */
 'use strict';
-const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').monero;
 const BlockTemplate = require('src/models/block.template.model.js');
 
 const axios = require('axios');
+const config = require('src/util/config.js');
 const reserveSize = config.get('pool:reserveSize') || 8;
 
 // @TODO: Change to RPC client
-function sendRpcBase(method, data) {
-  return new Promise(function(resolve, reject) {
-    axios({
-      url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
-      method: 'post',
-      data: {
-        json_rpc: '2.0',
-        id: '1',
-        method,
-        params: data,
-      },
-    })
-        .then(({data}) =>{
-          resolve(data.result);
-        })
-        .catch((err)=>{
-          logger.error(err);
-          reject(err);
-        });
-  });
+function sendRpcBase(method, payload) {
+  
+  return axios({
+    url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
+    method: 'post',
+    data: {
+      json_rpc: '2.0',
+      id: '1',
+      method,
+      params: payload,
+    },
+  })
+  .then(({data}) =>{
+    if (data.error) {
+      logger.error(`Error while sending RPC request for method ${method} \n \t payload: ${JSON.stringify(payload)}; \n \t Error: ${data.error.message}`);
+      throw data.error
+    }
+    else {
+      return data.result;
+    }
+  })
+  
 }
 
 const MoneroApi = {

@@ -20,20 +20,20 @@ const SapphireApi = require('src/api/monero.api.js');
 
 
 class MinerModel {
+
   /**
-     * Serialize from JSON or JWT token into a Miner instance
-     * @param {object} data
-     */
+   * Serialize from JSON or JWT token into a Miner instance
+   * @param {object} data
+   */
   constructor(data) {
     this.address = data.address;
-    this.name = data.name;
     this.id = data.id;
   }
 
   /**
-     *
-     * @param {JSON} data The JSON data of a miner that needs to be serialized
-     */
+   *
+   * @param {JSON} data The JSON data of a miner that needs to be serialized
+   */
   static fromToken(tok) {
     try {
       
@@ -45,9 +45,9 @@ class MinerModel {
   }
 
   /**
-     *
-     * @return {BlockTemplate} jobTemplate
-     */
+   *
+   * @return {BlockTemplate} jobTemplate
+   */
   async getJob() {
     const blockTemplate = await BlockTemplateService.getBlockTemplate();
     return new Promise((resolve,reject) => {
@@ -62,19 +62,19 @@ class MinerModel {
     });
   }
   /**
-     *
-     * @Example Request
-     * "id": 2,
-     * "jsonrpc": "2.0",
-     * "method": "submit",
-     * "params": {
-     * "id": "1be0b7b6-b15a-47be-a17d-46b2911cf7d0",
-     * "job_id": "4BiGm3/RgGQzgkTI/xV0smdA+EGZ",
-     * "nonce": "d0030040",
-     * "result": "e1364b8782719d7683e2ccd3d8f724bc59dfa780a9e960e7c0e0046acdb40100"
-     * }
-     * @param {request} req
-     */
+   *
+   * @Example Request
+   * "id": 2,
+   * "jsonrpc": "2.0",
+   * "method": "submit",
+   * "params": {
+   * "id": "1be0b7b6-b15a-47be-a17d-46b2911cf7d0",
+   * "job_id": "4BiGm3/RgGQzgkTI/xV0smdA+EGZ",
+   * "nonce": "d0030040",
+   * "result": "e1364b8782719d7683e2ccd3d8f724bc59dfa780a9e960e7c0e0046acdb40100"
+   * }
+   * @param {request} req
+   */
   async submit(data) {
    
     const minerData = {

@@ -16,6 +16,7 @@ FROM ubuntu:18.04 as app
   # Building final image
   WORKDIR /usr/src/app
   EXPOSE 8088
+  EXPOSE 12345
   RUN apt update && apt install -y nodejs libboost-all-dev
 
 #   RUN chown -R node:node /usr/src/app

@@ -2,12 +2,15 @@
     "service": {
         "name": "emerald",
         "shared_secret": "__REPLACE__",
-        "host": "0.0.0.0",
+        "host": "emerald",
         "port": 8088
     },
     "port": 8088,
     "cluster": {
         "mode": "docker"
+    },
+    "log": {
+        "logdna_api_token": " "
     },
     "cache": {
         "host": "localhost",
@@ -18,7 +21,7 @@
     "pool": {
         "reserveSize": 8,
         "singleThread": false,
-        "poolAddress": "9wviCeWe2D8XS82k2ovp5EUYLzBt9pYNW2LXUFsZiv8S3Mt21FZ5qQaAroko1enzw3eGr9qC7X1D7Geoo2RrAotYPwq9Gm8",
+        "poolAddress": "",
         "workers": 1,
         "randomX": true,
         "difficulty": 5000,

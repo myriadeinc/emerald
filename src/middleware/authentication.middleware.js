@@ -7,13 +7,16 @@ const secret = config.get('service:shared_secret');
 const AuthMiddleware = {
 
   validateSharedSecret: (req, res, next) => {
+    let authArr = [null, null]
     if (req.headers.authorization) {
-      const authArr = req.headers.authorization.split();
-      if ('shared_secret' == authArr[0] && secret == authArr[1]) {
-        next();
-      }
+      authArr = req.headers.authorization.split(' ');
     }
-    res.status(403).send('Unauthorized');
+    if ('shared_secret' == authArr[0] && secret == authArr[1]) {
+      next();
+    }
+    else{
+      res.status(403).send('Unauthorized');
+    }
   },
 };
 
