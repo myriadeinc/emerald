@@ -33,8 +33,8 @@
     "path": "^0.12.7",
     "promise-redis": "0.0.5",
     "redis": "^2.8.0",
-    "cryptonote-lib": "git+https://github.com/myriadeinc/cryptonote-lib.git",
-    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v15.0.0"
+    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git#v7.0.0",
+    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v16.0.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",

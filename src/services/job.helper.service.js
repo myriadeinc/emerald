@@ -10,7 +10,7 @@ const xmrUtils = require('src/util/xmr.js');
 const BlockTemplateService = require('src/services/block.template.service.js');
 // baseDiff = 2^256
 const baseDiff = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
-// 20k is a reasonable minimum difficulty based on hashrate
+// 20k is a reasonable minimum difficulty based on hashrate for low-end CPUs
 const minDiff = BigInt(20000);
 const JobHelperService = {
   /**
@@ -19,25 +19,27 @@ const JobHelperService = {
      *
      */
   create: (blockTemplate, minerId) => {
+    const diff = JobHelperService.getVarDiff(minerId, blockTemplate);
     const newJob = {
       minerId: minerId,
       job_id: crypto.pseudoRandomBytes(21).toString('hex'),
       blockHash: blockTemplate.idHash,
-      extraNonce: blockTemplate.extraNonce,
+      extraNonce: Math.floor(Math.random() * Math.floor(Number.MAX_SAFE_INTEGER)),
       height: blockTemplate.height,
       seed_hash: blockTemplate.seed_hash,
-      difficulty: JobHelperService.getVarDiff(minerId, blockTemplate),
+      // Diff hardcoded for now
+      difficulty: diff.toString()
       
     };
     const jobReply = {
       height: newJob.height,
-      blob: blockTemplate.blob,
+      blob: JobHelperService.createBlob(blockTemplate.blob),
       job_id: newJob.job_id,
       id: minerId,
        /**
      * @todo: add proper conversion from diff to target
      */
-      target: JobHelperService.getTargetHex(),
+      target: JobHelperService.getTargetHex(diff),
       seed_hash: newJob.seed_hash,
       algo: "rx/0"
     };
@@ -47,23 +49,30 @@ const JobHelperService = {
         });
   },
 
+  // Add proper blob creation
+  createBlob: (blob) => {
+
+
+
+  },
   getTargetHex: (difficulty) => {
             difficulty = BigInt(difficulty);
             let difficultyBuffer = new Buffer(32);
             difficultyBuffer.fill(0);
 
-            let quotient = Buffer.from((baseDiff/n).toString(16),'hex');
+            let quotient = Buffer.from((baseDiff/difficulty).toString(16),'hex');
             quotient.copy(difficultyBuffer, 32 - quotient.length);
 
             let buff = difficultyBuffer.slice(0, 4);
-             let buffReversed = new Buffer(Array.prototype.slice.call(buff).reverse());
+            let buffReversed = Buffer.from(Array.prototype.slice.call(buff).reverse());
             return buffReversed.toString('hex');
   },
 
   getVarDiff: (minerId, blockTemplate) => {
   // Need to add real variable difficulty calculator
-    return blockTemplate.difficulty / 100000;
-   // return blockTemplate.difficulty;
+    return minDiff;
+  //return blockTemplate.difficulty;
+   
   },
   /**
      * @todo: add proper method

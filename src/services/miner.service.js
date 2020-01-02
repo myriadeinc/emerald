@@ -33,30 +33,36 @@ const MinerService = {
 
   // TODO: promisify
   submit: (params) => {
-    return miner.submit(data)
-        .then((result) => {
-          return result;
-        })
-        .catch((err) => {
-          logger.error(err);
-          return err;
-        });
+    return new Promise((resolve, reject) => {
+      miner.submit(data)
+      .then((result) => {
+        resolve(result);
+      })
+      .catch((err) => {
+        logger.error(err);
+        reject(err);
+      });
+    });
+   
   },
 
   login: (params) => {
     const login = params.login;
     const pass = params.pass;
     return new Promise((resolve,reject) => {
+      
       diamondApi.login(login, pass)
         .then((accessToken) => {
           return diamondApi.decodeAndVerifyToken(accessToken);
+          
         })
         .then((tokenJSON) => {
           tokenJSON.account.id = tokenJSON.sub;
           logger.info(`Storing JSONToken for miner: ${tokenJSON.account.id} into cache`);
           cache.put(tokenJSON.account.id, tokenJSON, 'MINER_ID');
-          return MinerModel.fromToken(tokenJSON);
+          return MinerModel.fromToken(null);
         })
+      
         .then((miner) => {
           if (!miner) {
             throw Error('Miner not found!');

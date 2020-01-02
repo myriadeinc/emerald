@@ -37,7 +37,7 @@ class MinerModel {
   static fromToken(tok) {
     try {
       
-      return new MinerModel(tok.account);
+     return new MinerModel(tok.account);
     } catch (e) {
       logger.core.error(e);
       return null;
@@ -76,31 +76,24 @@ class MinerModel {
      * @param {request} req
      */
   async submit(data) {
-    /*
-      minerdata.id = miner uuid
-      minerdata.job_id = job id
-      minerdata.nonce = nonce
-      minerdata.result = resultHash -> the hash of the supposed block
-      Reconstruct the block from data,check to see that it matches the sent block
-      */
+   
     const minerData = {
       id: this.id,
       job_id: data.job_id,
       nonce: data.nonce,
       results: data.result,
     };
-    // Get the current block template and create a block with the provided nonce
-    const block = BlockReferenceService.buildBlock(minerData);
     const job = await JobHelperService.getFromId(minerData.job_id);
+    const block = BlockReferenceService.buildBlock(minerData, job);
+    
     const timestamp = new Date();
-    // Convert block into blob, then hash with randomx and compare with the hash that the miner sent
     if (!BlockReferenceService.checkBlock(block, minerData.result)) {
       // sapphireApi.sendShareInfo(job.minerId, job.difficulty, Date.now());
       return {error: "Invalid block! "};
     }
-    // If the difficulty check passes we submit the block
     if (BlockReferenceService.checkDifficulty(job.difficulty, block)) {
-      await moneroApi.submit(block);
+      await moneroApi.submit(block).then((result)=>{console.dir(result)});
+      
       const payload = {
         "minerId": minerData.id,
         "timestamp": timestamp,
@@ -109,7 +102,6 @@ class MinerModel {
         "jackpot": false
       };
       if(result.status === "ok"){
-          // If our block results in an award, trigger
           payload.jackpot = true;
       }
       sapphireApi.sendShareInfo(payload);
