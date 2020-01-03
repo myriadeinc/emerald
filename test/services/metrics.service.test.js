@@ -20,14 +20,13 @@ describe('Metrics Service Unit Tests', () => {
         })
         .then(() =>{
             return testing.mq.channel.consume(testing.config.get('rabbitmq:queue'), (msg) => {
-                return new Promise((resolve, reject) => {
                     testing.mq.channel.ack(msg);
                     let data = JSON.parse(msg.content.toString());
                     data.should.not.be.null;
                     data.testing.should.equal(100);
                     data.accountId.should.equal('1');
-                    resolve();
-                }) 
+                    
+        
             });
         })
         .catch(err => {
