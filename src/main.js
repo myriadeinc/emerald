@@ -11,6 +11,8 @@ const MinerService = require('src/services/miner.service.js');
 const jayson = require('jayson/promise');
 const cache = require('src/util/cache.js');
 const mq = require('src/util/mq.js');
+const sapphireApi = require('src/api/sapphire.api.js');
+
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
 let server;
@@ -37,6 +39,8 @@ const main = async () => {
   const stratum = jayson.server(MinerService);
   stratum.tcp().listen(port);
   logger.core.info(`Pool JSON-RPC Listening on port ${port}`);
+
+   
 
   const internalPort = config.get('service:port');
   const internalServer = require('src/server.internal.js');

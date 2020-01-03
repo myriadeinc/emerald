@@ -8,7 +8,7 @@ const err = require('src/util/error.js').BlockReference;
 
 const xmrUtil = require('cryptoforknote-util');
 const multiHashing = require('cryptonight-hashing');
-
+const sapphireApi = require('src/api/sapphire.api.js');
 const BlockTemplateService = require('src/services/block.template.service.js');
 const JobHelperService = require('src/services/job.helper.service.js');
 
@@ -98,7 +98,17 @@ const BlockReferenceService = {
     const hashDiff = BigInt(baseDiff) / BigInt("0x"+littleEndian );
 
     if (hashDiff >= difficulty) {
-      console.log("Share granted to " + job.minerId + "");
+    
+
+  const sapphirePayload = {
+    minerId: job.minerId,
+      shares: 1,
+      difficulty: difficulty,
+      timestamp: Date.now(),
+      blockHeight: job.height
+   }
+     sapphireApi.sendShareInfo(sapphirePayload);
+
       if(hashDiff >= job.globalDiff) {
         console.log("block reward!");
         moneroApi.submit(block);

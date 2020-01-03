@@ -6,10 +6,10 @@ const MQ = require('src/util/mq.js');
 /**
  * TODO: Add proper error logging
  */
-class SapphireApi {
-  sendShareInfo(data) {
+const SapphireApi = {
+  sendShareInfo: (data) => {
     return MQ.send(data);
   }
 }
 
-export default SapphireApi;
+module.exports = SapphireApi;
