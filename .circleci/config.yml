@@ -45,5 +45,5 @@ jobs:
           name: Push & deploy build
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              docker push myriadeinc/sapphire:$(git show -s --pretty=%H)
+              docker push myriadeinc/emerald:$(git show -s --pretty=%H)
             fi
