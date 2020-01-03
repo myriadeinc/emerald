@@ -53,7 +53,7 @@ class DiamondApi {
     });
   }
 
-  /**
+  /** 
    *
    * @param {UUID} userId
    * @param {Hex} address

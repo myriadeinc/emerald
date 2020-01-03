@@ -1,4 +1,4 @@
-const randomxUtil = require('cryptonote-lib');
+const randomxUtil = require('cryptoforknote-util');
 const blockUtil = require('cryptonight-hashing');
 const bignum = require('bignum');
 

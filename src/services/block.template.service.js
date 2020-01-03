@@ -1,8 +1,8 @@
 const config = require('src/util/config.js');
 const axios = require('axios');
-const logger = require('src/util/logger.js');
 const BlockTemplateModel = require('src/models/block.template.model.js');
-const MoneroApi = require('src/api/monero.api.js');
+const moneroApi = require('src/api/monero.api.js');
+
 let currentBlockTemplate;
 
 const BlockTemplateService = {
@@ -12,7 +12,8 @@ const BlockTemplateService = {
       url: `http://${config.get('pickaxe:host')}:${config.get('pickaxe:port')}/api/v1/subscribe/`,
       method: 'post',
       data: {
-        hostname: `http://${config.get('service:host')}:${config.get('service:port')}`,
+        // Add proper route to config file
+        hostname: `http://${config.get('service:host')}:${config.get('service:port')}/v1/block`,
       },
       headers: {
         Authorization: `shared_secret ${config.get('service:shared_secret')}`,
@@ -20,17 +21,14 @@ const BlockTemplateService = {
     });
   },
 
-  getBlockTemplate: () => {
-    return currentBlockTemplate;
+  getBlockTemplate: async () => {
+    return currentBlockTemplate || await moneroApi.getBlockTemplate();
   },
 
-  init: () => {
-    const moneroApi = new MoneroApi();
-    return moneroApi.getBlockTemplate()
-        .then((block) => {
-          currentBlockTemplate = block;
-          return BlockTemplateService.subscribeToUpdates();
-        });
+  init: async () => {
+    const blockTemplate = await moneroApi.getBlockTemplate();
+    currentBlockTemplate = blockTemplate;
+    return BlockTemplateService.subscribeToUpdates();
   },
 
   updateBlock: (data) => {

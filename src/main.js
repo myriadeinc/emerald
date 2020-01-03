@@ -7,12 +7,15 @@ const BlockTemplateService = require('src/services/block.template.service.js');
 
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
-
+const MinerService = require('src/services/miner.service.js');
+const jayson = require('jayson/promise');
 const cache = require('src/util/cache.js');
 const mq = require('src/util/mq.js');
+
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
 let server;
+
 
 const main = async () => {
   logger.core.info(`Starting Emerald for ${config.get('pool:desc')}`);
@@ -30,11 +33,19 @@ const main = async () => {
 
   logger.core.info('Block Templating queue initialized');
 
-  const pool = require('src/pool.js');
   const port = config.get('pool:port');
-  server = pool.listen(port, () => {
-    logger.core.info(`Listening on port ${port}`);
+  logger.core.info(`Starting Pool JSON-RPC on port ${port}`);
+  const stratum = jayson.server(MinerService);
+  stratum.tcp().listen(port);
+  logger.core.info(`Pool JSON-RPC Listening on port ${port}`);
+
+  const internalPort = config.get('service:port');
+  const internalServer = require('src/server.internal.js');
+  
+  server = internalServer.listen(internalPort, () => {
+    logger.core.info(`Internal server listening on port ${internalPort}`);
   });
+  
 };
 
 const gracefulShutdown = () => {

@@ -6,7 +6,7 @@ const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
 
-const xmrUtil = require('cryptonote-lib');
+const xmrUtil = require('cryptoforknote-util');
 const multiHashing = require('cryptonight-hashing');
 
 const BlockTemplateService = require('src/services/block.template.service.js');
@@ -26,9 +26,6 @@ const BlockReferenceService = {
      */
   buildBlock: (minerData, job) => {
     try {
-      const blockTemplate = BlockTemplateService.getBlockTemplate();
-      const job = JobHelperService.getFromId(minerData.job_id);
-
       const block = new Buffer(blockTemplate.buffer.length);
       blockTemplate.buffer.copy(block);
       // Write the extra nonce first, then the regular nonce
@@ -62,7 +59,6 @@ const BlockReferenceService = {
     // Diff is a reference from bignum
     const hashDiff = xmr.diff.div(
         bignum.fromBuffer(new Buffer(hashArray)),
-
     );
 
     if (hashDiff.ge(blockTemplate.difficulty)) {
