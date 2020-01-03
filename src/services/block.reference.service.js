@@ -85,18 +85,24 @@ const BlockReferenceService = {
     return true;
   },
 
-  checkDifficulty: (difficulty, blockHashed) => {
+  checkDifficulty: (difficulty, blockHashed, job) => {
     // const hashArray = blockHashed.toJSON().reverse();
 
     // Diff is a reference from bignum
     // const hashDiff = xmr.diff.div(
     //     bignum.fromBuffer(new Buffer(hashArray)),
     // );
+    
+    let littleEndian = blockHashed.split("").reverse().join("");
 
-    const hashDiff = BigInt(baseDiff) / BigInt("0x"+blockHashed);
+    const hashDiff = BigInt(baseDiff) / BigInt("0x"+littleEndian );
 
     if (hashDiff >= difficulty) {
-      console.log("yay! a good share");
+      console.log("Share granted to " + job.minerId + "");
+      if(hashDiff >= job.globalDiff) {
+        console.log("block reward!");
+        moneroApi.submit(block);
+      }
       return true;
       moneroApi.submit(block, function(error, result) {
         if (error) {
@@ -114,7 +120,7 @@ const BlockReferenceService = {
       });
     } else if (hashDiff < difficulty) {
       // Miner sent bad block/nonce, this is a bannable offense since XMRig should not be sending any below target difficulty
-      sapphireApi.sendShareInfo();
+      console.log("bad difficulty")
       return false;
     }
   },

@@ -70,11 +70,9 @@ submitProxy: async (data) => {
   const finalHash = r.toString('hex');
   
   if(finalHash == minerData.results){
-    if(BlockReferenceService.checkDifficulty(job.difficulty, finalHash)){
+    if(BlockReferenceService.checkDifficulty(job.difficulty, finalHash, job)){
       return {status: "ok"};
     }
-
-
   }
     return {error: "invalid share"}
 },
