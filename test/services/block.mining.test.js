@@ -10,10 +10,10 @@
  * 
  */
 
-const chai = require('chai')
-    .use(require('chai-as-promised'))
-    .use(require('chai-string'))
-    .should();
+// const chai = require('chai')
+//     .use(require('chai-as-promised'))
+//     .use(require('chai-string'))
+//     .should();
 /*
 
 TODO: Finish test
