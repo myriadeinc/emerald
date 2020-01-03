@@ -31,9 +31,9 @@ describe('Unit test for Block Reference Service', ()=> {
   // });
 
   it('should #buildBlock and return a blockTemplate blob', () => {
-    let block = Buffer.from(blockTemplateBlob, "hex");
-    const NonceBuffer = Buffer.from("7a810000", 'hex');
-    let result = xmrUtil.construct_block_blob(block, NonceBuffer, 0);
+    // let block = Buffer.from(blockTemplateBlob, "hex");
+    // const NonceBuffer = Buffer.from("7a810000", 'hex');
+    // let result = xmrUtil.construct_block_blob(block, NonceBuffer, 0);
 
     "HEXSTRINGHERE".toString('hex').should.be.eql("HEXSTRINGHERE");
 
@@ -44,12 +44,12 @@ describe('Unit test for Block Reference Service', ()=> {
     // BlockReferenceService.checkBlock(block, seed_hash, result);
  
     //let blockTemplateBlob ="0c0cbf88baf005e790a70e827cc6c0ef7f6a65587b5d2096454ebbb1b5641d003917f69639d947000000006bca7454ec7321f4012214e481539dd6c54379c5e7dd0788b9201a17d60aa5970b";
-    let block = Buffer.from(blockTemplateBlob, "hex");
-    const NonceBuffer = Buffer.from("7a810000", 'hex');
-    let result = xmrUtil.construct_block_blob(block, NonceBuffer, 0);
-    let r = Buffer.from(result, 'hex');
-    let t = BlockReferenceService.convertBlock(r);
-    t = BlockReferenceService.hashBlock(result);
+    // let block = Buffer.from(blockTemplateBlob, "hex");
+    // const NonceBuffer = Buffer.from("7a810000", 'hex');
+    // let result = xmrUtil.construct_block_blob(block, NonceBuffer, 0);
+    // let r = Buffer.from(result, 'hex');
+    // let t = BlockReferenceService.convertBlock(r);
+    // t = BlockReferenceService.hashBlock(result);
     "HEXSTRINGHERE".should.be.eql(powResult);
 
   });
