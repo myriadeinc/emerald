@@ -53,5 +53,5 @@ describe('Unit test for Block Reference Service', ()=> {
     "HEXSTRINGHERE".should.be.eql(powResult);
 
   });
-  after('test done', ()=>{process.exit()})
+  
 })
