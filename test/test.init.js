@@ -20,8 +20,8 @@ const cache = require('src/util/cache.js');
 cache.init(config.get('cache'));
 
 // initialize Testing MQ
-const mq = require('src/util/mq.js');
-const mqReady = mq.init(config.get('rabbitmq:url'));
+// const mq = require('src/util/mq.js');
+// const mqReady = mq.init(config.get('rabbitmq:url'));
 
 // other libs
 const should = require('chai')
@@ -40,8 +40,8 @@ process.on('unhandledRejection', (reason, promise) => {
 
 
 module.exports = {
-    mq,
-    mqReady,
+    // mq,
+    // mqReady,
     cache,
     config,
     should,
