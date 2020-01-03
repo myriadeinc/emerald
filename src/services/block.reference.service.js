@@ -12,6 +12,7 @@ const multiHashing = require('cryptonight-hashing');
 const BlockTemplateService = require('src/services/block.template.service.js');
 const JobHelperService = require('src/services/job.helper.service.js');
 
+const baseDiff = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
 
 /**
  * @Note
@@ -20,48 +21,89 @@ const JobHelperService = require('src/services/job.helper.service.js');
  * minerData: id, job_id, nonce, result
  */
 const BlockReferenceService = {
+
   /**
      * @param {Object} minerData Custom object with fields for
      *
      */
   buildBlock: (minerData, job) => {
     try {
-      const block = new Buffer(blockTemplate.buffer.length);
-      blockTemplate.buffer.copy(block);
+
+      let block = Buffer.from(job.blockBlob,"hex");
+ 
+      // const block = new Buffer(blockTemplate.buffer.length);
+      // blockTemplate.buffer.copy(block);
       // Write the extra nonce first, then the regular nonce
-      block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
+      // block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
       /*
             For fallback:
             new Buffer(minerData.nonce, 'hex').copy(block, 39);
             Writing the nonce in a specific position if util does not work in testing
             */
-      const NonceBuffer = new Buffer(minerData.nonce, 'hex');
-      return xmrUtil.construct_block_blob(blockTemplate, NonceBuffer, randomXid);
+      const NonceBuffer = Buffer.from(minerData.nonce, 'hex');
+
+      let result = xmrUtil.construct_block_blob(block, NonceBuffer, 0)
+      return result;
     } catch (e) {
       logger.error(e);
       throw err.instantiation;
     }
   },
+  /**
+   * block should be constructed block from buildblock
+   */
+  convertBlock: (constructedBlock) => {
+    try {
+        let block = xmrUtil.convert_blob(constructedBlock, 0);
+        return block;
+    } catch (e) {
+      logger.error(e);
+      throw e;
+    }
+  },
+
+  /**
+   * Block should be hashed block from convertBlock()
+   */
+  hashBlock: (block, seed_hash) => {
+    try {
+      return multiHashing.randomx(block, Buffer.from(seed_hash, 'hex'));
+  } catch (e) {
+    logger.error(e);
+    throw e;
+  }
+  },
+
   checkBlock: (block, seed_hash, result) => {
     const blockHashed = xmrUtil.randomx(block, seed_hash);
 
-    if (blockHashed.toString('hex') !== minerdata.result) {
-      logger('Bad Hash!!!');
+    if (blockHashed.toString('hex') !== result) {
+      logger('Bad Hash');
       return false;
     }
 
     return true;
   },
 
-  checkDifficulty: (difficulty, blockHashed) => {
-    const hashArray = blockHashed.toJSON().reverse();
+  checkDifficulty: (difficulty, blockHashed, job) => {
+    // const hashArray = blockHashed.toJSON().reverse();
 
     // Diff is a reference from bignum
-    const hashDiff = xmr.diff.div(
-        bignum.fromBuffer(new Buffer(hashArray)),
-    );
+    // const hashDiff = xmr.diff.div(
+    //     bignum.fromBuffer(new Buffer(hashArray)),
+    // );
+    
+    let littleEndian = blockHashed.split("").reverse().join("");
 
-    if (hashDiff.ge(blockTemplate.difficulty)) {
+    const hashDiff = BigInt(baseDiff) / BigInt("0x"+littleEndian );
+
+    if (hashDiff >= difficulty) {
+      console.log("Share granted to " + job.minerId + "");
+      if(hashDiff >= job.globalDiff) {
+        console.log("block reward!");
+        moneroApi.submit(block);
+      }
+      return true;
       moneroApi.submit(block, function(error, result) {
         if (error) {
           sapphireApi.sendShareInfo();
@@ -76,9 +118,9 @@ const BlockReferenceService = {
           return true;
         }
       });
-    } else if (hashDiff.lt(job.difficulty)) {
+    } else if (hashDiff < difficulty) {
       // Miner sent bad block/nonce, this is a bannable offense since XMRig should not be sending any below target difficulty
-      sapphireApi.sendShareInfo();
+      console.log("bad difficulty")
       return false;
     }
   },
@@ -87,3 +129,6 @@ const BlockReferenceService = {
 };
 
 module.exports = BlockReferenceService;
+
+
+  

@@ -66,6 +66,10 @@ const MQ = {
         });
   },
 
+  close: () => {
+    
+    return MQ.channel.close.then( () => { return amq.close();});
+  }
 };
 
 module.exports = MQ;

@@ -30,13 +30,12 @@ class MinerModel {
     this.id = data.id;
   }
 
-  /**
-   *
-   * @param {JSON} data The JSON data of a miner that needs to be serialized
-   */
+    /**
+     *
+     * @param {JSON} data The JSON data of a miner that needs to be serialized
+     */
   static fromToken(tok) {
     try {
-      
      return new MinerModel(tok.account);
     } catch (e) {
       logger.core.error(e);
@@ -45,9 +44,9 @@ class MinerModel {
   }
 
   /**
-   *
-   * @return {BlockTemplate} jobTemplate
-   */
+     *
+     * @return {BlockTemplate} jobTemplate
+     */
   async getJob() {
     const blockTemplate = await BlockTemplateService.getBlockTemplate();
     return new Promise((resolve,reject) => {
@@ -61,30 +60,36 @@ class MinerModel {
 
     });
   }
+  
   /**
-   *
-   * @Example Request
-   * "id": 2,
-   * "jsonrpc": "2.0",
-   * "method": "submit",
-   * "params": {
-   * "id": "1be0b7b6-b15a-47be-a17d-46b2911cf7d0",
-   * "job_id": "4BiGm3/RgGQzgkTI/xV0smdA+EGZ",
-   * "nonce": "d0030040",
-   * "result": "e1364b8782719d7683e2ccd3d8f724bc59dfa780a9e960e7c0e0046acdb40100"
-   * }
-   * @param {request} req
-   */
-  async submit(data) {
-   
+     *
+     * @Example Request
+     * "id": 2,
+     * "jsonrpc": "2.0",
+     * "method": "submit",
+     * "params": {
+     * "id": "1be0b7b6-b15a-47be-a17d-46b2911cf7d0",
+     * "job_id": "4BiGm3/RgGQzgkTI/xV0smdA+EGZ",
+     * "nonce": "d0030040",
+     * "result": "e1364b8782719d7683e2ccd3d8f724bc59dfa780a9e960e7c0e0046acdb40100"
+     * }
+     * @param {request} req
+     */
+  async submit(params) {
     const minerData = {
-      id: this.id,
-      job_id: data.job_id,
-      nonce: data.nonce,
-      results: data.result,
+      id: params.id,
+      job_id: params.job_id,
+      nonce: params.nonce,
+      results: params.result,
     };
     const job = await JobHelperService.getFromId(minerData.job_id);
     const block = BlockReferenceService.buildBlock(minerData, job);
+    
+    return new Promise((resolve,reject)=>{
+
+      resolve({status: "ok"});
+
+    })
     
     const timestamp = new Date();
     if (!BlockReferenceService.checkBlock(block, minerData.result)) {

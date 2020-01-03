@@ -5,12 +5,11 @@
 
 // const MoneroApi = require('src/api/monero.api.js');
 
-// const moneroApi = new MoneroApi();
-// /**
-//  * Get job manually from job service, then mine to find a nonce
-//  * 
-//  */
-// const config = require('src/util/config.js');
+/**
+ * Get job manually from job service, then mine to find a nonce
+ * 
+ */
+
 // const chai = require('chai')
 //     .use(require('chai-as-promised'))
 //     .use(require('chai-string'))

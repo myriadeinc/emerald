@@ -8,7 +8,7 @@
     "start:dev": "nodemon --inspect=0.0.0.0:9878 -L --ignore test src/main.js",
     "start": "node src/main.js",
     "lint:fix": "eslint --fix src",
-    "test": "mocha --color --recursive 'test'"
+    "test": "mocha --color --recursive --exit 'test' "
   },
   "author": "",
   "license": "ISC",
@@ -20,8 +20,6 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-formatter": "^1.0.0",
-    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git#v7.0.0",
-    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v16.0.1",
     "dateformat": "^3.0.3",
     "egads": "^1.0.2",
     "express": "^4.17.1",
@@ -34,7 +32,9 @@
     "nconf": "^0.10.0",
     "path": "^0.12.7",
     "promise-redis": "0.0.5",
-    "redis": "^2.8.0"
+    "redis": "^2.8.0",
+    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git#v7.0.0",
+    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v16.0.1"
   },
   "devDependencies": {
     "chai": "^4.2.0",

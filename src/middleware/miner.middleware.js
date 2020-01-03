@@ -82,9 +82,6 @@ const MinerMiddleware = {
   //     next();
   //   }
   // },
-
-  rpcAuthenticateMiner: (method, )
-
 };
 
 module.exports = MinerMiddleware;

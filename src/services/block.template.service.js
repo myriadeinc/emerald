@@ -8,6 +8,7 @@ let currentBlockTemplate;
 const BlockTemplateService = {
 
   subscribeToUpdates: () => {
+    
     return axios({
       url: `http://${config.get('pickaxe:host')}:${config.get('pickaxe:port')}/api/v1/subscribe/`,
       method: 'post',
