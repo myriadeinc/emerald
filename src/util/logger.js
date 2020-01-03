@@ -8,7 +8,7 @@ const config = require('src/util/config.js');
 let LogDNAStream = require('logdna-bunyan').BunyanStream;
 let logDNA = new LogDNAStream({
   key: config.get('log:logdna_api_token')
-});
+}) || null;
 
 const logger = bunyan.createLogger({
   name: 'emerald',
@@ -17,7 +17,7 @@ const logger = bunyan.createLogger({
       stream:formatOut 
     }, 
     {
-      stream: logDNA,
+      stream: logDNA || formatOut,
       type: 'raw'
     }
   ]
