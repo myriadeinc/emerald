@@ -12,6 +12,7 @@ We can still manually check the PoW by examining the hash but this is a tedious 
 
 # Major changes required 
 - Add method to push new jobs to miner clients
+- Add either proper `varDiff` functionality or option to change `difficulty` by API
 - Move `submit()` logic to `MinerModel`
 - Use proper `extraNonce` field 
 - Add some semblance of a banning system for invalid shares
