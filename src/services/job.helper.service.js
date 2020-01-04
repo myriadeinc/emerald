@@ -11,7 +11,7 @@ const BlockTemplateService = require('src/services/block.template.service.js');
 // baseDiff = 2^256
 const baseDiff = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
 // 20k is a reasonable minimum difficulty based on hashrate for low-end CPUs
-const minDiff = BigInt(100);
+const minDiff = BigInt(20000);
 const JobHelperService = {
   /**
      * @description Create a new job based on existing blocktemplate
@@ -29,7 +29,7 @@ const JobHelperService = {
       seed_hash: blockTemplate.seed_hash,
       blockBlob: blockTemplate.templateBlob,
       globalDiff: blockTemplate.difficulty,
-      // Diff hardcoded for now
+      // Cannot use BigInt in Redis!
       difficulty: diff.toString()
     };
     const jobReply = {
