@@ -13,6 +13,7 @@ We can still manually check the PoW by examining the hash but this is a tedious 
 # Major changes required 
 - Add method to push new jobs to miner clients
 - Move `submit()` logic to `MinerModel`
+- Use proper `extraNonce` field 
 - Add some semblance of a banning system for invalid shares
 - Add proper class for `Job` 
 - Add proper `blocktemplate` validation from `pickaxe` and checking of new blocks
