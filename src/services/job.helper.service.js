@@ -34,7 +34,7 @@ const JobHelperService = {
     };
     const jobReply = {
       height: newJob.height,
-      blob: blockTemplate.blob,
+      blob: newJob.blockHash,
       job_id: newJob.job_id,
       id: minerId,
        /**
