@@ -54,6 +54,7 @@ class MinerModel {
         .then((job) => {
           resolve(job);
         }).catch((err)=>{
+          logger.core.error("Could not fetch job! : "+err);
           reject(err);
         });
 

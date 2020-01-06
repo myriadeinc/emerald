@@ -101,6 +101,9 @@ submitProxy: async (data) => {
           job: result,
           status: "OK"
         };
+        if(!responseBody.job){
+          logger.error("Job not found! " + result);
+        }
 
         resolve(responseBody);
         

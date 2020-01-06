@@ -47,7 +47,11 @@ const JobHelperService = {
     return cache.put(newJob.job_id, newJob, 'job')
         .then((result) => {
           return jobReply;
-        });
+        })
+        .catch(err => {
+          logger.core.error(err);
+        })
+        ;
   },
 
   // Add proper blob creation
