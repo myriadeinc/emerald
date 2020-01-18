@@ -33,7 +33,7 @@ const JobHelperService = {
       difficulty: diff.toString()
     };
     if(!blockTemplate.blob){
-      logger.core.error("Blob missing! Critical error");
+      logger.core.info("Blob missing! Critical error");
     }
     const jobReply = {
       height: newJob.height,
@@ -48,7 +48,7 @@ const JobHelperService = {
       algo: "rx/0"
     };
     if(!blob){
-      logger.core.error("Blob missing! Should be : " + blockTemplate.blob);
+      logger.core.info("Blob missing! Should be : " + blockTemplate.blob);
     }
     return cache.put(newJob.job_id, newJob, 'job')
         .then((result) => {
