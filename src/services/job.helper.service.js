@@ -23,7 +23,7 @@ const JobHelperService = {
     const newJob = {
       minerId: minerId,
       job_id: crypto.pseudoRandomBytes(21).toString('hex'),
-      blockHash: blockTemplate.blob,
+      blockHash: blockTemplate.blob.toString(),
       extraNonce: 5,//crypto.pseudoRandomBytes(4).readUInt32BE(0, true),
       height: blockTemplate.height,
       seed_hash: blockTemplate.seed_hash,
@@ -32,6 +32,9 @@ const JobHelperService = {
       // Cannot use BigInt in Redis!
       difficulty: diff.toString()
     };
+    if(!blockTemplate.blob){
+      logger.core.error("Blob missing! Critical error");
+    }
     const jobReply = {
       height: newJob.height,
       blob: newJob.blockHash,
@@ -44,6 +47,9 @@ const JobHelperService = {
       seed_hash: newJob.seed_hash,
       algo: "rx/0"
     };
+    if(!blob){
+      logger.core.error("Blob missing! Should be : " + blockTemplate.blob);
+    }
     return cache.put(newJob.job_id, newJob, 'job')
         .then((result) => {
           return jobReply;

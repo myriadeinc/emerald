@@ -49,7 +49,9 @@ class MinerModel {
      */
   async getJob() {
     const blockTemplate = await BlockTemplateService.getBlockTemplate();
+
     return new Promise((resolve,reject) => {
+      
       JobHelperService.create(blockTemplate, this.id)
         .then((job) => {
           resolve(job);
