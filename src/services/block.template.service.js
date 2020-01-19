@@ -23,7 +23,7 @@ const BlockTemplateService = {
   },
 
   getBlockTemplate: async () => {
-    return currentBlockTemplate || await moneroApi.getBlockTemplate();
+    return await moneroApi.getBlockTemplate();
   },
 
   init: async () => {
