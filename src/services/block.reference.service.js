@@ -29,7 +29,9 @@ const BlockReferenceService = {
   buildBlock: (minerData, job) => {
     try {
 
-      let block = Buffer.from(job.blockBlob,"hex");
+      let block = Buffer.from(job.blob,"hex");
+      // 8 is the default reserve offset
+      block.writeUInt32BE(job.extraNonce, 8);
  
       // const block = new Buffer(blockTemplate.buffer.length);
       // blockTemplate.buffer.copy(block);
