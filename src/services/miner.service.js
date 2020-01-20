@@ -96,7 +96,6 @@ submitProxy: async (data) => {
       });
 
       return miner.getJob().then((result)=>{
-        logger.core.info("Job data : "+result);
         const responseBody = {
           id: miner.id,
           job: result,
