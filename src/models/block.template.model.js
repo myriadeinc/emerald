@@ -28,6 +28,7 @@ class BlockTemplate {
   }
 
   getBlob() {
+    // We write the reserve offset into the block template, then construct it using the native tools
     const buffer = Buffer.from(this.blob, 'hex');
     // We start the extraNonce at 1 as the original code effectively writes 1
     buffer.writeUInt32BE(1, reserveOffset);

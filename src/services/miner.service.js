@@ -22,60 +22,6 @@ const MinerService = {
   paramDump: (params) => {
     return params;
   },
-  // job is pushed to the client/miner, must implement this via raw server
-  job: (params) => {
-    return miner.getJob()
-        .then((job) => {
-          return {
-            job,
-            success: true,
-          }
-        })
-        .catch((err) => {
-          logger.error(err);
-          return err;
-        });
-  },
-
- // TODO: promisify
- submit: (params) => {
-  return new Promise((resolve, reject) => {
-    // Load miner by id
-    // MinerModel.submit(data)
-
-    return MinerService.submitProxy(params)
-    .then((result) => {
-      resolve(result);
-    })
-    .catch((err) => {
-      logger.error(err);
-      reject(err);
-    });
-  });
- 
-},
-// This is very bad code, must rewrite!
-submitProxy: async (data) => {
-  const minerData = {
-    id: data.id,
-    job_id: data.job_id,
-    nonce: data.nonce,
-    results: data.result,
-  };
-  const job = await JobHelperService.getFromId(minerData.job_id);
-
-  const block = BlockReferenceService.buildBlock(minerData, job);
-  const block2 = BlockReferenceService.convertBlock(block);
-  const r = BlockReferenceService.hashBlock(block2, job.seed_hash);
-  const finalHash = r.toString('hex');
-  
-  if(finalHash == minerData.results){
-    if(BlockReferenceService.checkDifficulty(job.difficulty, finalHash, job)){
-      return {status: "ok"};
-    }
-  }
-    return {error: "invalid share"}
-},
 
   login: (params) => {
     const login = params.login;
@@ -88,7 +34,6 @@ submitProxy: async (data) => {
       //  effectively compromise all of our back-end service). Since there is low risk and no
       //  incentive for anyone to impersonate another miner, we will use Miner Address as login and
       //  their miner Id as pass.
-
 
       const miner = new MinerModel({
         address: login,
@@ -113,6 +58,52 @@ submitProxy: async (data) => {
       });
     }); 
   },
+  
+
+ submit: (params) => {
+  return new Promise((resolve, reject) => {
+    // Load miner by id
+    // MinerModel.submit(data)
+
+    return MinerService.submitProxy(params)
+    .then((result) => {
+      resolve(result);
+    })
+    .catch((err) => {
+      logger.error(err);
+      reject(err);
+    });
+  });
+ 
+},
+
+
+// This is very bad code, must rewrite!
+submitProxy: async (data) => {
+  const minerData = {
+    id: data.id,
+    job_id: data.job_id,
+    nonce: data.nonce,
+    result: data.result,
+  };
+  const job = await JobHelperService.getFromId(minerData.job_id);
+
+  const block = BlockReferenceService.buildBlockFromBase(minerData, job);
+  const block2 = BlockReferenceService.convertBlock(block);
+  const r = BlockReferenceService.hashBlock(block2, job.seed_hash);
+  const finalHash = r.toString('hex');
+  let dump = data;
+  dump.timestamp = Date.now();
+  logger.info(data);
+  
+  if(finalHash == minerData.result){
+    if(BlockReferenceService.checkDifficulty(job.difficulty, finalHash, job)){
+      return {status: "ok"};
+    }
+  }
+    return {error: "invalid share"}
+},
+
   
   keepalived: (params) => {
     return new Promise((resolve, reject) => {

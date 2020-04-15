@@ -6,8 +6,6 @@ const _ = require('lodash');
 const globals = require('src/util/global.js');
 const cache = require('src/util/cache.js');
 
-const bignum = require('bignum');
-
 const JobHelperService = require('src/services/job.helper.service.js');
 const BlockTemplateService = require('src/services/block.template.service.js');
 
@@ -15,9 +13,7 @@ const DiamondApi = require('src/api/diamond.api.js');
 const diamondApi = new DiamondApi();
 
 const MoneroApi = require('src/api/monero.api.js');
-
 const SapphireApi = require('src/api/monero.api.js');
-
 
 class MinerModel {
 
@@ -29,20 +25,6 @@ class MinerModel {
     this.address = data.address;
     this.id = data.id;
   }
-
-    /**
-     *
-     * @param {JSON} data The JSON data of a miner that needs to be serialized
-     */
-  static fromToken(tok) {
-    try {
-     return new MinerModel(tok.account);
-    } catch (e) {
-      logger.core.error(e);
-      return null;
-    }
-  }
-
   /**
      *
      * @return {BlockTemplate} jobTemplate

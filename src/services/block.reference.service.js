@@ -1,7 +1,7 @@
 'use strict';
 
 const xmr = require('src/util/xmr.js');
-const bignum = require('bignum');
+
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
