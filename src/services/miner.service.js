@@ -95,6 +95,7 @@ submitProxy: async (data) => {
   let dump = data;
   dump.timestamp = Date.now();
   logger.info(data);
+  console.dir(data);
   
   if(finalHash == minerData.result){
     if(BlockReferenceService.checkDifficulty(job.difficulty, finalHash, job)){

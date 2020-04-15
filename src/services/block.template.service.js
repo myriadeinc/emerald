@@ -19,11 +19,11 @@ const BlockTemplateService = {
 
   subscribeToUpdates: () => {
     return axios({
-      url: debugUrl || `http://${config.get('pickaxe:host')}:${config.get('pickaxe:port')}/api/v1/subscribe/`,
+      url: `http://${config.get('pickaxe:host')}:${config.get('pickaxe:port')}/api/v1/subscribe/`,
       method: 'post',
       data: {
         // Add proper route to config file
-        hostname: debugRec || `http://${config.get('service:host')}:${config.get('service:port')}/v1/block`,
+        hostname: `http://${config.get('service:host')}:${config.get('service:port')}/v1/block`,
       },
       headers: {
         Authorization: debugSecret ||`shared_secret ${config.get('service:shared_secret')}`,
