@@ -88,7 +88,9 @@ submitProxy: async (data) => {
   };
   const job = await JobHelperService.getFromId(minerData.job_id);
 
+  // Fetch our version of the miner's block and build it
   const block = BlockReferenceService.buildBlockFromBase(minerData, job);
+  // Convert into actual cryptonight format
   const block2 = BlockReferenceService.convertBlock(block);
   const r = BlockReferenceService.hashBlock(block2, job.seed_hash);
   const finalHash = r.toString('hex');

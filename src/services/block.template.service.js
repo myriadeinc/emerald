@@ -26,7 +26,7 @@ const BlockTemplateService = {
         hostname: `http://${config.get('service:host')}:${config.get('service:port')}/v1/block`,
       },
       headers: {
-        Authorization: debugSecret ||`shared_secret ${config.get('service:shared_secret')}`,
+        Authorization: `shared_secret ${config.get('service:shared_secret')}`,
       },
     });
   },
