@@ -1,5 +1,4 @@
-node_moodules/
-test/
+node_modules/
 .vscode/
 .github/
 .buildkite/

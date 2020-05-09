@@ -1,0 +1,10 @@
+{
+  "id": 1,
+  "jsonrpc": "2.0",
+  "method": "dump",
+  "params": {
+    "login": "x",
+    "pass": "x",
+    "agent": "x"
+  }
+}

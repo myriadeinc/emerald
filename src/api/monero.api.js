@@ -5,31 +5,30 @@ const BlockTemplate = require('src/models/block.template.model.js');
 
 const axios = require('axios');
 const config = require('src/util/config.js');
-const reserveSize = config.get('pool:reserveSize') || 8;
-
-// @TODO: Change to RPC client
-function sendRpcBase(method, payload) {
-  
-  return axios({
-    url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
-    method: 'post',
-    data: {
-      json_rpc: '2.0',
-      id: '1',
-      method,
-      params: payload,
-    },
-  })
-  .then(({data}) =>{
-    if (data.error) {
-      logger.error(`Error while sending RPC request for method ${method} \n \t payload: ${JSON.stringify(payload)}; \n \t Error: ${data.error.message}`);
-      throw data.error
-    }
-    else {
-      return data.result;
-    }
-  })
-  
+const reserve_size = config.get('pool:reserveSize') || 8;
+const wallet_address = config.get('pool:poolAddress')
+/**
+ * @todo: Change to RPC client
+ *  */
+async function sendRpcBase(method, payload) {
+  try {
+    const response = await axios({
+      url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
+      method: 'POST',
+      data: {
+        json_rpc: '2.0',
+        id: '1',
+        method: method,
+        params: payload,
+      },
+    });
+    return response.data.result;
+  }
+  catch (err) {
+    console.log('error!')
+    logger.error(err);
+    return { error: true }
+  }
 }
 
 const MoneroApi = {
@@ -39,27 +38,33 @@ const MoneroApi = {
     */
   getBlockTemplate: async () => {
     const response = await sendRpcBase('get_block_template', {
-      reserve_size: reserveSize,
-      wallet_address: config.get('pool:poolAddress'),
+      reserve_size,
+      wallet_address,
     });
     return new BlockTemplate(response);
   },
+  getInfo: async () => {
+    const info = await sendRpcBase('get_info', {});
+    return info
+  },
+
 
   /**
-    * @description gets the header of the last block : promisified
-    * @return {object} Returns the header of the last block promisified
+    * @description Gets the header of the last block
+    * @return {object} Returns the header of the last block
     */
   getLastBlockHeader: async () => {
-    return await sendRpcBase('get_last_block_header', {});
+    return sendRpcBase('get_last_block_header', {});
   },
+
 
   /**
     * @description Submit a block to the daemon
-    * @param {Buffer} buffer Shared buffer constructed with xmr utilities
+    * @param {String} hexBlock Block represented as hex string
     * @return {object} The status of block submitted, in JSON RPC format
     */
-  submit: async (buffer) => {
-    return await sendRpcBase('submit_block', [buffer.toString('hex')]);
+  submit: (hexBlock) => {
+    return sendRpcBase('submit_block', [hexBlock]);
   },
 };
 

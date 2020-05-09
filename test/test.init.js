@@ -16,8 +16,8 @@ const config = require('nconf')
     .file('defaults', { file: `${configPath}/default.json` });
 
 // initialize Cache
-const cache = require('src/util/cache.js');
-cache.init(config.get('cache'));
+// const cache = require('src/util/cache.js');
+// cache.init(config.get('cache'));
 
 // initialize Testing MQ
 // const mq = require('src/util/mq.js');
@@ -42,7 +42,7 @@ process.on('unhandledRejection', (reason, promise) => {
 module.exports = {
     // mq,
     // mqReady,
-    cache,
+    // cache,
     config,
     should,
 };

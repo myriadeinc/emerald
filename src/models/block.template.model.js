@@ -9,6 +9,10 @@ const xmrUtil = require('src/util/xmr.js');
 
 class BlockTemplate {
   constructor(data) {
+    if (data.error) {
+      logger.error('Error in fetching block template, check monero daemon')
+      throw err.instantiation;
+    }
     try {
       this.difficulty = data.difficulty;
       this.blob = data.blockhashing_blob;
@@ -17,7 +21,6 @@ class BlockTemplate {
       this.seed_hash = data.seed_hash;
       this.reservedOffset = data.reserved_offset;
       this.previousHash = data.prev_hash;
-      this.expectedReward = data.expectedReward;
       // This is only if for some reason the prev_hash field does not exist, ignore until refactor
       // this.previous_hash = Buffer.alloc(32);
       // this.buffer.copy(this.previousHash, 0, previousOffset, 39);
@@ -34,17 +37,6 @@ class BlockTemplate {
     buffer.writeUInt32BE(1, reserveOffset);
     return xmrUtil.convert_blob(buffer).toString('hex');
   }
-  /* Note:
-    This function is only used for miner proxies
-    It does not seem to be explicitly supported in Monero
-    Left until further refactor is needed
-    nextBlobWithChildNonce(){
-        // Write a 32 bit integer, big-endian style to the 0 byte of the reserve offset.
-        this.buffer.writeUInt32BE(++this.extraNonce, this.reservedOffset);
-        // Don't convert the blob to something hashable.
-        return this.buffer.toString('hex');
-    }
-    */
 }
 
 module.exports = BlockTemplate;

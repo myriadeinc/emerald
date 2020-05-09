@@ -20,10 +20,13 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-formatter": "^1.0.0",
+    "cryptoforknote-util": "git+https://github.com/myriadeinc/cryptonote-lib.git",
+    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git",
     "dateformat": "^3.0.3",
     "egads": "^1.0.2",
     "express": "^4.17.1",
     "express-json-rpc-router": "^1.0.0",
+    "express-validator": "^6.4.1",
     "jayson": "git+https://github.com/myriadeinc/jayson.git",
     "json-rpc-client": "^0.2.2",
     "jsonwebtoken": "^8.5.1",
@@ -32,9 +35,7 @@
     "nconf": "^0.10.0",
     "path": "^0.12.7",
     "promise-redis": "0.0.5",
-    "redis": "^2.8.0",
-    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git#v7.0.0",
-    "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git#v16.0.1"
+    "redis": "^2.8.0"
   },
   "devDependencies": {
     "chai": "^4.2.0",
@@ -43,7 +44,7 @@
     "eslint": "^6.0.1",
     "eslint-config-google": "^0.13.0",
     "mocha": "^6.2.0",
-    "nodemon": "^1.19.1",
+    "nodemon": "^2.0.4",
     "sinon": "^7.5.0"
   }
 }
