@@ -1,4 +1,12 @@
 'use strict';
+/**
+ * DEPRECATED - For now
+ * See the login section in StratumService for discussion
+ * Basically, we can't do a secure login becuase the miner credentials are being sent via plaintext
+ * If we have our own custom client, then we can establish a secure connection
+ * The current reference client (xmrig) cannot properly secure as its using raw TCP requests (plaintext packets)
+ * For the time being, we cannot guarantee a safe login procedure
+ */
 const _ = require('lodash');
 const config = require('src/util/config.js');
 const axios = require('axios');

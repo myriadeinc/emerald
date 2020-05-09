@@ -1,140 +1,75 @@
 'use strict';
-
+const bignum = require('bignum');
 const xmr = require('src/util/xmr.js');
-
-const config = require('src/util/config.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
 
-const xmrUtil = require('cryptoforknote-util');
-const multiHashing = require('cryptonight-hashing');
-const sapphireApi = require('src/api/sapphire.api.js');
-const BlockTemplateService = require('src/services/block.template.service.js');
-const JobHelperService = require('src/services/job.helper.service.js');
+// Value is 16^64 or 2^256
+const baseDiff = bignum('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',16)
 
-const baseDiff = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
-
-/**
- * @Note
- * @description
- * This model was created to separate the block processing logic from miner model
- * minerData: id, job_id, nonce, result
- */
 const BlockReferenceService = {
-
-  /**
-     * @param {Object} minerData Custom object with fields for
-     *
-     */
-  buildBlock: (minerData, job) => {
-    try {
-
-      let block = Buffer.from(job.blob,"hex");
-      // 8 is the default reserve offset
-      block.writeUInt32BE(job.extraNonce, 8);
- 
-      // const block = new Buffer(blockTemplate.buffer.length);
-      // blockTemplate.buffer.copy(block);
-      // Write the extra nonce first, then the regular nonce
-      // block.writeUInt32BE(job.extraNonce, blockTemplate.reserveOffset);
-      /*
-            For fallback:
-            new Buffer(minerData.nonce, 'hex').copy(block, 39);
-            Writing the nonce in a specific position if util does not work in testing
-            */
-      const NonceBuffer = Buffer.from(minerData.nonce, 'hex');
-
-      let result = xmrUtil.construct_block_blob(block, NonceBuffer, 0)
-      return result;
-    } catch (e) {
-      logger.error(e);
-      throw err.instantiation;
+  // Checks if block sent by miner corresponds to the job they were assigned
+  verifyBlock: (minerData, job) => {
+    try{
+    let block = BlockReferenceService.buildBlock(job.blob, minerData.nonce, job.extraNonce);
+    block = BlockReferenceService.convertBlock(block);
+    block = BlockReferenceService.hashBlock(block, job.seed_hash);
+    return block.toString('hex') == minerData.result;
+    } catch (err){
+      logger.error(err);
+      return false;
     }
   },
-  /**
-   * block should be constructed block from buildblock
-   */
+  // For fallback:
+  // new Buffer(minerData.nonce, 'hex').copy(block, 39);
+  // Writing the nonce in a specific position if util does not work in testing
+
+  buildBlock: (blob, nonce, extraNonce) => {
+    let block = Buffer.from(blob, "hex");
+    // Value of 8 is given because our default reserve_offset is set to 8
+    block.writeUInt32BE(extraNonce, 8);
+    const NonceBuffer = Buffer.from(nonce, 'hex');
+    return xmr.construct_block_blob(block, NonceBuffer);
+  },
+  // Used when our nonce is represented as an integer value 
+  buildIntNonce: (blob, nonce) => {
+    let block = Buffer.from(blob, "hex");
+    const buf = Buffer.allocUnsafe(4);
+    buf.writeUInt32LE(nonce);
+    const NonceBuffer = buf;
+    return xmr.construct_block_blob(block, NonceBuffer);
+  },
   convertBlock: (constructedBlock) => {
-    try {
-        let block = xmrUtil.convert_blob(constructedBlock, 0);
-        return block;
-    } catch (e) {
-      logger.error(e);
-      throw e;
-    }
+    return xmr.convert_blob(constructedBlock);
   },
-
-  /**
-   * Block should be hashed block from convertBlock()
-   */
   hashBlock: (block, seed_hash) => {
-    try {
-      return multiHashing.randomx(block, Buffer.from(seed_hash, 'hex'));
-  } catch (e) {
-    logger.error(e);
-    throw e;
-  }
+    return xmr.randomx(block, Buffer.from(seed_hash, 'hex'));
   },
+  checkDifficulty: (localDiff, globalDiff, block) => {
 
-  checkBlock: (block, seed_hash, result) => {
-    const blockHashed = xmrUtil.randomx(block, seed_hash);
+    // Why are we using bignum library instead of native BigInt here? 
+    // Proper division (because of hex data) only works as expected via loading raw Buffers
+    let rawBlock = Buffer.from(block, 'hex');
+    rawBlock = Array.prototype.slice.call(rawBlock, 0).reverse();
+    const hashNum   = bignum.fromBuffer(Buffer.from(rawBlock));
+    let hashDiff  = baseDiff.div(hashNum);
 
-    if (blockHashed.toString('hex') !== result) {
-      logger('Bad Hash');
-      return false;
-    }
-
-    return true;
-  },
-
-  checkDifficulty: (difficulty, blockHashed, job) => {
-    // const hashArray = blockHashed.toJSON().reverse();
-
-    // Diff is a reference from bignum
-    // const hashDiff = xmr.diff.div(
-    //     bignum.fromBuffer(new Buffer(hashArray)),
-    // );
+    hashDiff = BigInt(hashDiff)
+    globalDiff = BigInt(globalDiff);
+    localDiff = BigInt(localDiff);
     
-    let littleEndian = blockHashed.split("").reverse().join("");
-
-    const hashDiff = BigInt(baseDiff) / BigInt("0x"+littleEndian );
-
-    if (hashDiff >= difficulty) {
-    
-
-  const sapphirePayload = {
-    minerId: job.minerId,
-      shares: 1,
-      difficulty: difficulty,
-      timestamp: Date.now(),
-      blockHeight: job.height
-   }
-     sapphireApi.sendShareInfo(sapphirePayload);
-
-      if(hashDiff >= job.globalDiff) {
-        console.log("block reward!");
-        moneroApi.submit(block);
-      }
-      return true;
-      moneroApi.submit(block, function(error, result) {
-        if (error) {
-          sapphireApi.sendShareInfo();
-          resolve('MONERO API ERROR');
-          return false;
-        } else {
-          // var blockFastHash = cryptoNightFast(convertedBlob || cryptoNoteUtils.cnUtil.convert_blob(block)).toString('hex');
-          // Send blockfasthash instead
-          sapphireApi.sendShareInfo();
-          jobRefresh();
-          resolve('Share Granted');
-          return true;
-        }
-      });
-    } else if (hashDiff < difficulty) {
-      // Miner sent bad block/nonce, this is a bannable offense since XMRig should not be sending any below target difficulty
-      console.log("bad difficulty")
-      return false;
+    if(hashDiff >= globalDiff){
+      console.log('we won!')
+      // We won the block reward!
+      // Submit to monero node
+      return 2;
     }
+    if(hashDiff >= localDiff){
+      // Grant share to miner
+      return 1;
+    }
+    // Block does not match difficulty requirements: low difficulty share
+    return 0;
   },
 
 

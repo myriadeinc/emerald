@@ -7,12 +7,14 @@ const axios = require('axios');
 const config = require('src/util/config.js');
 const reserveSize = config.get('pool:reserveSize') || 8;
 
-// @TODO: Change to RPC client
+/**
+ * @todo: Change to RPC client
+ *  */ 
 function sendRpcBase(method, payload) {
   
   return axios({
     url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
-    method: 'post',
+    method: 'POST',
     data: {
       json_rpc: '2.0',
       id: '1',
@@ -46,20 +48,20 @@ const MoneroApi = {
   },
 
   /**
-    * @description gets the header of the last block : promisified
-    * @return {object} Returns the header of the last block promisified
+    * @description Gets the header of the last block
+    * @return {object} Returns the header of the last block
     */
   getLastBlockHeader: async () => {
-    return await sendRpcBase('get_last_block_header', {});
+    return sendRpcBase('get_last_block_header', {});
   },
 
   /**
     * @description Submit a block to the daemon
-    * @param {Buffer} buffer Shared buffer constructed with xmr utilities
+    * @param {String} hexBlock Block represented as hex string
     * @return {object} The status of block submitted, in JSON RPC format
     */
-  submit: async (buffer) => {
-    return await sendRpcBase('submit_block', [buffer.toString('hex')]);
+  submit: async (hexBlock) => {
+    return await sendRpcBase('submit_block', [hexBlock]);
   },
 };
 

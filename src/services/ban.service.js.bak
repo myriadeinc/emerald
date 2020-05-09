@@ -1,12 +1,14 @@
 /* eslint-disable valid-jsdoc */
+/**
+ * @description Deprecated until we have first-party mining client
+ */
+
 'use strict';
 
 const cache = require('src/util/cache.js');
 const strikeLimit = 5;
 
-
 const BanService = {
-
   checkBan: (id) => {
     return cache.get(id, 'strikes') > strikeLimit;
   },

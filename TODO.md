@@ -11,9 +11,8 @@ We can still manually check the PoW by examining the hash but this is a tedious 
 [`getTargetHex()`](https://en.bitcoinwiki.org/wiki/Difficulty_in_Mining)
 
 # Major changes required 
-- Add method to push new jobs to miner clients
-- Add either proper `varDiff` functionality or option to change `difficulty` by API
-- Move `submit()` logic to `MinerModel`
+- Add method to push new jobs to miner clients (might require heavy refactor or even rewrite due to use of third-party library)
+- Add either proper `varDiff` functionality or option to change `difficulty` by API call or other on-demand configuration
 - Use proper `extraNonce` field 
 - Add some semblance of a banning system for invalid shares
 - Add proper class for `Job` 
@@ -22,4 +21,4 @@ We can still manually check the PoW by examining the hash but this is a tedious 
 # Nice-to-haves
 - Minimize Docker image
 - Refactor node-gyp libraries for only `randomx` and Monero block constructing functions
-- Have safer authentication method
+- Have safer authentication method (or chagne after we have first-party client)

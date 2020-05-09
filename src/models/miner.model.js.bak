@@ -1,0 +1,54 @@
+/**
+ * @description Deprecated Miner Model, we can't properly setup miner models without authentication, which is currently not possible
+ * Therefore, the code here is dead until we have a properly specced client software that will securely authenticate a miner/user
+ * 
+ * 
+ */
+const logger = require('src/util/logger.js').miner;
+const config = require('src/util/config.js');
+const xmr = require('src/util/xmr.js');
+const err = require('src/util/error.js');
+const _ = require('lodash');
+
+const JobHelperService = require('src/services/job.helper.service.js');
+const BlockTemplateService = require('src/services/block.template.service.js');
+
+const DiamondApi = require('src/api/diamond.api.js');
+
+
+class MinerModel {
+
+  /**
+   * Serialize from JSON or JWT token into a Miner instance
+   * @param {object} data
+   */
+  constructor(data) {
+    this.address = data.address;
+    this.id = data.id;
+  }
+  /**
+     *
+     * @return {BlockTemplate} jobTemplate
+     */
+  async getJob() {
+    const blockTemplate = await BlockTemplateService.getBlockTemplate();
+
+    return new Promise((resolve,reject) => {
+      
+      JobHelperService.create(blockTemplate, this.id)
+        .then((job) => {
+          resolve(job);
+        }).catch((err)=>{
+          logger.core.error("Could not fetch job! : "+err);
+          reject(err);
+        });
+
+
+    });
+  }
+  async submit(params) {
+   return {status: 'ok'}
+  }
+}
+
+module.exports = MinerModel;

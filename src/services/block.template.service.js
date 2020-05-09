@@ -5,16 +5,6 @@ const moneroApi = require('src/api/monero.api.js');
 
 let currentBlockTemplate;
 
-// let baseBlockTemplate = {
-  
-
-
-// };
-
-
-// const debugUrl = "http://staging.myriade.io/pickaxe/api/v1/subscribe";
-// const debugRec = "http://ef8555d7.ngrok.io";
-// const debugSecret = "";
 const BlockTemplateService = {
 
   subscribeToUpdates: () => {
@@ -32,14 +22,11 @@ const BlockTemplateService = {
   },
 
   getBlockTemplate: async () => {
-    return await moneroApi.getBlockTemplate();
+    const template = currentBlockTemplate || await moneroApi.getBlockTemplate;
+    return template;
   },
 
-
-
   init: async () => {
-    // console.log("debug mode "+config.get('test:debug'));
-    // console.log("optins "+config.get('test:foobar'));
     const blockTemplate = await moneroApi.getBlockTemplate();
     currentBlockTemplate = blockTemplate;
     return BlockTemplateService.subscribeToUpdates();

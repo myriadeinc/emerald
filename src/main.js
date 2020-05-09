@@ -7,7 +7,7 @@ const BlockTemplateService = require('src/services/block.template.service.js');
 
 const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
-const MinerService = require('src/services/miner.service.js');
+const StratumService = require('src/services/stratum.service.js');
 const jayson = require('jayson/promise');
 const cache = require('src/util/cache.js');
 const mq = require('src/util/mq.js');
@@ -35,12 +35,9 @@ const main = async () => {
   logger.core.info('Block Templating queue initialized');
 
   const port = config.get('pool:port');
-  logger.core.info(`Starting Pool JSON-RPC on port ${port}`);
-  const stratum = jayson.server(MinerService);
+  const stratum = jayson.server(StratumService);
   stratum.tcp().listen(port);
   logger.core.info(`Pool JSON-RPC Listening on port ${port}`);
-
-   
 
   const internalPort = config.get('service:port');
   const internalServer = require('src/server.internal.js');
