@@ -11,7 +11,7 @@ const StratumService = require('src/services/stratum.service.js');
 const jayson = require('jayson/promise');
 const cache = require('src/util/cache.js');
 const mq = require('src/util/mq.js');
-const sapphireApi = require('src/api/sapphire.api.js');
+
 
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
