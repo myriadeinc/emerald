@@ -13,7 +13,7 @@ const MoneroApi = require('src/api/monero.api.js');
 const StratumService = {
 
   // Test function, this will never be called from the mining client xmrig
-  paramDump: (params) => {
+  dump: (params) => {
     logger.info(params)
     return params;
   },
