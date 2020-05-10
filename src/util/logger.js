@@ -6,21 +6,21 @@ const bunyan = require('bunyan')
 const config = require('src/util/config.js');
 
 let LogDNAStream = require('logdna-bunyan').BunyanStream;
-let logDNA = new LogDNAStream({
-  key: config.get('log:logdna_api_token')
-}) || null;
+
+let streams = [];
+streams.push({stream: formatOut });
+if(config.get('log:logdna_api_token')){
+  streams.push({
+    stream: new LogDNAStream({
+      key: config.get('log:logdna_api_token')
+    }),
+    type: 'raw'
+  })
+}
 
 const logger = bunyan.createLogger({
   name: 'emerald',
-  streams: [ 
-    {
-      stream:formatOut 
-    }, 
-    {
-      stream: logDNA || formatOut,
-      type: 'raw'
-    }
-  ]
+  streams
 });
 
 

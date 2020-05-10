@@ -1,7 +1,5 @@
 /* eslint-disable valid-jsdoc */
-
 const crypto = require('crypto');
-const config = require('src/util/config.js');
 const logger = require('src/util/logger.js');
 const cache = require('src/util/cache.js');
 const xmrUtil = require('cryptoforknote-util');

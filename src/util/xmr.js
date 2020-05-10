@@ -48,7 +48,7 @@ const xmr = {
     return hashUtil.randomx(blob, seed_hash, 0);
   },
   convert_blob: (blob) => {
-    return blockUtil.convert_blob(blob,0)
+    return blockUtil.convert_blob(blob, 0)
   }
 };
 module.exports = xmr;

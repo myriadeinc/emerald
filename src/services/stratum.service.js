@@ -14,6 +14,7 @@ const StratumService = {
 
   // Test function, this will never be called from the mining client xmrig
   paramDump: (params) => {
+    logger.info(params)
     return params;
   },
 
@@ -47,13 +48,24 @@ const StratumService = {
   const status = await BlockReferenceService.checkDifficulty(job.difficulty,job.globalDiff,minerData.result);
   if(status){
     const isValid = await BlockReferenceService.verifyBlock(minerData,job);
-    if(status == 2) {
+    if(status == 2 && isValid) {
       logger.info('winner winner chicken dinner! We got some sweet sweet XMR');
-      StratumService.sendWinner(minerData.result);
+      try{
+        StratumService.sendWinner(minerData.result)
+      }
+      catch (e){
+        logger.error(e)
+      }
+      ;
     }
     if(isValid){
+      try{
         StratumService.sendShare(job)
-        return {status: 'OK'}
+      }
+      catch (e){
+        logger.error(e)
+      }
+      return {status: 'OK'}
     }
   }
 
