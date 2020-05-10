@@ -37,7 +37,8 @@ const MQ = {
   send: (msg) => {
     return MQ.channel.assertQueue(queue)
         .then((ok) => {
-          logger.info(`Sending: ${msg}\n on queue ${queue}`);
+          logger.info(`Sending data \n on queue ${queue} :`);
+          logger.info(msg);
           return MQ.channel.sendToQueue(queue, toBuffer(msg));
         })
         .then(() => {

@@ -97,13 +97,13 @@ const StratumService = {
   return {
     error: {
     code: -1,
-    message: "Low difficulty share"
+    message: "Low difficulty or bad share"
     }
   };
 },
 
+  // This method should not be used as we don't maintain live TCP connections
   keepalived: (params) => {
-    // We don't currently maintain proper TCP connection so send a placeholder "OK" type status
     return {status: 'KEEPALIVED'}
   },
 
