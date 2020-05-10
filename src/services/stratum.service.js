@@ -9,13 +9,38 @@ const JobHelperService = require('src/services/job.helper.service.js');
 const SapphireApi = require('src/api/sapphire.api.js');
 const MoneroApi = require('src/api/monero.api.js');
 
+const sendWinner = (block) => {
+  MoneroApi.submit(block)
+  .then(res =>{
+    logger.info(res);
+    return true
+    // We would have to refresh/fetch new job based on the monero daemon api response
+  })
+  .catch(err =>{
+    logger.error(err);
+    return err;
+  });
+
+};
+const sendShare = (job) => {
+  const sapphirePayload = {
+      minerId: job.minerId,
+      shares: 1, // We can modify this later for 'mining boosts'
+      difficulty: job.difficulty,
+      timestamp: Date.now(),
+      blockHeight: job.height
+   }
+   logger.info(sapphirePayload);
+   SapphireApi.sendShareInfo(sapphirePayload);
+   return true;
+}
 
 const StratumService = {
 
   // Test function, this will never be called from the mining client xmrig
   dump: (params) => {
-    logger.info(params)
-    return params;
+    logger.info(params);
+    return {status: 'ok'}
   },
 
   login: async (params) => {
@@ -51,7 +76,7 @@ const StratumService = {
     if(status == 2 && isValid) {
       logger.info('winner winner chicken dinner! We got some sweet sweet XMR');
       try{
-        StratumService.sendWinner(minerData.result)
+        sendWinner(minerData.result)
       }
       catch (e){
         logger.error(e)
@@ -60,7 +85,7 @@ const StratumService = {
     }
     if(isValid){
       try{
-        StratumService.sendShare(job)
+        sendShare(job);
       }
       catch (e){
         logger.error(e)
@@ -75,31 +100,6 @@ const StratumService = {
     message: "Low difficulty share"
     }
   };
-},
-sendWinner: (block) => {
-  MoneroApi.submit(block)
-  .then(res =>{
-    logger.info(res);
-    return true
-    // We would have to refresh/fetch new job based on the monero daemon api response
-  })
-  .catch(err =>{
-    logger.error(err);
-    return err;
-  });
-
-},
-sendShare: (job) => {
-  const sapphirePayload = {
-      minerId: job.minerId,
-      shares: 1, // We can modify this later for 'mining boosts'
-      difficulty: job.difficulty,
-      timestamp: Date.now(),
-      blockHeight: job.height
-   }
-   logger.info(sapphirePayload);
-   SapphireApi.sendShareInfo(sapphirePayload);
-   return true;
 },
 
   keepalived: (params) => {
