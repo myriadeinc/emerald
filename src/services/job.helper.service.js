@@ -3,6 +3,8 @@ const crypto = require('crypto');
 const logger = require('src/util/logger.js');
 const cache = require('src/util/cache.js');
 const xmrUtil = require('cryptoforknote-util');
+const config = require('src/util/config.js');
+
 
 const BlockTemplateService = require('src/services/block.template.service.js');
 // baseDiff = 2^256
@@ -10,7 +12,7 @@ const baseDiff = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 // Reserved offset should be changed later, default is 8
 const reserveOffset = 8;
 // 40k is a reasonable minimum difficulty based on hashrate for low-end CPUs, the represented number on the client will be different
-const minDiff = BigInt(40000);
+const minDiff = config.get('pool:diff') || BigInt(40000);
 const JobHelperService = {
   /**
      * @description Create a new job based on existing blocktemplate
@@ -31,19 +33,19 @@ const JobHelperService = {
       // Cannot use BigInt in Redis!
       difficulty: diff.toString()
     };
-    if(!newJob.blob){
+    if (!newJob.blob) {
       logger.core.info("Blob missing!");
     }
-   
+
     const jobReply = JobHelperService.createStratumJob(newJob, minerId, diff);
-    
+
     await cache.put(newJob.job_id, newJob, 'job');
     return jobReply;
   },
   createStratumJob: (newJob, minerId, diff) => {
     return {
       height: newJob.height,
-      blob: JobHelperService.createBlob(newJob.blob,newJob.extraNonce),
+      blob: JobHelperService.createBlob(newJob.blob, newJob.extraNonce),
       job_id: newJob.job_id,
       id: minerId,
       target: JobHelperService.getTargetHex(diff),
@@ -69,7 +71,7 @@ const JobHelperService = {
     // We are translating the difficulty, which is an integer representation of the required nonce condition, to a hexadecimal representation format
     difficulty = BigInt(difficulty);
     let difficultyBuffer = Buffer.alloc(32);
-    let quotient = Buffer.from((baseDiff/difficulty).toString(16),'hex');
+    let quotient = Buffer.from((baseDiff / difficulty).toString(16), 'hex');
     quotient.copy(difficultyBuffer, 32 - quotient.length);
     let buff = difficultyBuffer.slice(0, 4);
     let buffReversed = Buffer.from(Array.prototype.slice.call(buff).reverse());
@@ -77,19 +79,19 @@ const JobHelperService = {
   },
 
   getVarDiff: (minerId, blockTemplate) => {
-  // Need to add real variable difficulty calculator, currently using a static difficulty for all miners
-    return minDiff;   
+    // Need to add real variable difficulty calculator, currently using a static difficulty for all miners
+    return minDiff;
   },
-  
+
   getFromId: async (id) => {
-    return cache.get(id,'job')
-        .then(job => {
-          return job;
-        })
-        .catch(err => {
-          logger.core.error(`Error hitting cache with job::${id} ; ${err}`);
-          return err;
-        });      
+    return cache.get(id, 'job')
+      .then(job => {
+        return job;
+      })
+      .catch(err => {
+        logger.core.error(`Error hitting cache with job::${id} ; ${err}`);
+        return err;
+      });
   },
 
 };
