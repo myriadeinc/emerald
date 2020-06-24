@@ -9,9 +9,9 @@ const reserveSize = config.get('pool:reserveSize') || 8;
 
 /**
  * @todo: Change to RPC client
- *  */ 
+ *  */
 function sendRpcBase(method, payload) {
-  
+
   return axios({
     url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
     method: 'POST',
@@ -22,16 +22,16 @@ function sendRpcBase(method, payload) {
       params: payload,
     },
   })
-  .then(({data}) =>{
-    if (data.error) {
-      logger.error(`Error while sending RPC request for method ${method} \n \t payload: ${JSON.stringify(payload)}; \n \t Error: ${data.error.message}`);
-      throw data.error
-    }
-    else {
-      return data.result;
-    }
-  })
-  
+    .then(({ data }) => {
+      if (data.error) {
+        logger.error(`Error while sending RPC request for method ${method} \n \t payload: ${JSON.stringify(payload)}; \n \t Error: ${data.error.message}`);
+        throw data.error
+      }
+      else {
+        return data.result;
+      }
+    })
+
 }
 
 const MoneroApi = {
