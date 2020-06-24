@@ -31,6 +31,10 @@ function sendRpcBase(method, payload) {
         return data.result;
       }
     })
+    .catch(err => {
+      logger.error(err);
+      return {};
+    })
 
 }
 
@@ -60,8 +64,8 @@ const MoneroApi = {
     * @param {String} hexBlock Block represented as hex string
     * @return {object} The status of block submitted, in JSON RPC format
     */
-  submit: async (hexBlock) => {
-    return await sendRpcBase('submit_block', [hexBlock]);
+  submit: (hexBlock) => {
+    return sendRpcBase('submit_block', [hexBlock]);
   },
 };
 
