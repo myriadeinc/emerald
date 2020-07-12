@@ -11,8 +11,8 @@ const BlockTemplateService = require('src/services/block.template.service.js');
 const baseDiff = BigInt('0xFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF');
 // Reserved offset should be changed later, default is 8
 const reserveOffset = 8;
-// 40k is a reasonable minimum difficulty based on hashrate for low-end CPUs, the represented number on the client will be different
-const minDiff = BigInt(1000);//config.get('pool:diff') || BigInt(40000);
+// 10k is a reasonable minimum difficulty based on hashrate for low-end CPUs, the represented number on the client will be different
+const minDiff = config.get('pool:diff') || BigInt(10000);
 const JobHelperService = {
   /**
      * @description Create a new job based on existing blocktemplate
