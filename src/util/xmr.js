@@ -1,6 +1,5 @@
 const blockUtil = require('cryptoforknote-util');
 const hashUtil = require('cryptonight-hashing');
-const bignum = require('bignum');
 
 /**
  * 

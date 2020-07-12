@@ -10,32 +10,25 @@ const reserveSize = config.get('pool:reserveSize') || 8;
 /**
  * @todo: Change to RPC client
  *  */
-function sendRpcBase(method, payload) {
-
-  return axios({
-    url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
-    method: 'POST',
-    data: {
-      json_rpc: '2.0',
-      id: '1',
-      method,
-      params: payload,
-    },
-  })
-    .then(({ data }) => {
-      if (data.error) {
-        logger.error(`Error while sending RPC request for method ${method} \n \t payload: ${JSON.stringify(payload)}; \n \t Error: ${data.error.message}`);
-        throw data.error
-      }
-      else {
-        return data.result;
-      }
-    })
-    .catch(err => {
-      logger.error(err);
-      return {};
-    })
-
+async function sendRpcBase(method, payload) {
+  try {
+    const response = await axios({
+      url: `http://${config.get('monero:daemon:host')}:${config.get('monero:daemon:port')}/json_rpc`,
+      method: 'POST',
+      data: {
+        json_rpc: '2.0',
+        id: '1',
+        method: method,
+        params: payload,
+      },
+    });
+    return response.data.result;
+  }
+  catch (err) {
+    console.log('error!')
+    logger.error(err);
+    return { error: true }
+  }
 }
 
 const MoneroApi = {
@@ -50,6 +43,11 @@ const MoneroApi = {
     });
     return new BlockTemplate(response);
   },
+  getInfo: async () => {
+    const info = await sendRpcBase('get_info', {});
+    return info
+  },
+
 
   /**
     * @description Gets the header of the last block
@@ -58,6 +56,7 @@ const MoneroApi = {
   getLastBlockHeader: async () => {
     return sendRpcBase('get_last_block_header', {});
   },
+
 
   /**
     * @description Submit a block to the daemon

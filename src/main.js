@@ -1,5 +1,4 @@
 const path = require('path');
-
 const rootPath = path.resolve(`${__dirname}/..`);
 require('app-module-path').addPath(rootPath);
 
@@ -11,12 +10,10 @@ const StratumService = require('src/services/stratum.service.js');
 const jayson = require('jayson/promise');
 const cache = require('src/util/cache.js');
 const mq = require('src/util/mq.js');
-
-
+const axios = require('axios');
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
 let server;
-
 
 const main = async () => {
   logger.core.info(`Starting Emerald for ${config.get('pool:desc')}`);
@@ -33,19 +30,22 @@ const main = async () => {
   await BlockTemplateService.init();
 
   logger.core.info('Block Templating queue initialized');
+  // Ideally we should use something like pickaxe for polling, however at this point emerald/shadowstone/pickaxe should be refactored with stronger typing such as golang
+  setInterval(BlockTemplateService.poller, 2000);
 
-  const port = config.get('pool:port');
+  const port = config.get('pool:port') || 22345;
   const stratum = jayson.server(StratumService);
-  stratum.tcp().listen(port);
-  logger.core.info(`Pool JSON-RPC Listening on port ${port}`);
+  stratum.tcp().listen(port, () => {
+    logger.core.info(`Stratum Pool JSON-RPC Listening on port ${port}`);
+  });
 
   const internalPort = config.get('service:port');
   const internalServer = require('src/server.internal.js');
-  
+
   server = internalServer.listen(internalPort, () => {
     logger.core.info(`Internal server listening on port ${internalPort}`);
   });
-  
+
 };
 
 const gracefulShutdown = () => {

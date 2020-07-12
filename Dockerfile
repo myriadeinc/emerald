@@ -1,38 +1,13 @@
-  # WORKDIR /usr/src/build
-  # RUN chmod 777 /usr/src/build
-FROM ubuntu:18.04
-
-  # Building final image
+FROM ubuntu:20.04
+  EXPOSE 8080
+  EXPOSE 22345
+  EXPOSE 9878
   WORKDIR /usr/src/app
-  EXPOSE 8088
-  EXPOSE 12345
-  ENV NODE_ENV "prod"
+  COPY . .
+  RUN apt-get -qq update && apt-get install -qq -y tzdata && apt-get install -y libboost-all-dev curl g++ build-essential musl musl-dev git make gcc python python-dev
+  RUN ln -s /usr/lib/x86_64-linux-musl/libc.so /lib/libc.musl-x86_64.so.1 
 
-  RUN apt-get update \
-      && apt-get -y install curl gnupg sudo libboost-all-dev git
-  
-  # Setup for nvm
-  RUN mkdir /usr/local/nvm
-  ENV NVM_DIR /usr/local/nvm 
-  ENV NODE_VERSION v10.17.0
-  RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash 
-  
-  RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-  
-  ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-  ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
-
- 
-  # Install && build app dependencies
-  COPY . . 
-  RUN rm -rf node_modules
-  RUN npm install
-
-  CMD [ "node", "src/main.js" ]
-
-#   RUN chown -R node:node /usr/src/app
-#   USER node
-#   COPY --from=builder /usr/local/lib /usr/local/lib
-#   COPY --from=builder /usr/lib /usr/lib
-#   COPY --from=builder /usr/src/build/ /usr/src/app/
- 
+  RUN curl -SL https://deb.nodesource.com/setup_12.x | bash -
+  RUN apt-get -qq update && apt-get -qq install --yes nodejs
+  RUN npm install --quiet
+  CMD ["node", "src/main.js"]

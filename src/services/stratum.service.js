@@ -11,28 +11,27 @@ const MoneroApi = require('src/api/monero.api.js');
 
 const sendWinner = (block) => {
   MoneroApi.submit(block)
-  .then(res =>{
-    logger.info(res);
-    return true
-    // We would have to refresh/fetch new job based on the monero daemon api response
-  })
-  .catch(err =>{
-    logger.error(err);
-    return err;
-  });
+    .then(res => {
+      logger.info(res);
+      return true
+      // We would have to refresh/fetch new job based on the monero daemon api response
+    })
+    .catch(err => {
+      logger.error(err);
+      return err;
+    });
 
 };
 const sendShare = (job) => {
   const sapphirePayload = {
-      minerId: job.minerId,
-      shares: 1, // We can modify this later for 'mining boosts'
-      difficulty: job.difficulty,
-      timestamp: Date.now(),
-      blockHeight: job.height
-   }
-   logger.info(sapphirePayload);
-   SapphireApi.sendShareInfo(sapphirePayload);
-   return true;
+    minerId: job.minerId,
+    shares: 1, // We can modify this later for 'mining boosts'
+    difficulty: job.difficulty,
+    timestamp: Date.now(),
+    blockHeight: job.height
+  }
+  SapphireApi.sendShareInfo(sapphirePayload);
+  return true;
 }
 
 const StratumService = {
@@ -40,71 +39,72 @@ const StratumService = {
   // Test function, this will never be called from the mining client xmrig
   dump: (params) => {
     logger.info(params);
-    return {status: 'ok'}
+    return { status: 'ok' }
   },
 
   login: async (params) => {
     const minerId = params.login;
-      //  DO NOT REMOVE
-      // After discussion, since XMRrig sends insecure TCP requests, we will not
-      //  be requesting the actual Diamond password (since exposing that password will 
-      //  effectively compromise all of our back-end service). Since there is low risk and no
-      //  incentive for anyone to impersonate another miner, we will use Miner uuid as login 
-      const job = await StratumService.getJob(minerId);
-      return {
-        id: minerId,
-        job,
-        status: 'OK'
-      }        
+    //  DO NOT REMOVE
+    // After discussion, since XMRrig sends insecure TCP requests, we will not
+    //  be requesting the actual Diamond password (since exposing that password will 
+    //  effectively compromise all of our back-end service). Since there is low risk and no
+    //  incentive for anyone to impersonate another miner, we will use Miner uuid as login 
+    const job = await StratumService.job(minerId);
+    return {
+      id: minerId,
+      job,
+      status: 'OK'
+    }
   },
-  getJob: async (minerId) => {
+  job: async (minerId) => {
     const block = await BlockTemplateService.getBlockTemplate();
-    return await JobHelperService.create(block, minerId);
+    const job = await JobHelperService.create(block, minerId);
+    return job;
   },
- // If we refactor this in the future, it is a top priority
- submit: async (params) => {
-   const job = await JobHelperService.getFromId(params.job_id);
-   const minerData = {
-    minerId: params.id,
-    job_id: params.job_id,
-    nonce: params.nonce,
-    result: params.result,
-  };
-  const status = await BlockReferenceService.checkDifficulty(job.difficulty,job.globalDiff,minerData.result);
-  if(status){
-    const isValid = await BlockReferenceService.verifyBlock(minerData,job);
-    if(status == 2 && isValid) {
-      logger.info('winner winner chicken dinner! We got some sweet sweet XMR');
-      try{
-        sendWinner(minerData.result)
+  // If we refactor this in the future, it is a top priority
+  submit: async (params) => {
+    const job = await JobHelperService.getFromId(params.job_id);
+    const minerData = {
+      minerId: params.id,
+      job_id: params.job_id,
+      nonce: params.nonce,
+      result: params.result,
+    };
+    const status = await BlockReferenceService.checkDifficulty(job.difficulty, job.globalDiff, minerData.result);
+    if (status) {
+      const isValid = await BlockReferenceService.verifyBlock(minerData, job);
+      if (status == 2 && isValid) {
+        logger.info('winner winner chicken dinner! We got some sweet sweet XMR');
+        try {
+          sendWinner(minerData.result)
+        }
+        catch (e) {
+          logger.error(e)
+        }
+        ;
       }
-      catch (e){
-        logger.error(e)
+      if (isValid) {
+        try {
+          sendShare(job);
+        }
+        catch (e) {
+          logger.error(e)
+        }
+        return { status: 'OK' }
       }
-      ;
     }
-    if(isValid){
-      try{
-        sendShare(job);
-      }
-      catch (e){
-        logger.error(e)
-      }
-      return {status: 'OK'}
-    }
-  }
 
-  return {
-    error: {
-    code: -1,
-    message: "Low difficulty or bad share"
-    }
-  };
-},
+    return {
+      error: {
+        code: -1,
+        message: "Low difficulty or bad share"
+      }
+    };
+  },
 
   // This method should not be used as we don't maintain live TCP connections
   keepalived: (params) => {
-    return {status: 'KEEPALIVED'}
+    return { status: 'KEEPALIVED' }
   },
 
 };

@@ -21,54 +21,56 @@ const MQ = {
   channel,
   init: (url) => {
     return amq.connect(url)
-        .then((conn) => {
-          return conn.createChannel();
-        })
-        .then((ch) => {
-          MQ.channel = ch;
-          return true;
-        })
-        .catch(err => {
-          logger.error(err);
-        });
+      .then((conn) => {
+        return conn.createChannel();
+      })
+      .then((ch) => {
+        MQ.channel = ch;
+        return true;
+      })
+      .catch(err => {
+        logger.error(err);
+      });
   },
 
   send: (msg) => {
     return MQ.channel.assertQueue(queue)
-        .then((ok) => {
+      .then((ok) => {
+        if (config.get("rabbitmq:debug")) {
           logger.info(`Sending data \n on queue ${queue} :`);
           logger.info(msg);
-          return MQ.channel.sendToQueue(queue, toBuffer(msg));
-        })
-        .then(() => {
-          return 0;
-        })
-        .catch((err) => {
-          logger.error(err);
-          logger.error(`Error occured while sending: \n ${msg}`);
-          return -1;
-        });
+        }
+        return MQ.channel.sendToQueue(queue, toBuffer(msg));
+      })
+      .then(() => {
+        return 0;
+      })
+      .catch((err) => {
+        logger.error(err);
+        logger.error(`Error occured while sending: \n ${msg}`);
+        return -1;
+      });
   },
 
   registerConsumer: (cb) => {
     return MQ.channel.assertQueue(queue)
-        .then((ok) => {
-          return MQ.channel.consume(queue, (msg) => {
-            if (null !== msg) {
-              MQ.channel.ack(msg);
-              logger.info(`Consuming message: ${msg.content.toString()}\n from queue ${queue}`);
-              cb(JSON.parse(msg.content.toString()));
-            }
-          });
-        })
-        .catch((err) => {
-          logger.error(err);
+      .then((ok) => {
+        return MQ.channel.consume(queue, (msg) => {
+          if (null !== msg) {
+            MQ.channel.ack(msg);
+            logger.info(`Consuming message: ${msg.content.toString()}\n from queue ${queue}`);
+            cb(JSON.parse(msg.content.toString()));
+          }
         });
+      })
+      .catch((err) => {
+        logger.error(err);
+      });
   },
 
   close: () => {
-    
-    return MQ.channel.close.then( () => { return amq.close();});
+
+    return MQ.channel.close.then(() => { return amq.close(); });
   }
 };
 

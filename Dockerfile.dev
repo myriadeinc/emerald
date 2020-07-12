@@ -1,10 +1,9 @@
-  # WORKDIR /usr/src/build
-  # RUN chmod 777 /usr/src/build
 FROM ubuntu:18.04
   WORKDIR /usr/src/app
   EXPOSE 8088
   EXPOSE 12345
   EXPOSE 9878
+  ARG DEBIAN_FRONTEND=noninteractive
 
   RUN apt-get update \
       && apt-get -y install curl gnupg sudo libboost-all-dev git
@@ -28,11 +27,6 @@ FROM ubuntu:18.04
 
   RUN chmod 777 /usr/src/app
 
-  CMD [ "node", "/usr/src/app/src/main.js" ]
+  CMD [ "node", "src/main.js" ]
 
-#   RUN chown -R node:node /usr/src/app
-#   USER node
-#   COPY --from=builder /usr/local/lib /usr/local/lib
-#   COPY --from=builder /usr/lib /usr/lib
-#   COPY --from=builder /usr/src/build/ /usr/src/app/
  

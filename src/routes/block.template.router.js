@@ -7,15 +7,16 @@ const AuthMiddleware = require('src/middleware/authentication.middleware.js');
 
 
 router.post('/',
-    AuthMiddleware.validateSharedSecret,
-    /**
-     * @todo: Add Jobtemplate validating middleware to check fields for req.body
-     */
-    (req, res) => {
-      const blockData = req.body;
-      BlockTemplateService.updateBlock(blockData);
-      res.sendStatus(200);
-    },
+  AuthMiddleware.validateSharedSecret,
+  /**
+   * @todo: Add Jobtemplate validating middleware to check fields for req.body
+   */
+  (req, res) => {
+    const blockData = req.body;
+    BlockTemplateService.updateBlock(blockData);
+    console.dir(blockData.height)
+    res.sendStatus(200);
+  },
 );
 
 

@@ -6,8 +6,8 @@ services:
       service: emerald
     build:
         context: ./
-        dockerfile: Dockerfile.dev
-    image: myriade/emerald:dev
+        dockerfile: Dockerfile
+    # image: myriade/emerald:dev
     command: ["bash", "-c", "npm run start:dev"]
     environment:
       - NODE_ENV=local
@@ -17,7 +17,7 @@ services:
     ports:
       - "8088:8088"
       - "9878:9878"
-      - "12345:12345"
+      - "22345:22345"
     depends_on:
       cache:
           condition: service_healthy

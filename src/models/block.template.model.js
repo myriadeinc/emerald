@@ -9,6 +9,10 @@ const xmrUtil = require('src/util/xmr.js');
 
 class BlockTemplate {
   constructor(data) {
+    if (data.error) {
+      logger.error('Error in fetching block template, check monero daemon')
+      throw err.instantiation;
+    }
     try {
       this.difficulty = data.difficulty;
       this.blob = data.blockhashing_blob;
@@ -17,7 +21,6 @@ class BlockTemplate {
       this.seed_hash = data.seed_hash;
       this.reservedOffset = data.reserved_offset;
       this.previousHash = data.prev_hash;
-      this.expectedReward = data.expectedReward;
       // This is only if for some reason the prev_hash field does not exist, ignore until refactor
       // this.previous_hash = Buffer.alloc(32);
       // this.buffer.copy(this.previousHash, 0, previousOffset, 39);
