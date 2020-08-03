@@ -3,7 +3,7 @@ jobs:
   build:
     docker:
       # Primary
-      - image: myriadeinc/node-ci:latest
+      - image: node:12.18.3-buster
         environment:
           rabbitmq__url: amqp://guest:guest@127.0.0.1:5672/
       - image: redis:3.2.3
