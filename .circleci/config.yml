@@ -23,6 +23,19 @@ jobs:
             done
             echo Failed waiting for Postgres && exit 1
       - run:
+          name: Installing pre-requisite dependencies
+          command: |
+          apt-get -qq update && \
+          apt-get install libc6-dev && \
+          apt-get -qq install -y \
+          libboost-all-dev \
+          libsodium-dev \
+          libsodium23
+      - run:
+          name: Installing cryptoforknote library
+          command: |
+            npm install https://github.com/myriadeinc/cryptonote-lib.git 
+      - run:
           name: Installing dev dependencies
           command: |
             npm install
