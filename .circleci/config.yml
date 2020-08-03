@@ -13,6 +13,9 @@ jobs:
       - setup_remote_docker:
           version: 18.06.0-ce
       - run:
+          name: Installing pre-requisite dependencies
+          command: apt-get -qq update && apt-get install libc6-dev && apt-get -qq install -y libboost-all-dev libsodium-dev libsodium23 netcat
+      - run:
           name: Waiting for cache to be ready
           command: |
             for i in `seq 1 10`;
@@ -21,10 +24,7 @@ jobs:
               echo -n .
               sleep 1
             done
-            echo Failed waiting for Postgres && exit 1
-      - run:
-          name: Installing pre-requisite dependencies
-          command: apt-get -qq update && apt-get install libc6-dev && apt-get -qq install -y libboost-all-dev libsodium-dev libsodium23
+            echo Failed waiting for Cache && exit 1
       - run:
           name: Installing cryptoforknote library
           command: |
