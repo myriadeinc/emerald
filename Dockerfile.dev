@@ -1,32 +1,15 @@
-FROM ubuntu:18.04
-  WORKDIR /usr/src/app
-  EXPOSE 8088
-  EXPOSE 12345
+FROM node:12.18.3-buster
+  EXPOSE 8080
+  EXPOSE 22345
   EXPOSE 9878
-  ARG DEBIAN_FRONTEND=noninteractive
+  WORKDIR /usr/src/app
+  COPY . .
+  RUN apt-get -qq update && apt-get -qq install -y libboost-all-dev \
+  libsodium-dev \
+  libsodium23 
 
-  RUN apt-get update \
-      && apt-get -y install curl gnupg sudo libboost-all-dev git
-  
-  # Setup for nvm
-  RUN mkdir /usr/local/nvm
-  ENV NVM_DIR /usr/local/nvm 
-  ENV NODE_VERSION v10.17.0
-  RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.11/install.sh | bash 
-  
-  RUN /bin/bash -c "source $NVM_DIR/nvm.sh && nvm install $NODE_VERSION && nvm use --delete-prefix $NODE_VERSION"
-  
-  ENV NODE_PATH $NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
-  ENV PATH      $NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+  RUN npm install --quiet
+  RUN ldconfig
 
- 
-  # Install && build app dependencies
-  COPY . . 
-  RUN rm -rf node_modules
-  RUN npm install
-
-  RUN chmod 777 /usr/src/app
-
-  CMD [ "node", "src/main.js" ]
-
- 
+  # USER node
+  CMD ["run.sh"]

@@ -104,7 +104,7 @@ const StratumService = {
 
   // This method should not be used as we don't maintain live TCP connections
   keepalived: (params) => {
-    return { status: 'KEEPALIVED' }
+    return { status: 'KEEPALIVED', id: params.id }
   },
 
 };

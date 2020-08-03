@@ -27,23 +27,24 @@ const BlockTemplateService = {
 
     try {
       const recentTemplate = await moneroApi.getBlockTemplate();
-
-
       // Works up until ~15 digits, then we have to switch to BigInt
       if (Number(recentTemplate.height) > Number(currentBlockTemplate.height)) {
         logger.info(`New blockheight found at height:${recentTemplate.height}`);
         currentBlockTemplate = recentTemplate;
-
         try {
           const resp = await axios.get('http://shadowstone:9990/refresh')
-          console.dir(resp.data)
+          if (resp.data == 'OK') {
+            console.dir('Shadowstone job refreshed')
+          }
         } catch (err) {
-          logger.error("I couldnt do it!")
+          logger.error("Could not send refresh notification to shadowstone")
           // logger.core.error(err)
         }
-
-
       }
+      else {
+        logger.info('\n')
+      }
+
     }
     catch (err) {
       logger.error(err)

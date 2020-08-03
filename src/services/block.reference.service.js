@@ -4,18 +4,19 @@ const xmr = require('src/util/xmr.js');
 const logger = require('src/util/logger.js').block;
 const err = require('src/util/error.js').BlockReference;
 
+
 // Value is 16^64 or 2^256
-const baseDiff = bignum('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF',16)
+const baseDiff = bignum('FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF', 16)
 
 const BlockReferenceService = {
   // Checks if block sent by miner corresponds to the job they were assigned
   verifyBlock: (minerData, job) => {
-    try{
-    let block = BlockReferenceService.buildBlock(job.blob, minerData.nonce, job.extraNonce);
-    block = BlockReferenceService.convertBlock(block);
-    block = BlockReferenceService.hashBlock(block, job.seed_hash);
-    return block.toString('hex') == minerData.result;
-    } catch (err){
+    try {
+      let block = BlockReferenceService.buildBlock(job.blob, minerData.nonce, job.extraNonce);
+      block = BlockReferenceService.convertBlock(block);
+      block = BlockReferenceService.hashBlock(block, job.seed_hash);
+      return block.toString('hex') == minerData.result;
+    } catch (err) {
       logger.error(err);
       return false;
     }
@@ -51,20 +52,20 @@ const BlockReferenceService = {
     // Proper division (because of hex data) only works as expected via loading raw Buffers
     let rawBlock = Buffer.from(block, 'hex');
     rawBlock = Array.prototype.slice.call(rawBlock, 0).reverse();
-    const hashNum   = bignum.fromBuffer(Buffer.from(rawBlock));
-    let hashDiff  = baseDiff.div(hashNum);
+    const hashNum = bignum.fromBuffer(Buffer.from(rawBlock));
+    let hashDiff = baseDiff.div(hashNum);
 
     hashDiff = BigInt(hashDiff)
     globalDiff = BigInt(globalDiff);
     localDiff = BigInt(localDiff);
-    
-    if(hashDiff >= globalDiff){
-      console.log('we won!')
+
+    if (hashDiff >= globalDiff) {
+
       // We won the block reward!
       // Submit to monero node
       return 2;
     }
-    if(hashDiff >= localDiff){
+    if (hashDiff >= localDiff) {
       // Grant share to miner
       return 1;
     }
@@ -78,4 +79,3 @@ const BlockReferenceService = {
 module.exports = BlockReferenceService;
 
 
-  

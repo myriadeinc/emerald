@@ -20,7 +20,7 @@
     "body-parser": "^1.19.0",
     "bunyan": "^1.8.12",
     "bunyan-formatter": "^1.0.0",
-    "cryptoforknote-util": "git+https://github.com/MoneroOcean/node-cryptoforknote-util.git",
+    "cryptoforknote-util": "git+https://github.com/myriadeinc/cryptonote-lib.git",
     "cryptonight-hashing": "git+https://github.com/MoneroOcean/node-cryptonight-hashing.git",
     "dateformat": "^3.0.3",
     "egads": "^1.0.2",

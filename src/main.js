@@ -22,9 +22,8 @@ const main = async () => {
   await cache.init(config.get('cache'));
   logger.core.info('Cache initialized');
 
-  logger.core.info('Initializing messaging queue RabbitMQ');
+  logger.core.info(`Initializing messaging queue RabbitMQ: ${config.get('rabbitmq:url')}`);
   await mq.init(config.get('rabbitmq:url'));
-  logger.core.info('Messaging queue initialized');
 
   logger.core.info('Initializing Block Templating service');
   await BlockTemplateService.init();

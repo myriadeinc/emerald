@@ -26,6 +26,7 @@ const MQ = {
       })
       .then((ch) => {
         MQ.channel = ch;
+        logger.info("Messaging Queue Initialized!")
         return true;
       })
       .catch(err => {
