@@ -3,13 +3,19 @@ FROM node:12.18.3-buster
   EXPOSE 22345
   EXPOSE 9878
   WORKDIR /usr/src/app
-  COPY . .
-  RUN apt-get -qq update && apt-get -qq install -y libboost-all-dev \
+  COPY package*.json ./
+
+  RUN apt-get -qq update && \
+  apt-get install libc6-dev && \
+  apt-get -qq install -y \
+  libboost-all-dev \
   libsodium-dev \
   libsodium23 
 
-  RUN npm install --quiet
-  RUN ldconfig
+  COPY src config run.sh ./
+  # Install early to catch any potential errors
+  RUN npm install https://github.com/myriadeinc/cryptonote-lib.git
+  RUN npm install --no-optional --quiet
 
   # USER node
-  CMD ["run.sh"]
+  CMD ["node", "src/main.js"]

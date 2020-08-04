@@ -18,4 +18,4 @@ FROM node:12.18.3-buster
   RUN npm install --no-optional --quiet
 
   # USER node
-  CMD ["run.sh"]
+  CMD ["node", "src/main.js"]
