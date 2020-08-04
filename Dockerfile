@@ -12,7 +12,7 @@ FROM node:12.18.3-buster
   libsodium-dev \
   libsodium23 
 
-  COPY src config run.sh ./
+  COPY . .
   # Install early to catch any potential errors
   RUN npm install https://github.com/myriadeinc/cryptonote-lib.git
   RUN npm install --no-optional --quiet
