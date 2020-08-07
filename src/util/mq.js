@@ -30,6 +30,7 @@ const MQ = {
         return true;
       })
       .catch(err => {
+        logger.err("Could not connect to RabbitMQ!")
         logger.error(err);
       });
   },

@@ -28,7 +28,6 @@ const main = async () => {
   logger.core.info('Initializing Block Templating service');
   await BlockTemplateService.init();
 
-  logger.core.info('Block Templating queue initialized');
   // Ideally we should use something like pickaxe for polling, however at this point emerald/shadowstone/pickaxe should be refactored with stronger typing such as golang
   setInterval(BlockTemplateService.poller, 2000);
 
