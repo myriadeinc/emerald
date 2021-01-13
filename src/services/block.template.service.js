@@ -24,6 +24,28 @@ const BlockTemplateService = {
   //     },
   //   });
   // },
+  handleReqErr: (e) => {
+    if (err.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      console.log(err.response.data);
+      console.log(err.response.status);
+      console.log(err.response.headers);
+      logger.error("Could not send refresh notification to worker: bad request")
+    } else if (err.request) {
+      // The request was made but no response was received
+      // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+      // http.ClientRequest in node.js
+      console.log(err.request);
+      logger.error("Could not send refresh notification to worker: no response")
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      logger.error(err.message)
+    }
+    logger.error(err)
+  },
+
+
   poller: async () => {
 
     try {
@@ -35,35 +57,18 @@ const BlockTemplateService = {
         logger.info(`New blockheight found at height:${recentTemplate.height} from time: ${blockTime}`);
         lastTime = new Date();
         currentBlockTemplate = recentTemplate;
-        const shadowstone = await axios.get(config.get('shadowstone:host'))
-        const whetstone = await axios.get(config.get('whetstone:host'))
-        if (shadowstone.data == 'OK') {
-          logger.info('Shadowstone job refreshed')
-        }
-        if (whetstone.data == 'OK') {
-          logger.info('Whetstone job refreshed')
-        }
+        axios.get(config.get('shadowstone:host'))
+        .then(res => logger.info(`Shadowstone job ${res.data}` ))
+        .catch(e=> handleReqErr(e))
+        
+        axios.get(config.get('whetstone:host'))
+        .then(res => logger.info(`Whetstone job ${res.data}` ))
+        .catch(e=> handleReqErr(e))
+        
 
       }
     }
     catch (err) {
-      if (err.response) {
-        // The request was made and the server responded with a status code
-        // that falls out of the range of 2xx
-        console.log(err.response.data);
-        console.log(err.response.status);
-        console.log(err.response.headers);
-        logger.error("Could not send refresh notification to shadowstone: bad request")
-      } else if (err.request) {
-        // The request was made but no response was received
-        // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
-        // http.ClientRequest in node.js
-        console.log(err.request);
-        logger.error("Could not send refresh notification to shadowstone: no response")
-      } else {
-        // Something happened in setting up the request that triggered an Error
-        console.log('Error', err.message);
-      }
       logger.error(err)
     }
 
