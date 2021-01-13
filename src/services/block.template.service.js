@@ -59,11 +59,11 @@ const BlockTemplateService = {
         currentBlockTemplate = recentTemplate;
         axios.get(config.get('shadowstone:host'))
         .then(res => logger.info(`Shadowstone job ${res.data}` ))
-        .catch(e=> handleReqErr(e))
+        .catch(e=> BlockTemplateService.handleReqErr(e))
         
         axios.get(config.get('whetstone:host'))
         .then(res => logger.info(`Whetstone job ${res.data}` ))
-        .catch(e=> handleReqErr(e))
+        .catch(e=> BlockTemplateService.handleReqErr(e))
         
 
       }
