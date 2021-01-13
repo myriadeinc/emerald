@@ -24,7 +24,7 @@ const BlockTemplateService = {
   //     },
   //   });
   // },
-  handleReqErr: (e) => {
+  handleReqErr: (err) => {
     if (err.response) {
       // The request was made and the server responded with a status code
       // that falls out of the range of 2xx
@@ -59,11 +59,11 @@ const BlockTemplateService = {
         currentBlockTemplate = recentTemplate;
         axios.get(config.get('shadowstone:host'))
         .then(res => logger.info(`Shadowstone job ${res.data}` ))
-        .catch(e=> BlockTemplateService.handleReqErr(e))
+        .catch(e => BlockTemplateService.handleReqErr(e))
         
         axios.get(config.get('whetstone:host'))
         .then(res => logger.info(`Whetstone job ${res.data}` ))
-        .catch(e=> BlockTemplateService.handleReqErr(e))
+        .catch(e => BlockTemplateService.handleReqErr(e))
         
 
       }
