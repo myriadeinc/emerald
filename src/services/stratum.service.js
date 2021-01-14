@@ -62,7 +62,7 @@ const StratumService = {
       status: 'OK'
     }
   },
-  proxyjob: async (loginData) => {
+  proxyjob: async (params) => {
     const minerId = params.login;
     const job = await StratumService.job(minerId);
     return job
