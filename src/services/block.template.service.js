@@ -57,6 +57,12 @@ const BlockTemplateService = {
         logger.info(`New blockheight found at height:${recentTemplate.height} from time: ${blockTime}`);
         lastTime = new Date();
         currentBlockTemplate = recentTemplate;
+        axios.get(`http://sapphire:8081/v1/god/refresh?block=${recentTemplate.height}`)
+        .then(res => logger.info(`Sapphire Update ${res.data}` ))
+        .catch(e => BlockTemplateService.handleReqErr(e))
+        
+
+
         axios.get(config.get('shadowstone:host'))
         .then(res => logger.info(`Shadowstone job ${res.data}` ))
         .catch(e => BlockTemplateService.handleReqErr(e))
