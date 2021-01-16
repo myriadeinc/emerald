@@ -62,10 +62,10 @@ const BlockTemplateService = {
         .catch(e => BlockTemplateService.handleReqErr(e))
         
 
-
-        axios.get(config.get('shadowstone:host'))
-        .then(res => logger.info(`Shadowstone job ${res.data}` ))
-        .catch(e => BlockTemplateService.handleReqErr(e))
+        // Goodbye shadowstone
+        // axios.get(config.get('shadowstone:host'))
+        // .then(res => logger.info(`Shadowstone job ${res.data}` ))
+        // .catch(e => BlockTemplateService.handleReqErr(e))
         
         axios.get(config.get('whetstone:host'))
         .then(res => logger.info(`Whetstone job ${res.data}` ))
