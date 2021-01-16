@@ -11,7 +11,7 @@ const MoneroApi = require('src/api/monero.api.js');
 
 const config = require('src/util/config.js');
 
-const useSapphire = config.get('nobridge') ? false : true;
+const useSapphire = config.get('useSapphire')
 
 const sendWinner = (block) => {
   MoneroApi.submit(block)
