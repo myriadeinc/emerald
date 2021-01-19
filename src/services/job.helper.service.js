@@ -69,14 +69,8 @@ const JobHelperService = {
     return xmrUtil.convert_blob(newBlob).toString("hex");
   },
   getTargetHex: (difficulty) => {
-    // We are translating the difficulty, which is an integer representation of the required nonce condition, to a hexadecimal representation format
-    difficulty = BigInt(difficulty);
-    let difficultyBuffer = Buffer.alloc(32);
-    let quotient = Buffer.from((baseDiff / difficulty).toString(16), 'hex');
-    quotient.copy(difficultyBuffer, 32 - quotient.length);
-    let buff = difficultyBuffer.slice(0, 4);
-    let buffReversed = Buffer.from(Array.prototype.slice.call(buff).reverse());
-    return buffReversed.toString('hex');
+    // Cannot do proper integer conversion with BigInt class, rely on proxy whetstone
+    return difficulty.toString()
   },
 
   getVarDiff: (minerId, blockTemplate) => {
