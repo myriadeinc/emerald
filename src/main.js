@@ -10,6 +10,8 @@ const StratumService = require('src/services/stratum.service.js');
 const jayson = require('jayson/promise');
 const cache = require('src/util/cache.js');
 const mq = require('src/util/mq.js');
+const metrics = require('src/util/metrics.js');
+
 const axios = require('axios');
 // Eventually refactor when migrating to K8 so that every pod is a worker with a master pod
 //  instead of using cluster module from javascript
@@ -17,7 +19,8 @@ let server;
 
 const main = async () => {
   logger.core.info(`Starting Emerald for ${config.get('pool:desc')}`);
-
+  logger.core.info('Starting Internal Server Metrics');
+  metrics.init('Emerald');
   logger.core.info('Initializing cache DB');
   await cache.init(config.get('cache'));
   logger.core.info('Cache initialized');

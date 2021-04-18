@@ -3,20 +3,26 @@ const bunyan = require('bunyan')
 , bformat = require('bunyan-formatter')  
 , formatOut = bformat({ outputMode: 'short', level: 'debug'});
 
+const gelfStream = require('gelf-stream')
 const config = require('src/util/config.js');
 
-let LogDNAStream = require('logdna-bunyan').BunyanStream;
+const gelfHost = config.get('fluentd_host') || 'localhost';
+const gelfPort = config.get('fluentd_port') || 9999;
 
 let streams = [];
 streams.push({stream: formatOut });
-if(config.get('log:logdna_api_token')){
+
+
+let streams = [];
+streams.push({ stream: formatOut });
+if(config.get('prod_logging')){
   streams.push({
-    stream: new LogDNAStream({
-      key: config.get('log:logdna_api_token')
-    }),
+    stream: gelfStream.forBunyan(gelfHost, gelfPort),
     type: 'raw'
   })
 }
+
+
 
 const logger = bunyan.createLogger({
   name: 'emerald',
