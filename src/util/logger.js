@@ -10,10 +10,6 @@ const gelfHost = config.get('fluentd_host') || 'localhost';
 const gelfPort = config.get('fluentd_port') || 9999;
 
 let streams = [];
-streams.push({stream: formatOut });
-
-
-let streams = [];
 streams.push({ stream: formatOut });
 if(config.get('prod_logging')){
   streams.push({
