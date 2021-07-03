@@ -1,22 +1,22 @@
 'use strict';
 const bunyan = require('bunyan')
-, bformat = require('bunyan-formatter')  
-, formatOut = bformat({ outputMode: 'short', level: 'debug'});
-
+  , bformat = require('bunyan-formatter')
+  , formatOut = bformat({ outputMode: 'short', level: 'info' });
 const gelfStream = require('gelf-stream')
 const config = require('src/util/config.js');
 
-const gelfHost = config.get('fluentd_host') || 'localhost';
-const gelfPort = config.get('fluentd_port') || 9999;
+const gelfHost = config.get('fluentd_host');
+const gelfPort = config.get('fluentd_port');
 
 let streams = [];
 streams.push({ stream: formatOut });
-if(config.get('prod_logging')){
+if(gelfHost){
   streams.push({
     stream: gelfStream.forBunyan(gelfHost, gelfPort),
     type: 'raw'
   })
 }
+
 
 
 

@@ -38,9 +38,9 @@ const MQ = {
   send: (msg) => {
     return MQ.channel.assertQueue(queue)
       .then(ok => {
-        if (config.get("rabbitmq:debug")) {
-          logger.info(`Sending data \n on queue ${queue} :`);
-          logger.info(msg);
+        if (config.get("logdebug")) {
+          logger.debug(`Sending data \n on queue ${queue} :`);
+          logger.debug(msg);
         }
         return MQ.channel.sendToQueue(queue, toBuffer(msg));
       })

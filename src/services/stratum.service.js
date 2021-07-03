@@ -42,7 +42,7 @@ const StratumService = {
 
   // Test function, this will never be called from the mining client xmrig
   dump: (params) => {
-    logger.info(params);
+    logger.debug(params);
     return { status: 'ok' }
   },
 
