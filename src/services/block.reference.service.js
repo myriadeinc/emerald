@@ -47,8 +47,8 @@ const BlockReferenceService = {
     return xmr.randomx(block, Buffer.from(seed_hash, 'hex'));
   },
   checkDifficulty: (localDiff, globalDiff, block) => {
-    // Add some metrics
-    const benchmarkDiff = 200n
+    // Add some metrics, 200k check
+    const benchmarkDiff = 200000n
     // Why are we using bignum library instead of native BigInt here? 
     // Proper division (because of hex data) only works as expected via loading raw Buffers
     let rawBlock = Buffer.from(block, 'hex');
