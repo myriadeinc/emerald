@@ -48,7 +48,7 @@ const BlockReferenceService = {
   },
   checkDifficulty: (localDiff, globalDiff, block) => {
     // Add some metrics
-    const benchmarkDiff = 20000n
+    const benchmarkDiff = 200n
     // Why are we using bignum library instead of native BigInt here? 
     // Proper division (because of hex data) only works as expected via loading raw Buffers
     let rawBlock = Buffer.from(block, 'hex');
@@ -67,7 +67,7 @@ const BlockReferenceService = {
       return 2;
     }
     if (hashDiff >= localDiff) {
-      if(hashDiff >= benchmarkDiff) logger.info(`Found big diff block ${hashDiff} surpassing ${benchmarkDiff}`)
+      if(hashDiff >= benchmarkDiff) {logger.info(`Found big diff block ${hashDiff} surpassing ${benchmarkDiff}`)}
       // Grant share to miner
       return 1;
     }
