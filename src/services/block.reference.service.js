@@ -60,6 +60,8 @@ const BlockReferenceService = {
     globalDiff = BigInt(globalDiff);
     localDiff = BigInt(localDiff);
 
+    console.log(`Share of ${hashDiff}`)
+
     if (hashDiff >= globalDiff) {
 
       // We won the block reward!
