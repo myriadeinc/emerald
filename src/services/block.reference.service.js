@@ -48,7 +48,7 @@ const BlockReferenceService = {
   },
   checkDifficulty: (localDiff, globalDiff, block) => {
     // Add some metrics, 200k check
-    const benchmarkDiff = 200000n
+    const benchmarkDiff = 1000000000n
     // Why are we using bignum library instead of native BigInt here? 
     // Proper division (because of hex data) only works as expected via loading raw Buffers
     let rawBlock = Buffer.from(block, 'hex');
@@ -60,10 +60,8 @@ const BlockReferenceService = {
     globalDiff = BigInt(globalDiff);
     localDiff = BigInt(localDiff);
 
-    console.log(`Share of ${hashDiff}`)
-
     if (hashDiff >= globalDiff) {
-
+      logger.info(`Found win block ${hashDiff} against ${globalDiff}`)
       // We won the block reward!
       // Submit to monero node
       return 2;
