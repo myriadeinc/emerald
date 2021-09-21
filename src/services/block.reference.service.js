@@ -47,8 +47,7 @@ const BlockReferenceService = {
     return xmr.randomx(block, Buffer.from(seed_hash, 'hex'));
   },
   checkDifficulty: (localDiff, globalDiff, block) => {
-    // Add some metrics, 200k check
-    const benchmarkDiff = 1000000000n
+
     // Why are we using bignum library instead of native BigInt here? 
     // Proper division (because of hex data) only works as expected via loading raw Buffers
     let rawBlock = Buffer.from(block, 'hex');
@@ -66,14 +65,34 @@ const BlockReferenceService = {
       // Submit to monero node
       return 2;
     }
+    BlockReferenceService.evalDiff(hashDiff, globalDiff)
     if (hashDiff >= localDiff) {
-      if(hashDiff >= benchmarkDiff) {logger.info(`Found big diff block ${hashDiff} surpassing ${benchmarkDiff}`)}
       // Grant share to miner
       return 1;
     }
     // Block does not match difficulty requirements: low difficulty share
     return 0;
   },
+  // All BigInts
+  evalDiff: (minerDiff, globalDiff) => {
+    try{
+      // Add some metrics
+    const benchmarkDiff = 1000000000n
+    let third = globalDiff / 3n;
+    let half = globalDiff / 2n;
+    let threeq = (3n * globalDiff) / 4n; 
+    // Not the most elegant way, but works for now 
+    if (minerDiff >= threeq ){ logger.info(`Enormous block ${minerDiff} 3.4`) }
+    else if (minerDiff >= half){ logger.info(`Enormous block ${minerDiff} 1.2`)}
+    else if (minerDiff >= third){ logger.info(`Enormous block ${minerDiff} 1.3`)}
+    if(minerDiff >= benchmarkDiff) {logger.info(`Found big diff block ${hashDiff} surpassing ${benchmarkDiff}`)}
+
+    }
+    catch(e){
+      logger.error(e)
+    }
+
+  }
 
 
 };

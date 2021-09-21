@@ -7,6 +7,8 @@ const axios = require('axios');
 const config = require('src/util/config.js');
 const reserve_size = config.get('pool:reserveSize') || 8;
 const wallet_address = config.get('pool:poolAddress')
+
+const BACKUP_NODE = 'http://node.melo.tools:18081/json_rpc';
 /**
  * @todo: Change to RPC client
  *  */
@@ -25,10 +27,32 @@ async function sendRpcBase(method, payload) {
     return response.data.result;
   }
   catch (err) {
-    console.log('error!')
+    logger.error("XMR Daemon Error")
+    logger.error(err);
+    return sendRpcBaseRetry(method, payload)
+  }
+}
+
+async function sendRpcBaseRetry(method, payload){
+  try {
+    const response = await axios({
+      url: BACKUP_NODE,
+      method: 'POST',
+      data: {
+        json_rpc: '2.0',
+        id: '1',
+        method: method,
+        params: payload,
+      },
+    });
+    return response.data.result;
+  }
+  catch (err) {
+    logger.error("Backup Daemon Error")
     logger.error(err);
     return { error: true }
   }
+
 }
 
 const MoneroApi = {
