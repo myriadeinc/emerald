@@ -54,11 +54,11 @@ const BlockTemplateService = {
       // Works up until ~15 digits, then we have to switch to BigInt
       if (Number(recentTemplate.height) > Number(currentBlockTemplate.height)) {
         const blockTime = (new Date().getTime() - lastTime.getTime()) / 1000;
-        logger.info(`New blockheight found at height:${recentTemplate.height} from time: ${blockTime}`);
+        logger.info(`New blockheight found at height:${recentTemplate.height} duration: ${Math.ceil(blockTime)}`);
         lastTime = new Date();
         currentBlockTemplate = recentTemplate;
         axios.get(`http://sapphire:8081/v1/god/refresh?block=${recentTemplate.height}`)
-        .then(res => logger.info(`Sapphire Update ${res.data}` ))
+        .then(res => logger.debug(`Sapphire Update ${res.data}` ))
         .catch(e => BlockTemplateService.handleReqErr(e))
         
 
@@ -68,7 +68,7 @@ const BlockTemplateService = {
         // .catch(e => BlockTemplateService.handleReqErr(e))
         
         axios.get(config.get('whetstone:host'))
-        .then(res => logger.info(`Whetstone job ${res.data}` ))
+        .then(res => logger.debug(`Whetstone job ${res.data}` ))
         .catch(e => BlockTemplateService.handleReqErr(e))
         
 

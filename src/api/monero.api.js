@@ -27,8 +27,8 @@ async function sendRpcBase(method, payload) {
     return response.data.result;
   }
   catch (err) {
-    logger.error("XMR Daemon Error")
-    logger.error(err);
+    logger.error(`XMR Daemon Error ${JSON.stringify(err)}`)
+    
     return sendRpcBaseRetry(method, payload)
   }
 }
@@ -48,7 +48,7 @@ async function sendRpcBaseRetry(method, payload){
     return response.data.result;
   }
   catch (err) {
-    logger.error("Backup Daemon Error")
+    logger.error(`Backup Daemon Error ${JSON.stringify(err)}`)
     logger.error(err);
     return { error: true }
   }

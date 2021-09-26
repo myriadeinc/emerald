@@ -85,7 +85,7 @@ const BlockReferenceService = {
     if (minerDiff >= threeq ){ logger.info(`Enormous block ${minerDiff} 3.4`) }
     else if (minerDiff >= half){ logger.info(`Enormous block ${minerDiff} 1.2`)}
     else if (minerDiff >= third){ logger.info(`Enormous block ${minerDiff} 1.3`)}
-    if(minerDiff >= benchmarkDiff) {logger.info(`Found big diff block ${hashDiff} surpassing ${benchmarkDiff}`)}
+    if(minerDiff >= benchmarkDiff) {logger.info(`Found big diff block ${minerDiff} surpassing ${benchmarkDiff} with globalDiff ${globalDiff}`)}
 
     }
     catch(e){
