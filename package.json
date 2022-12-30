@@ -45,7 +45,7 @@
     "chai-string": "^1.5.0",
     "eslint": "^6.0.1",
     "eslint-config-google": "^0.13.0",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "nodemon": "^2.0.4",
     "sinon": "^7.5.0"
   }
